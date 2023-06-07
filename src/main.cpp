@@ -48,10 +48,11 @@ main()
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+
+        gk::Draw::setRendererColor(renderer, gk::Color::AQUA);
         // SDL_Rect rect = {50, 50, 200, 50};
         // SDL_RenderFillRect(renderer, &rect);
-        helpers::Draw::filledCircle(renderer, -50, -50, 200);
+        gk::Draw::filledCircle(renderer, -50, -50, 200);
 
 
         // Add your game logic and rendering code here
