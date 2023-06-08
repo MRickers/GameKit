@@ -2,6 +2,9 @@ add_executable(${PROJECT_NAME}
 main.cpp
 helpers/Draw.hpp
 helpers/Draw.cpp
+helpers/ClockChrono.hpp
+helpers/ClockChrono.cpp
+helpers/Types.hpp
 app/App.hpp
 app/App.cpp
 )
