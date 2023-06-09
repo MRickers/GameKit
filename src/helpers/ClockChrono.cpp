@@ -12,18 +12,24 @@ namespace gk
 
   void ChronoClock::Start()
   {
-    m_start_time = std::chrono::high_resolution_clock::now();
+    m_start_time = std::chrono::system_clock::now();
   }
 
   void ChronoClock::Stop()
   {
-    m_stop_time = std::chrono::high_resolution_clock::now();
+    m_stop_time = std::chrono::system_clock::now();
+  }
+
+  time_ms ChronoClock::Round()
+  {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(
+               std::chrono::system_clock::now() - m_start_time)
+        .count();
   }
 
   bool ChronoClock::HasPassed(const time_ms delta)
   {
-    Stop();
-    return TimePassed() >= delta ? true : false;
+    return Round() >= delta ? true : false;
   }
 
 } // namespace gk

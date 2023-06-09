@@ -3,6 +3,6 @@
 
 namespace gk
 {
-  using time_ms = uint64_t;
+  using time_ms = uint32_t;
 
 } // namespace gk

@@ -1,5 +1,6 @@
 #pragma once
 #include "ClockChrono.hpp"
+#include "ClockSDL.hpp"
 
 namespace gk
 {
@@ -10,6 +11,10 @@ namespace gk
     Clock m_clock{};
 
   public:
+    time_ms Round()
+    {
+      return m_clock.Round();
+    }
     void Reset()
     {
       m_clock.Start();
@@ -51,5 +56,6 @@ namespace gk
   };
 
   using Timer = ITimer<ChronoClock>;
+  using TimerSdl = ITimer<SDLClock>;
 
 } // namespace gk

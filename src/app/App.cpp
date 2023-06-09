@@ -1,7 +1,9 @@
 #include "app/App.hpp"
 #include "helpers/Draw.hpp"
+#include "helpers/Timer.hpp"
 #include <SDL2/SDL.h>
 
+#include <spdlog/spdlog.h>
 #include <stdexcept>
 namespace gk
 {
@@ -66,13 +68,18 @@ namespace gk
 
   void App::draw()
   {
+    static auto x = 320;
     // clear renderer
     SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
     SDL_RenderClear(m_renderer);
 
     // draw circle
     gk::Draw::setRendererColor(m_renderer, gk::Color::CRIMSON);
-    gk::Draw::filledCircle(m_renderer, 320, 240, 150);
+    gk::Draw::filledCircle(m_renderer, x++, 240, 150);
+    if (x >= 640)
+    {
+      x = 0;
+    }
     // draw
     SDL_RenderPresent(m_renderer);
   }
@@ -86,15 +93,44 @@ namespace gk
   {
     m_running = false;
   }
+
   void App::run()
   {
     m_running = true;
+    const time_ms update_rate = 1000 / 60;
+    const auto max_updates = 5;
+    auto update_clock = gk::Timer{};
+    update_clock.Start();
 
+    auto counted_frames = 0;
+    auto fps_timer = gk::Timer{};
+    fps_timer.Start();
+
+    // fixed timestep ohne Timer Klasse bauen und schauen, ob fps erreich wird
     while (m_running)
     {
-      handleEvents();
-      update();
+      auto updates = 0;
+
+      if (auto elapsed_time = update_clock.Round(); elapsed_time >= update_rate)
+      {
+        while (elapsed_time >= update_rate && updates++ < max_updates)
+        {
+          handleEvents();
+          update();
+          elapsed_time -= update_rate;
+          ++counted_frames;
+        }
+        update_clock.Reset();
+      }
       draw();
+
+      if (fps_timer.HasPassed(1000))
+      {
+        spdlog::info("Fps: {}", counted_frames);
+        counted_frames = 0;
+        fps_timer.Reset();
+      }
+      // Sleep einbauen wegen cpu
     }
   }
 } // namespace gk

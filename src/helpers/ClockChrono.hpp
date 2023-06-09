@@ -10,12 +10,13 @@ namespace gk
     time_ms TimePassed();
     void Start();
     void Stop();
+    time_ms Round();
     bool HasPassed(const time_ms delta);
 
   private:
-    std::chrono::high_resolution_clock::time_point m_start_time{
+    std::chrono::system_clock::time_point m_start_time{
         std::chrono::high_resolution_clock::now()};
-    std::chrono::high_resolution_clock::time_point m_stop_time{
+    std::chrono::system_clock::time_point m_stop_time{
         std::chrono::high_resolution_clock::now()};
   };
 
