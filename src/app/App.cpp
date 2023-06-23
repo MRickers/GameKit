@@ -5,6 +5,11 @@
 
 #include <spdlog/spdlog.h>
 #include <stdexcept>
+
+#include <algorithm>
+#include <chrono>
+#include <thread>
+
 namespace gk
 {
 
@@ -97,40 +102,95 @@ namespace gk
   void App::run()
   {
     m_running = true;
-    const time_ms update_rate = 1000 / 60;
+    // const time_ms update_rate = 1000 / 60;
+    const auto update_rate = std::chrono::milliseconds{1000 / 60};
     const auto max_updates = 5;
-    auto update_clock = gk::Timer{};
-    update_clock.Start();
 
-    auto counted_frames = 0;
+    auto lastUpdateTime = std::chrono::system_clock::now();
+    auto lastRenderTime = std::chrono::system_clock::now();
+
     auto fps_timer = gk::Timer{};
     fps_timer.Start();
+    auto framecount = 0;
 
-    // fixed timestep ohne Timer Klasse bauen und schauen, ob fps erreich wird
     while (m_running)
     {
       auto updates = 0;
+      auto now = std::chrono::system_clock::now();
 
-      if (auto elapsed_time = update_clock.Round(); elapsed_time >= update_rate)
+      while (std::chrono::duration_cast<std::chrono::milliseconds>(
+                 now - lastUpdateTime) > update_rate &&
+             updates < max_updates)
       {
-        while (elapsed_time >= update_rate && updates++ < max_updates)
-        {
-          handleEvents();
-          update();
-          elapsed_time -= update_rate;
-          ++counted_frames;
-        }
-        update_clock.Reset();
+        handleEvents();
+        update();
+        lastUpdateTime += update_rate;
+        updates++;
+        framecount++;
       }
+
+      // if maybe an update tooks forever we dont want to catch up
+      if (now - lastUpdateTime > update_rate)
+      {
+        lastUpdateTime = now - update_rate;
+      }
+
       draw();
+      lastRenderTime = now;
 
       if (fps_timer.HasPassed(1000))
       {
-        spdlog::info("Fps: {}", counted_frames);
-        counted_frames = 0;
+        spdlog::info("{}", framecount);
+        framecount = 0;
         fps_timer.Reset();
       }
-      // Sleep einbauen wegen cpu
+
+      while ((now - lastRenderTime) < update_rate &&
+             (now - lastUpdateTime) < update_rate)
+      {
+        std::this_thread::sleep_for(std::chrono::milliseconds{1});
+        now = std::chrono::system_clock::now();
+      }
     }
   }
+  // void App::run()
+  // {
+  //   m_running = true;
+  //   const time_ms update_rate = 1000 / 60;
+  //   const auto max_updates = 5;
+  //   auto update_clock = gk::Timer{};
+  //   update_clock.Start();
+
+  //   auto counted_frames = 0;
+  //   auto fps_timer = gk::Timer{};
+  //   fps_timer.Start();
+
+  //   // fixed timestep ohne Timer Klasse bauen und schauen, ob fps erreich
+  //   wird while (m_running)
+  //   {
+  //     auto updates = 0;
+
+  //     if (auto elapsed_time = update_clock.Round(); elapsed_time >=
+  //     update_rate)
+  //     {
+  //       while (elapsed_time >= update_rate && updates++ < max_updates)
+  //       {
+  //         handleEvents();
+  //         update();
+  //         elapsed_time -= update_rate;
+  //         ++counted_frames;
+  //       }
+  //       update_clock.Reset();
+  //     }
+  //     draw();
+
+  //     if (fps_timer.HasPassed(1000))
+  //     {
+  //       spdlog::info("Fps: {}", counted_frames);
+  //       counted_frames = 0;
+  //       fps_timer.Reset();
+  //     }
+  //     // Sleep einbauen wegen cpu
+  //   }
+  // }
 } // namespace gk
