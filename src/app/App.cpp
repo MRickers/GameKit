@@ -3,11 +3,9 @@
 #include "helpers/Timer.hpp"
 #include <SDL2/SDL.h>
 
+#include <chrono>
 #include <spdlog/spdlog.h>
 #include <stdexcept>
-
-#include <algorithm>
-#include <chrono>
 #include <thread>
 
 namespace gk
@@ -56,16 +54,7 @@ namespace gk
 
   void App::handleEvents()
   {
-    SDL_Event e;
-
-    while (SDL_PollEvent(&e) != 0)
-    {
-      if (e.type == SDL_QUIT)
-      {
-        m_running = false;
-      }
     }
-  }
 
   void App::update()
   {
@@ -153,44 +142,4 @@ namespace gk
       }
     }
   }
-  // void App::run()
-  // {
-  //   m_running = true;
-  //   const time_ms update_rate = 1000 / 60;
-  //   const auto max_updates = 5;
-  //   auto update_clock = gk::Timer{};
-  //   update_clock.Start();
-
-  //   auto counted_frames = 0;
-  //   auto fps_timer = gk::Timer{};
-  //   fps_timer.Start();
-
-  //   // fixed timestep ohne Timer Klasse bauen und schauen, ob fps erreich
-  //   wird while (m_running)
-  //   {
-  //     auto updates = 0;
-
-  //     if (auto elapsed_time = update_clock.Round(); elapsed_time >=
-  //     update_rate)
-  //     {
-  //       while (elapsed_time >= update_rate && updates++ < max_updates)
-  //       {
-  //         handleEvents();
-  //         update();
-  //         elapsed_time -= update_rate;
-  //         ++counted_frames;
-  //       }
-  //       update_clock.Reset();
-  //     }
-  //     draw();
-
-  //     if (fps_timer.HasPassed(1000))
-  //     {
-  //       spdlog::info("Fps: {}", counted_frames);
-  //       counted_frames = 0;
-  //       fps_timer.Reset();
-  //     }
-  //     // Sleep einbauen wegen cpu
-  //   }
-  // }
 } // namespace gk

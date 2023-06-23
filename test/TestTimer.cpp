@@ -12,5 +12,6 @@ TEST_CASE("Timer", "[timing]")
   while (!timer.HasPassed(1000))
   {
   }
+  timer.Stop();
   REQUIRE(timer.TimePassed() >= 1000);
 }

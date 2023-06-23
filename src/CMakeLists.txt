@@ -9,6 +9,7 @@ helpers/ClockSDL.cpp
 helpers/Types.hpp
 app/App.hpp
 app/App.cpp
+app/snake/Snake.hpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
