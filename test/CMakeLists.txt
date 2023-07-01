@@ -25,3 +25,25 @@ ${CMAKE_CURRENT_SOURCE_DIR}/../src/helpers/Timer.hpp
 target_include_directories(TestTimer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 target_link_libraries(TestTimer Catch2::Catch2WithMain)
 add_test(NAME TestTimerTest COMMAND TestTimer)
+
+add_executable(TestSnake 
+TestSnake.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/app/snake/Snake.hpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/app/snake/Snake.cpp
+)
+target_include_directories(TestSnake PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_link_libraries(TestSnake Catch2::Catch2WithMain SDL2)
+add_test(NAME TestSnakeTest COMMAND TestSnake)
+
+add_executable(TestVector2d
+TestVector2d.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/Vector2d.hpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/Vector2d.cpp
+)
+target_include_directories(TestVector2d PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_link_libraries(TestVector2d Catch2::Catch2WithMain)
+set_target_properties(TestVector2d PROPERTIES
+CXX_STANDARD 17
+CXX_STANDARD_REQUIRED ON
+)
+add_test(NAME TestVector2dTest COMMAND TestVector2d)
