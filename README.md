@@ -1,5 +1,5 @@
 # Sssnake
-![example workflow](https://github.com/MRickers/SSsnake/blob/master/.github/workflows/cmake.yml/badge.svg)
+![Linux Build Status](https://github.com/MRickers/SSsnake/actions/workflows/cmake.yml/badge.svg)
 
 ## Build
 
