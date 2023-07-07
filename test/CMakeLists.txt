@@ -47,3 +47,18 @@ CXX_STANDARD 17
 CXX_STANDARD_REQUIRED ON
 )
 add_test(NAME TestVector2dTest COMMAND TestVector2d)
+
+add_executable(TestInputHandler
+TestInputHandler.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/core/InputHandler.hpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/core/InputHandler.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/Vector2d.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/Vector2d.hpp
+)
+target_include_directories(TestInputHandler PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_link_libraries(TestInputHandler Catch2::Catch2WithMain SDL2)
+set_target_properties(TestInputHandler PROPERTIES
+CXX_STANDARD 17
+CXX_STANDARD_REQUIRED ON
+)
+add_test(NAME TestInputHandlerTest COMMAND TestVector2d)

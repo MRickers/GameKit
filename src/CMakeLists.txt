@@ -7,6 +7,10 @@ helpers/ClockChrono.cpp
 helpers/ClockSDL.hpp
 helpers/ClockSDL.cpp
 helpers/Types.hpp
+helpers/GameException.hpp
+core/GameObject.hpp
+core/InputHandler.hpp
+core/InputHandler.cpp
 app/App.hpp
 app/App.cpp
 app/snake/Snake.hpp

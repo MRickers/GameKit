@@ -84,7 +84,6 @@ void gk::Vector2D::Normalize()
 {
   if (const auto len = Length(); len > 0)
   {
-
     *this *= 1 / Length();
   }
 }

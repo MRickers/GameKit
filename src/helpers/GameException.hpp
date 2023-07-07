@@ -29,6 +29,22 @@ namespace gk
     std::string m_msg{""};
   };
 
+  void ExceptionHandler(std::exception_ptr eptr, const char* file,
+                        const int line)
+  {
+    try
+    {
+      if (eptr)
+        std::rethrow_exception(eptr);
+    }
+    catch (const std::exception& e)
+    {
+      throw GameException{e.what(), 0, file, line};
+    }
+  }
+
+#define HandleException(eptr) ExceptionHandler(eptr, __FILE__, __LINE__)
+
 #define GameException(message, error)                                          \
   GameException                                                                \
   {                                                                            \
