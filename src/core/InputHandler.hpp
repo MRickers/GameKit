@@ -9,7 +9,18 @@
 
 namespace gk
 {
-  using Event = SDL_Event;
+  enum EventType
+  {
+    Idle,
+    KeyDown = SDL_KEYDOWN,
+    KeyUp = SDL_KEYUP,
+  };
+  struct Event
+  {
+    EventType type{Idle};
+    SDL_Scancode scancode{SDL_SCANCODE_UNKNOWN};
+  };
+
   using Events = std::vector<Event>;
 
   struct EventDetails
@@ -27,6 +38,7 @@ namespace gk
   {
     std::string id{""};
     Events events{};
+    bool already_invoked{false};
     size_t event_counter{0};
     EventDetails event_details{};
   };
@@ -40,10 +52,10 @@ namespace gk
     bool AddCallback(const std::string& id, EventCallback);
     bool RemoveCallback(const std::string& id);
 
-    bool AddBinding(const std::string& id, const EventBinding);
+    bool AddBinding(const EventBinding&);
     bool RemoveBinding(const std::string& id);
 
-    void HandleEvent(const Event&);
+    void HandleEvent(const SDL_Event&);
     void Update();
 
   private:

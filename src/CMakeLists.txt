@@ -1,5 +1,4 @@
-add_executable(${PROJECT_NAME}
-main.cpp
+add_library(libGkCore STATIC 
 helpers/Draw.hpp
 helpers/Draw.cpp
 helpers/ClockChrono.hpp
@@ -11,14 +10,26 @@ helpers/GameException.hpp
 core/GameObject.hpp
 core/InputHandler.hpp
 core/InputHandler.cpp
+vector/Vector2d.hpp
+vector/Vector2d.cpp
 app/App.hpp
 app/App.cpp
+)
+target_include_directories(libGkCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(libGkCore PRIVATE SDL2 spdlog::spdlog_header_only)
+set_target_properties(libGkCore PROPERTIES
+CXX_STANDARD 17
+CXX_STANDARD_REQUIRED On
+)
+
+add_executable(${PROJECT_NAME}
+main.cpp
+
 app/snake/Snake.hpp
 app/snake/Snake.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2 spdlog::spdlog_header_only)
+target_link_libraries(${PROJECT_NAME} PRIVATE libGkCore)
 set_target_properties(${PROJECT_NAME} PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On

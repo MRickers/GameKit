@@ -26,7 +26,7 @@ cmake --build build --config Debug
 ```
 
 ## Tests
-Run tests after build
+Run tests
 ```
 cd build
 ctest -C Debug

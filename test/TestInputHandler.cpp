@@ -24,11 +24,11 @@ TEST_CASE("Add/Remove Binding", "[inputhandler]")
   gk::InputHandler input_handler;
   SECTION("AddBinding")
   {
-    REQUIRE(input_handler.AddBinding("test", {}));
+    REQUIRE(input_handler.AddBinding({"test"}));
   }
   SECTION("RemoveBinding")
   {
-    REQUIRE(input_handler.AddBinding("test", {}));
+    REQUIRE(input_handler.AddBinding({"test"}));
     REQUIRE(input_handler.RemoveBinding("test"));
   }
   SECTION("RemoveInvalidBinding")

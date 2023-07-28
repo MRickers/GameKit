@@ -3,9 +3,14 @@ project(Snake LANGUAGES CXX)
 
 find_package(SDL2 REQUIRED)
 
-enable_testing()
+option(BUILD_TESTS "Build all tests" ON)
+
 
 add_subdirectory(spdlog)
 add_subdirectory(Catch2)
-add_subdirectory(test)
 add_subdirectory(src)
+
+if(${BUILD_TESTS})
+    add_subdirectory(test)
+    enable_testing()
+endif()

@@ -1,6 +1,7 @@
 #include "InputHandler.hpp"
 #include "helpers/GameException.hpp"
 
+#include <iostream>
 #include <stdexcept>
 
 bool gk::InputHandler::AddCallback(const std::string& id,
@@ -34,13 +35,16 @@ bool gk::InputHandler::RemoveCallback(const std::string& id)
   return false;
 }
 
-bool gk::InputHandler::AddBinding(const std::string& id,
-                                  const EventBinding binding)
+bool gk::InputHandler::AddBinding(const EventBinding& binding)
 {
   std::exception_ptr eptr = nullptr;
   try
   {
-    return m_bindings.try_emplace(id, binding).second;
+    if (binding.id.empty())
+    {
+      return false;
+    }
+    return m_bindings.try_emplace(binding.id, binding).second;
   }
   catch (...)
   {
@@ -65,7 +69,7 @@ bool gk::InputHandler::RemoveBinding(const std::string& id)
   return false;
 }
 
-void gk::InputHandler::HandleEvent(const Event& evnt)
+void gk::InputHandler::HandleEvent(const SDL_Event& evnt)
 {
   switch (evnt.type)
   {
@@ -88,16 +92,14 @@ void gk::InputHandler::Update()
   {
     for (auto& event : binding.events)
     {
-      if (isKeyEvent(event.type))
+      if (event.type == EventType::KeyDown && isKeyDown(event.scancode))
       {
-        if (keyDownEvent(event.type) && isKeyDown(event.key.keysym.scancode))
-        {
-          ++binding.event_counter;
-        }
-        else if (keyUpEvent(event.type) && isKeyUp(event.key.keysym.scancode))
-        {
-          ++binding.event_counter;
-        }
+        ++binding.event_counter;
+      }
+      else if (isKeyUp(event.scancode))
+      {
+        binding.event_counter = 0;
+        binding.already_invoked = false;
       }
     }
     // invoke callback
@@ -106,38 +108,33 @@ void gk::InputHandler::Update()
       if (const auto callback = m_callbacks.find(binding.id);
           callback != m_callbacks.end())
       {
-        callback->second(binding.event_details);
+        if (!binding.already_invoked)
+        {
+          callback->second(binding.event_details);
+          binding.already_invoked = true;
+        }
       }
     }
-    binding.event_counter = 0;
     binding.event_details.Reset();
   }
 }
 
 bool gk::InputHandler::isKeyEvent(const uint32_t event_type)
 {
-  if (event_type == SDL_KEYDOWN || event_type == SDL_KEYUP)
-  {
-    return true;
-  }
-  return false;
+  return event_type == SDL_KEYDOWN || event_type == SDL_KEYUP;
 }
 
 void gk::InputHandler::updateKeyStates()
 {
-  m_keystates = SDL_GetKeyboardState(0);
+  m_keystates = SDL_GetKeyboardState(NULL);
 }
 
 bool gk::InputHandler::isKeyDown(SDL_Scancode key) const
 {
   if (m_keystates != nullptr)
   {
-    if (m_keystates[key] == 1)
-    {
-      return true;
-    }
+    return m_keystates[key] == 1;
   }
-
   return false;
 }
 
