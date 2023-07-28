@@ -81,6 +81,18 @@ void gk::InputHandler::HandleEvent(const SDL_Event& evnt)
     updateKeyStates();
     break;
 
+  case SDL_MOUSEMOTION:
+    updateMouseStates();
+    break;
+
+  case SDL_MOUSEBUTTONDOWN:
+    updateMouseStates();
+    break;
+
+  case SDL_MOUSEBUTTONUP:
+    updateMouseStates();
+    break;
+
   default:
     break;
   }
@@ -92,14 +104,24 @@ void gk::InputHandler::Update()
   {
     for (auto& event : binding.events)
     {
-      if (event.type == EventType::KeyDown && isKeyDown(event.scancode))
+      if (isKeyEvent(event.type))
       {
-        ++binding.event_counter;
+        if (isKeyDown(event.scancode))
+        {
+          ++binding.event_counter;
+        }
+        else if (isKeyUp(event.scancode))
+        {
+          binding.event_counter = 0;
+          binding.already_invoked = false;
+        }
       }
-      else if (isKeyUp(event.scancode))
+      else if (isMouseEvent(event.type))
       {
-        binding.event_counter = 0;
-        binding.already_invoked = false;
+        if (isMouseButtonDown(event.mouseButton))
+        {
+          ++binding.event_counter;
+        }
       }
     }
     // invoke callback
@@ -124,6 +146,18 @@ bool gk::InputHandler::isKeyEvent(const uint32_t event_type)
   return event_type == SDL_KEYDOWN || event_type == SDL_KEYUP;
 }
 
+bool gk::InputHandler::isMouseEvent(const uint32_t event_type)
+{
+  return event_type == SDL_MOUSEMOTION || event_type == SDL_MOUSEBUTTONDOWN ||
+         event_type == SDL_MOUSEBUTTONUP;
+}
+
+void gk::InputHandler::updateMouseStates()
+{
+  static constexpr auto index_offset = 1;
+  m_mouseEvents[SDL_GetMouseState(&m_mouseX, &m_mouseY) - index_offset] = true;
+}
+
 void gk::InputHandler::updateKeyStates()
 {
   m_keystates = SDL_GetKeyboardState(NULL);
@@ -143,12 +177,7 @@ bool gk::InputHandler::isKeyUp(SDL_Scancode key) const
   return !isKeyDown(key);
 }
 
-bool gk::InputHandler::keyDownEvent(const uint32_t event_type) const
+bool gk::InputHandler::isMouseButtonDown(const MouseButton button) const
 {
-  return event_type == SDL_KEYDOWN;
-}
-
-bool gk::InputHandler::keyUpEvent(const uint32_t event_type) const
-{
-  return !keyDownEvent(event_type);
+  return m_mouseEvents[button];
 }
