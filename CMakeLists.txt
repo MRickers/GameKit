@@ -11,6 +11,6 @@ add_subdirectory(Catch2)
 add_subdirectory(src)
 
 if(${BUILD_TESTS})
-    add_subdirectory(test)
     enable_testing()
+    add_subdirectory(test)
 endif()

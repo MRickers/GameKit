@@ -2,6 +2,7 @@
 #include "vector/Vector2d.hpp"
 #include <array>
 #include <functional>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -52,13 +53,14 @@ namespace gk
   {
     std::string id{""};
     Events events{};
-    bool already_invoked{false};
     size_t event_counter{0};
     EventDetails event_details{};
+    bool already_invoked{false};
   };
   using EventCallback = std::function<void(const EventDetails&)>;
   class InputHandler
   {
+
     using Callbacks = std::unordered_map<std::string, EventCallback>;
     using Bindings = std::unordered_map<std::string, EventBinding>;
     // Index 0 = left mouse button pressed
@@ -67,6 +69,9 @@ namespace gk
     using MouseButtonState = std::array<bool, 3>;
 
   public:
+    InputHandler();
+    ~InputHandler();
+
     bool AddCallback(const std::string& id, EventCallback);
     bool RemoveCallback(const std::string& id);
 
@@ -79,6 +84,10 @@ namespace gk
   private:
     Callbacks m_callbacks{};
     Bindings m_bindings{};
+
+    class Details;
+    std::unique_ptr<Details> m_details{nullptr};
+
     const Uint8* m_keystates{nullptr};
     MouseButtonState m_mouseEvents{};
     bool m_mouseMotion{false};
@@ -92,5 +101,8 @@ namespace gk
     bool isKeyDown(SDL_Scancode key) const;
     bool isKeyUp(SDL_Scancode key) const;
     bool isMouseButtonDown(const MouseButton button) const;
+    bool setInvoked(const std::string id);
+    bool resetInvoked(const std::string id);
+    bool wasInvoked(const std::string& id) const;
   };
 } // namespace gk

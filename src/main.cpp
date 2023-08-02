@@ -25,12 +25,39 @@ int main()
 
     input->AddBinding(binding);
   }
+  {
+    auto binding = gk::EventBinding{"leftMouse"};
+    binding.events.push_back({gk::EventType::MouseDown});
+
+    input->AddBinding(binding);
+  }
+  {
+    auto binding = gk::EventBinding{"rightMouse"};
+    binding.events.push_back({gk::EventType::MouseDown, SDL_SCANCODE_UNKNOWN,
+                              gk::MouseButton::Right});
+
+    input->AddBinding(binding);
+  }
   input->AddCallback("test",
                      [](const gk::EventDetails&) { std::cout << "test\n"; });
 
   input->AddCallback("strg+c",
                      [](const gk::EventDetails&) { std::cout << "strg+c\n"; });
   input->AddCallback("esc", [&app](const gk::EventDetails&) { app.stop(); });
+
+  input->AddCallback("leftMouse",
+                     [&app](const gk::EventDetails& b)
+                     {
+                       std::cout << "left mouse pressed: " << b.mouse_pos.GetX()
+                                 << "," << b.mouse_pos.GetY() << "\n";
+                     });
+  input->AddCallback("rightMouse",
+                     [&app](const gk::EventDetails& b)
+                     {
+                       std::cout
+                           << "right mouse pressed: " << b.mouse_pos.GetX()
+                           << "," << b.mouse_pos.GetY() << "\n";
+                     });
 
   app.setInputHandler(std::move(input));
   app.run();

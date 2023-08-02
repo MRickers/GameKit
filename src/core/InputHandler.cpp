@@ -3,6 +3,21 @@
 
 #include <iostream>
 #include <stdexcept>
+static constexpr auto s_index_offset = 1;
+class gk::InputHandler::Details
+{
+public:
+  std::unordered_map<std::string, bool> m_invoked{};
+};
+
+gk::InputHandler::InputHandler()
+    : m_details{std::make_unique<InputHandler::Details>()}
+{
+}
+
+gk::InputHandler::~InputHandler()
+{
+}
 
 bool gk::InputHandler::AddCallback(const std::string& id,
                                    EventCallback callback)
@@ -44,6 +59,12 @@ bool gk::InputHandler::AddBinding(const EventBinding& binding)
     {
       return false;
     }
+    if (const auto added =
+            m_details->m_invoked.try_emplace(binding.id, false).second;
+        !added)
+    {
+      return false;
+    }
     return m_bindings.try_emplace(binding.id, binding).second;
   }
   catch (...)
@@ -59,6 +80,10 @@ bool gk::InputHandler::RemoveBinding(const std::string& id)
   std::exception_ptr eptr = nullptr;
   try
   {
+    if (const auto removed = m_details->m_invoked.erase(id); removed != 1)
+    {
+      return false;
+    }
     return m_bindings.erase(id) == 1;
   }
   catch (...)
@@ -110,10 +135,10 @@ void gk::InputHandler::Update()
         {
           ++binding.event_counter;
         }
-        else if (isKeyUp(event.scancode))
+        else
         {
+          resetInvoked(binding.id);
           binding.event_counter = 0;
-          binding.already_invoked = false;
         }
       }
       else if (isMouseEvent(event.type))
@@ -121,6 +146,11 @@ void gk::InputHandler::Update()
         if (isMouseButtonDown(event.mouseButton))
         {
           ++binding.event_counter;
+        }
+        else
+        {
+          resetInvoked(binding.id);
+          binding.event_counter = 0;
         }
       }
     }
@@ -130,14 +160,16 @@ void gk::InputHandler::Update()
       if (const auto callback = m_callbacks.find(binding.id);
           callback != m_callbacks.end())
       {
-        if (!binding.already_invoked)
+        if (!wasInvoked(binding.id))
         {
+          binding.event_details.mouse_pos = {static_cast<float>(m_mouseX),
+                                             static_cast<float>(m_mouseY)};
           callback->second(binding.event_details);
-          binding.already_invoked = true;
+          setInvoked(binding.id);
         }
+        binding.event_details.Reset();
       }
     }
-    binding.event_details.Reset();
   }
 }
 
@@ -154,8 +186,21 @@ bool gk::InputHandler::isMouseEvent(const uint32_t event_type)
 
 void gk::InputHandler::updateMouseStates()
 {
-  static constexpr auto index_offset = 1;
-  m_mouseEvents[SDL_GetMouseState(&m_mouseX, &m_mouseY) - index_offset] = true;
+  m_mouseEvents = {false, false, false};
+  const auto mouseButtons = SDL_GetMouseState(&m_mouseX, &m_mouseY);
+
+  if (mouseButtons & SDL_BUTTON(gk::MouseButton::Left))
+  {
+    m_mouseEvents[gk::MouseButton::Left - s_index_offset] = true;
+  }
+  if (mouseButtons & SDL_BUTTON(gk::MouseButton::Middle))
+  {
+    m_mouseEvents[gk::MouseButton::Middle - s_index_offset] = true;
+  }
+  if (mouseButtons & SDL_BUTTON(gk::MouseButton::Right))
+  {
+    m_mouseEvents[gk::MouseButton::Right - s_index_offset] = true;
+  }
 }
 
 void gk::InputHandler::updateKeyStates()
@@ -179,5 +224,37 @@ bool gk::InputHandler::isKeyUp(SDL_Scancode key) const
 
 bool gk::InputHandler::isMouseButtonDown(const MouseButton button) const
 {
-  return m_mouseEvents[button];
+  return m_mouseEvents[button - s_index_offset];
+}
+
+bool gk::InputHandler::setInvoked(const std::string id)
+{
+  if (const auto invoked = m_details->m_invoked.find(id);
+      invoked != m_details->m_invoked.end())
+  {
+    invoked->second = true;
+    return true;
+  }
+  return false;
+}
+
+bool gk::InputHandler::resetInvoked(const std::string id)
+{
+  if (const auto invoked = m_details->m_invoked.find(id);
+      invoked != m_details->m_invoked.end())
+  {
+    invoked->second = false;
+    return true;
+  }
+  return false;
+}
+
+bool gk::InputHandler::wasInvoked(const std::string& id) const
+{
+  if (const auto invoked = m_details->m_invoked.find(id);
+      invoked != m_details->m_invoked.end())
+  {
+    return invoked->second;
+  }
+  return false;
 }
