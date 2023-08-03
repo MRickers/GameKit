@@ -27,7 +27,7 @@ namespace gk
     Left = 1,
     Middle = 2,
     Right = 3,
-    Motion,
+    Motion = 4,
   };
   struct Event
   {
@@ -66,7 +66,8 @@ namespace gk
     // Index 0 = left mouse button pressed
     // Index 1 = middle mouse button pressed
     // Index 2 = right mouse button pressed
-    using MouseButtonState = std::array<bool, 3>;
+    // Index 4 = motion
+    using MouseButtonState = std::array<bool, MouseButton::Motion>;
 
   public:
     InputHandler();
@@ -95,12 +96,15 @@ namespace gk
     int m_mouseY{0};
 
     bool isKeyEvent(const uint32_t event_type);
-    bool isMouseEvent(const uint32_t event_type);
-    void updateMouseStates();
+    bool isMouseButtonEvent(const uint32_t event_type);
+    bool isMouseMotionEvent(const uint32_t event_type);
+    void updateMouseStates(const uint32_t event_type);
     void updateKeyStates();
     bool isKeyDown(SDL_Scancode key) const;
     bool isKeyUp(SDL_Scancode key) const;
     bool isMouseButtonDown(const MouseButton button) const;
+    bool isMotion() const;
+
     bool setInvoked(const std::string id);
     bool resetInvoked(const std::string id);
     bool wasInvoked(const std::string& id) const;

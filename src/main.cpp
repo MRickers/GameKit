@@ -38,6 +38,12 @@ int main()
 
     input->AddBinding(binding);
   }
+  {
+    auto binding = gk::EventBinding{"motion"};
+    binding.events.push_back({gk::EventType::MouseMotion});
+
+    input->AddBinding(binding);
+  }
   input->AddCallback("test",
                      [](const gk::EventDetails&) { std::cout << "test\n"; });
 
@@ -57,6 +63,12 @@ int main()
                        std::cout
                            << "right mouse pressed: " << b.mouse_pos.GetX()
                            << "," << b.mouse_pos.GetY() << "\n";
+                     });
+  input->AddCallback("motion",
+                     [&app](const gk::EventDetails& b)
+                     {
+                       std::cout << "motion: " << b.mouse_pos.GetX() << ","
+                                 << b.mouse_pos.GetY() << "\n";
                      });
 
   app.setInputHandler(std::move(input));

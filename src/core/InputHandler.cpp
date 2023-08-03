@@ -94,6 +94,8 @@ bool gk::InputHandler::RemoveBinding(const std::string& id)
   return false;
 }
 
+/// @brief If no event happens, this method will not be invoked.
+/// @param evnt
 void gk::InputHandler::HandleEvent(const SDL_Event& evnt)
 {
   switch (evnt.type)
@@ -107,15 +109,15 @@ void gk::InputHandler::HandleEvent(const SDL_Event& evnt)
     break;
 
   case SDL_MOUSEMOTION:
-    updateMouseStates();
+    updateMouseStates(evnt.type);
     break;
 
   case SDL_MOUSEBUTTONDOWN:
-    updateMouseStates();
+    updateMouseStates(evnt.type);
     break;
 
   case SDL_MOUSEBUTTONUP:
-    updateMouseStates();
+    updateMouseStates(evnt.type);
     break;
 
   default:
@@ -141,7 +143,7 @@ void gk::InputHandler::Update()
           binding.event_counter = 0;
         }
       }
-      else if (isMouseEvent(event.type))
+      else if (isMouseButtonEvent(event.type))
       {
         if (isMouseButtonDown(event.mouseButton))
         {
@@ -151,6 +153,15 @@ void gk::InputHandler::Update()
         {
           resetInvoked(binding.id);
           binding.event_counter = 0;
+        }
+      }
+      else if (isMouseMotionEvent(event.type))
+      {
+        if (isMotion())
+        {
+          resetInvoked(binding.id);
+          binding.event_counter = 1;
+          m_mouseEvents[MouseButton::Motion - s_index_offset] = false;
         }
       }
     }
@@ -178,28 +189,48 @@ bool gk::InputHandler::isKeyEvent(const uint32_t event_type)
   return event_type == SDL_KEYDOWN || event_type == SDL_KEYUP;
 }
 
-bool gk::InputHandler::isMouseEvent(const uint32_t event_type)
+bool gk::InputHandler::isMouseButtonEvent(const uint32_t event_type)
 {
-  return event_type == SDL_MOUSEMOTION || event_type == SDL_MOUSEBUTTONDOWN ||
-         event_type == SDL_MOUSEBUTTONUP;
+  return event_type == SDL_MOUSEBUTTONDOWN || event_type == SDL_MOUSEBUTTONUP;
 }
 
-void gk::InputHandler::updateMouseStates()
+bool gk::InputHandler::isMouseMotionEvent(const uint32_t event_type)
 {
-  m_mouseEvents = {false, false, false};
+  return event_type == SDL_MOUSEMOTION;
+}
+
+void gk::InputHandler::updateMouseStates(const uint32_t event_type)
+{
+  // m_mouseEvents = {false, false, false, false};
   const auto mouseButtons = SDL_GetMouseState(&m_mouseX, &m_mouseY);
 
   if (mouseButtons & SDL_BUTTON(gk::MouseButton::Left))
   {
     m_mouseEvents[gk::MouseButton::Left - s_index_offset] = true;
   }
+  else
+  {
+    m_mouseEvents[gk::MouseButton::Left - s_index_offset] = false;
+  }
   if (mouseButtons & SDL_BUTTON(gk::MouseButton::Middle))
   {
     m_mouseEvents[gk::MouseButton::Middle - s_index_offset] = true;
   }
+  else
+  {
+    m_mouseEvents[gk::MouseButton::Middle - s_index_offset] = false;
+  }
   if (mouseButtons & SDL_BUTTON(gk::MouseButton::Right))
   {
     m_mouseEvents[gk::MouseButton::Right - s_index_offset] = true;
+  }
+  else
+  {
+    m_mouseEvents[gk::MouseButton::Right - s_index_offset] = false;
+  }
+  if (event_type == SDL_MOUSEMOTION)
+  {
+    m_mouseEvents[gk::MouseButton::Motion - s_index_offset] = true;
   }
 }
 
@@ -225,6 +256,11 @@ bool gk::InputHandler::isKeyUp(SDL_Scancode key) const
 bool gk::InputHandler::isMouseButtonDown(const MouseButton button) const
 {
   return m_mouseEvents[button - s_index_offset];
+}
+
+bool gk::InputHandler::isMotion() const
+{
+  return m_mouseEvents[MouseButton::Motion - s_index_offset];
 }
 
 bool gk::InputHandler::setInvoked(const std::string id)
