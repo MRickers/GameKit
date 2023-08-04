@@ -140,7 +140,6 @@ void gk::InputHandler::Update()
         else
         {
           resetInvoked(binding.id);
-          binding.event_counter = 0;
         }
       }
       else if (isMouseButtonEvent(event.type))
@@ -152,7 +151,6 @@ void gk::InputHandler::Update()
         else
         {
           resetInvoked(binding.id);
-          binding.event_counter = 0;
         }
       }
       else if (isMouseMotionEvent(event.type))
@@ -160,8 +158,7 @@ void gk::InputHandler::Update()
         if (isMotion())
         {
           resetInvoked(binding.id);
-          binding.event_counter = 1;
-          m_mouseEvents[MouseButton::Motion - s_index_offset] = false;
+          ++binding.event_counter;
         }
       }
     }
@@ -181,7 +178,9 @@ void gk::InputHandler::Update()
         binding.event_details.Reset();
       }
     }
+    binding.event_counter = 0;
   }
+  m_mouseEvents[MouseButton::Motion - s_index_offset] = false;
 }
 
 bool gk::InputHandler::isKeyEvent(const uint32_t event_type)
@@ -201,7 +200,6 @@ bool gk::InputHandler::isMouseMotionEvent(const uint32_t event_type)
 
 void gk::InputHandler::updateMouseStates(const uint32_t event_type)
 {
-  // m_mouseEvents = {false, false, false, false};
   const auto mouseButtons = SDL_GetMouseState(&m_mouseX, &m_mouseY);
 
   if (mouseButtons & SDL_BUTTON(gk::MouseButton::Left))

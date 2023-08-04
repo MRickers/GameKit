@@ -40,6 +40,15 @@ int main()
   }
   {
     auto binding = gk::EventBinding{"motion"};
+    binding.events.push_back({gk::EventType::MouseDown, SDL_SCANCODE_UNKNOWN,
+                              gk::MouseButton::Left});
+    binding.events.push_back({gk::EventType::MouseMotion});
+
+    input->AddBinding(binding);
+  }
+  {
+    auto binding = gk::EventBinding{"strg+motion"};
+    binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_LCTRL});
     binding.events.push_back({gk::EventType::MouseMotion});
 
     input->AddBinding(binding);
@@ -68,6 +77,12 @@ int main()
                      [&app](const gk::EventDetails& b)
                      {
                        std::cout << "motion: " << b.mouse_pos.GetX() << ","
+                                 << b.mouse_pos.GetY() << "\n";
+                     });
+  input->AddCallback("strg+motion",
+                     [&app](const gk::EventDetails& b)
+                     {
+                       std::cout << "STRG+motion: " << b.mouse_pos.GetX() << ","
                                  << b.mouse_pos.GetY() << "\n";
                      });
 
