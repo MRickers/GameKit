@@ -1,6 +1,7 @@
 #pragma once
 #include "vector/Vector2d.hpp"
 
+class SDL_Renderer;
 namespace gk
 {
   class LoadParams
@@ -23,7 +24,7 @@ namespace gk
     virtual ~IGameObject()
     {
     }
-    virtual void Draw() = 0;
+    virtual void Draw(const SDL_Renderer*) = 0;
     virtual void Update() = 0;
     virtual void Clean() = 0;
   };
