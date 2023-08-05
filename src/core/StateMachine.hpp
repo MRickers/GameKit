@@ -27,9 +27,11 @@ namespace gk
     void switchTo(const StateType state);
     void remove(const StateType state);
     void registerState(const StateType state, StateCreator creator);
+    StateType currentState() const;
 
   private:
-    StateContainer m_state;
+    StateType m_currentState;
+    StateContainer m_states;
     TypeContainer m_toRemove;
     StateFactory m_factory;
 

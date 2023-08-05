@@ -38,7 +38,20 @@ gk::BaseStatePtr createState()
   return std::make_unique<StateMock>();
 }
 
+enum class StateType
+{
+  INIT,
+  MENU,
+  PLAY,
+  PAUSE
+};
+
 TEST_CASE("Add State", "[statemanager]")
 {
   gk::StateMachine stateMachine;
+
+  SECTION("RegisterState")
+  {
+    stateMachine.registerState(StateType::INIT, createState);
+  }
 }
