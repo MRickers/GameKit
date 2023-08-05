@@ -1,7 +1,7 @@
-#include "../src/core/StateManager.hpp"
+#include "../src/core/StateMachine.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-class StateMock : gk::IBaseState
+class StateMock : public gk::IBaseState
 {
   void onCreate() override
   {
@@ -33,7 +33,12 @@ class StateMock : gk::IBaseState
   std::string m_input{""};
 };
 
+gk::BaseStatePtr createState()
+{
+  return std::make_unique<StateMock>();
+}
+
 TEST_CASE("Add State", "[statemanager]")
 {
-  gk::StateManager stateManager{nullptr};
+  gk::StateMachine stateMachine;
 }
