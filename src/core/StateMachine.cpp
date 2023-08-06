@@ -1,6 +1,15 @@
 #include "StateMachine.hpp"
 #include <algorithm>
 
+void gk::StateMachine::processRequests()
+{
+  while (m_toRemove.begin() != m_toRemove.end())
+  {
+    removeState(*m_toRemove.begin());
+    m_toRemove.erase(m_toRemove.begin());
+  }
+}
+
 bool gk::StateMachine::hasState(const StateType state)
 {
   const auto found =
@@ -20,6 +29,11 @@ bool gk::StateMachine::hasState(const StateType state)
   return false;
 }
 
+void gk::StateMachine::remove(const StateType state)
+{
+  m_toRemove.push_back(state);
+}
+
 void gk::StateMachine::registerState(const StateType state,
                                      StateCreator creator)
 {
@@ -29,4 +43,26 @@ void gk::StateMachine::registerState(const StateType state,
 StateType gk::StateMachine::currentState() const
 {
   return m_currentState;
+}
+
+void gk::StateMachine::createState(const StateType state)
+{
+  if (const auto stateRegistered = m_factory.find(state);
+      stateRegistered != m_factory.end())
+  {
+    m_states.emplace_back(state, std::move(m_factory[state]()));
+  }
+}
+
+void gk::StateMachine::removeState(const StateType state)
+{
+  auto stateToRemove =
+      std::find_if(m_states.begin(), m_states.end(),
+                   [state](const std::pair<StateType, BaseStatePtr>& p)
+                   { return state == p.first; });
+  if (stateToRemove != m_states.end())
+  {
+    stateToRemove->second->onDestroy();
+    m_states.erase(stateToRemove);
+  }
 }

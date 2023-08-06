@@ -53,5 +53,6 @@ TEST_CASE("Add State", "[statemanager]")
   SECTION("RegisterState")
   {
     stateMachine.registerState(StateType::INIT, createState);
+    REQUIRE(!stateMachine.hasState(StateType::INIT));
   }
 }
