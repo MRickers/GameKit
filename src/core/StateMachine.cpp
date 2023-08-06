@@ -29,6 +29,29 @@ bool gk::StateMachine::hasState(const StateType state)
   return false;
 }
 
+void gk::StateMachine::switchTo(const StateType state)
+{
+  if (const auto toSwitch =
+          std::find_if(m_states.begin(), m_states.end(),
+                       [state](const std::pair<StateType, BaseStatePtr>& p)
+                       { return state == p.first; });
+      toSwitch != m_states.end())
+  {
+    m_states.back().second->deactivate();
+    const auto tmpType = toSwitch->first;
+    auto tmpState = std::move(toSwitch->second);
+    auto* tmpStatePtr = tmpState.get();
+
+    m_states.erase(toSwitch);
+    m_states.emplace_back(tmpType, std::move(tmpState));
+    tmpStatePtr->activate();
+    return;
+  }
+
+  createState(state);
+  m_states.back().second->activate();
+}
+
 void gk::StateMachine::remove(const StateType state)
 {
   m_toRemove.push_back(state);
