@@ -61,7 +61,7 @@ set_target_properties(TestInputHandler PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED ON
 )
-add_test(NAME TestInputHandlerTest COMMAND TestVector2d)
+add_test(NAME TestInputHandlerTest COMMAND TestInputHandler)
 
 
 add_executable(TestStateMachine
@@ -70,9 +70,9 @@ ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/StateMachine.hpp
 ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/StateMachine.cpp
 )
 target_include_directories(TestStateMachine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
-target_link_libraries(TestStateMachine Catch2::Catch2WithMain)
+target_link_libraries(TestStateMachine Catch2::Catch2WithMain spdlog::spdlog_header_only)
 set_target_properties(TestStateMachine PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED ON
 )
-add_test(NAME TestStateMachine COMMAND TestVector2d)
+add_test(NAME TestStateMachine COMMAND TestStateMachine)

@@ -1,4 +1,5 @@
 #include "StateMachine.hpp"
+#include "helpers/GameException.hpp"
 #include <algorithm>
 
 void gk::StateMachine::processRequests()
@@ -23,7 +24,7 @@ bool gk::StateMachine::hasState(const StateType state)
                                       { return state == stateToRemove; });
     if (removed == m_toRemove.end())
     {
-      return false;
+      return true;
     }
   }
   return false;
@@ -31,6 +32,7 @@ bool gk::StateMachine::hasState(const StateType state)
 
 void gk::StateMachine::switchTo(const StateType state)
 {
+
   if (const auto toSwitch =
           std::find_if(m_states.begin(), m_states.end(),
                        [state](const std::pair<StateType, BaseStatePtr>& p)
@@ -45,11 +47,18 @@ void gk::StateMachine::switchTo(const StateType state)
     m_states.erase(toSwitch);
     m_states.emplace_back(tmpType, std::move(tmpState));
     tmpStatePtr->activate();
-    return;
   }
+  else
+  {
+    if (!m_states.empty())
+    {
+      m_states.back().second->deactivate();
+    }
+    createState(state);
+    m_states.back().second->activate();
 
-  createState(state);
-  m_states.back().second->activate();
+    m_currentState = state;
+  }
 }
 
 void gk::StateMachine::remove(const StateType state)
@@ -73,8 +82,16 @@ void gk::StateMachine::createState(const StateType state)
   if (const auto stateRegistered = m_factory.find(state);
       stateRegistered != m_factory.end())
   {
-    m_states.emplace_back(state, std::move(m_factory[state]()));
+    auto newState = m_factory[state]();
+    auto* newStatePtr = newState.get();
+
+    m_states.emplace_back(state, std::move(newState));
+    newStatePtr->onCreate();
+    return;
   }
+  throw gk::GameException(std::string{"could not create state: "} +
+                              std::to_string(static_cast<int>(state)),
+                          -100);
 }
 
 void gk::StateMachine::removeState(const StateType state)

@@ -30,7 +30,7 @@ namespace gk
     StateType currentState() const;
 
   private:
-    StateType m_currentState;
+    StateType m_currentState{};
     StateContainer m_states;
     TypeContainer m_toRemove;
     StateFactory m_factory;
