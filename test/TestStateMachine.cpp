@@ -193,3 +193,65 @@ TEST_CASE("Update", "[statemanager]")
     REQUIRE(pauseStatePtr->m_input == "OnCreateActivateUpdate");
   }
 }
+
+TEST_CASE("Draw", "[statemanager]")
+{
+  gk::StateMachine stateMachine;
+
+  SECTION("Simple")
+  {
+    StateMock* statePtr = nullptr;
+
+    stateMachine.registerState(StateType::PAUSE,
+                               [&statePtr]() -> gk::BaseStatePtr
+                               {
+                                 auto state = std::make_unique<StateMock>();
+                                 statePtr = state.get();
+                                 return std::move(state);
+                               });
+    stateMachine.switchTo(StateType::PAUSE);
+    stateMachine.draw(nullptr);
+    REQUIRE(statePtr->m_input == "OnCreateActivateDraw");
+  }
+  SECTION("Transparent")
+  {
+    StateMock* pauseStatePtr = nullptr;
+    StateMock* playStatePtr = nullptr;
+    StateMock* menuStatePtr = nullptr;
+
+    stateMachine.registerState(StateType::PAUSE,
+                               [&pauseStatePtr]() -> gk::BaseStatePtr
+                               {
+                                 auto state = std::make_unique<StateMock>();
+                                 pauseStatePtr = state.get();
+                                 state->setTransparent(true);
+                                 return std::move(state);
+                               });
+    stateMachine.registerState(StateType::PLAY,
+                               [&playStatePtr]() -> gk::BaseStatePtr
+                               {
+                                 auto state = std::make_unique<StateMock>();
+                                 playStatePtr = state.get();
+                                 return std::move(state);
+                               });
+    stateMachine.registerState(StateType::MENU,
+                               [&menuStatePtr]() -> gk::BaseStatePtr
+                               {
+                                 auto state = std::make_unique<StateMock>();
+                                 menuStatePtr = state.get();
+                                 return std::move(state);
+                               });
+
+    stateMachine.switchTo(StateType::MENU);
+    stateMachine.switchTo(StateType::PLAY);
+    stateMachine.switchTo(StateType::PAUSE);
+    REQUIRE(menuStatePtr->m_input == "OnCreateActivateDeactivate");
+    REQUIRE(playStatePtr->m_input == "OnCreateActivateDeactivate");
+    REQUIRE(pauseStatePtr->m_input == "OnCreateActivate");
+    stateMachine.draw(nullptr);
+
+    REQUIRE(menuStatePtr->m_input == "OnCreateActivateDeactivate");
+    REQUIRE(playStatePtr->m_input == "OnCreateActivateDeactivateDraw");
+    REQUIRE(pauseStatePtr->m_input == "OnCreateActivateDraw");
+  }
+}

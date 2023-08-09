@@ -31,6 +31,35 @@ void gk::StateMachine::update()
   }
 }
 
+void gk::StateMachine::draw(const SDL_Renderer* renderer)
+{
+  if (m_states.empty())
+  {
+    return;
+  }
+
+  if (m_states.back().second->isTransparent() && m_states.size() > 1)
+  {
+    auto itr = m_states.end() - 1;
+    while (itr != m_states.begin())
+    {
+      if (!itr->second->isTransparent())
+      {
+        break;
+      }
+      --itr;
+    }
+    for (; itr != m_states.end(); ++itr)
+    {
+      itr->second->draw(renderer);
+    }
+  }
+  else
+  {
+    m_states.back().second->draw(renderer);
+  }
+}
+
 void gk::StateMachine::processRequests()
 {
   while (m_toRemove.begin() != m_toRemove.end())
