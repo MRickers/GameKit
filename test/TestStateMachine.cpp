@@ -108,3 +108,88 @@ TEST_CASE("Add/Switch State", "[statemanager]")
     REQUIRE(initStatePtr->m_input == "OnCreateActivate");
   }
 }
+
+TEST_CASE("Remove", "[statemanager]")
+{
+  gk::StateMachine stateMachine;
+
+  SECTION("Add/Remove")
+  {
+    StateMock* statePtr = nullptr;
+
+    stateMachine.registerState(StateType::PAUSE,
+                               [&statePtr]() -> gk::BaseStatePtr
+                               {
+                                 auto state = std::make_unique<StateMock>();
+                                 statePtr = state.get();
+                                 return std::move(state);
+                               });
+    stateMachine.switchTo(StateType::PAUSE);
+    stateMachine.remove(StateType::PAUSE);
+    REQUIRE(statePtr->m_input == "OnCreateActivate");
+    stateMachine.processRequests();
+    REQUIRE(!stateMachine.hasState(StateType::PAUSE));
+  }
+}
+
+TEST_CASE("Update", "[statemanager]")
+{
+  gk::StateMachine stateMachine;
+
+  SECTION("Simple")
+  {
+    StateMock* statePtr = nullptr;
+
+    stateMachine.registerState(StateType::PAUSE,
+                               [&statePtr]() -> gk::BaseStatePtr
+                               {
+                                 auto state = std::make_unique<StateMock>();
+                                 statePtr = state.get();
+                                 return std::move(state);
+                               });
+    stateMachine.switchTo(StateType::PAUSE);
+    stateMachine.update();
+    REQUIRE(statePtr->m_input == "OnCreateActivateUpdate");
+  }
+  SECTION("Transcendent")
+  {
+    StateMock* pauseStatePtr = nullptr;
+    StateMock* playStatePtr = nullptr;
+    StateMock* menuStatePtr = nullptr;
+
+    stateMachine.registerState(StateType::PAUSE,
+                               [&pauseStatePtr]() -> gk::BaseStatePtr
+                               {
+                                 auto state = std::make_unique<StateMock>();
+                                 pauseStatePtr = state.get();
+                                 state->setTranscendent(true);
+                                 return std::move(state);
+                               });
+    stateMachine.registerState(StateType::PLAY,
+                               [&playStatePtr]() -> gk::BaseStatePtr
+                               {
+                                 auto state = std::make_unique<StateMock>();
+                                 playStatePtr = state.get();
+                                 return std::move(state);
+                               });
+    stateMachine.registerState(StateType::MENU,
+                               [&menuStatePtr]() -> gk::BaseStatePtr
+                               {
+                                 auto state = std::make_unique<StateMock>();
+                                 menuStatePtr = state.get();
+                                 return std::move(state);
+                               });
+
+    stateMachine.switchTo(StateType::MENU);
+    stateMachine.switchTo(StateType::PLAY);
+    stateMachine.switchTo(StateType::PAUSE);
+    REQUIRE(menuStatePtr->m_input == "OnCreateActivateDeactivate");
+    REQUIRE(playStatePtr->m_input == "OnCreateActivateDeactivate");
+    REQUIRE(pauseStatePtr->m_input == "OnCreateActivate");
+    stateMachine.update();
+
+    REQUIRE(menuStatePtr->m_input == "OnCreateActivateDeactivate");
+    REQUIRE(playStatePtr->m_input == "OnCreateActivateDeactivateUpdate");
+    REQUIRE(pauseStatePtr->m_input == "OnCreateActivateUpdate");
+  }
+}

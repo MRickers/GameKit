@@ -2,6 +2,35 @@
 #include "helpers/GameException.hpp"
 #include <algorithm>
 
+void gk::StateMachine::update()
+{
+  if (m_states.empty())
+  {
+    return;
+  }
+
+  if (m_states.back().second->isTranscendent() && m_states.size() > 1)
+  {
+    auto itr = m_states.end() - 1;
+    while (itr != m_states.begin())
+    {
+      if (!itr->second->isTranscendent())
+      {
+        break;
+      }
+      --itr;
+    }
+    for (; itr != m_states.end(); ++itr)
+    {
+      itr->second->update();
+    }
+  }
+  else
+  {
+    m_states.back().second->update();
+  }
+}
+
 void gk::StateMachine::processRequests()
 {
   while (m_toRemove.begin() != m_toRemove.end())
