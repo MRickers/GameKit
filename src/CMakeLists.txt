@@ -10,6 +10,10 @@ helpers/GameException.hpp
 core/GameObject.hpp
 core/InputHandler.hpp
 core/InputHandler.cpp
+core/StateInputHandler.hpp
+core/StateInputHandler.cpp
+core/StateMachine.hpp
+core/StateMachine.cpp
 vector/Vector2d.hpp
 vector/Vector2d.cpp
 app/App.hpp

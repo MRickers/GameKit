@@ -29,8 +29,8 @@ namespace gk
     std::string m_msg{""};
   };
 
-  void ExceptionHandler(std::exception_ptr eptr, const char* file,
-                        const int line)
+  inline void ExceptionHandler(std::exception_ptr eptr, const char* file,
+                               const int line)
   {
     try
     {

@@ -4,39 +4,39 @@
 int main()
 {
   gk::App app{{"Snake", 640, 480}};
-  gk::InputHandlerPtr input = std::make_unique<gk::InputHandler>();
+  gk::InputHandlerPtr input = std::make_shared<gk::StateInputHandler>();
 
   {
     auto binding = gk::EventBinding{"test"};
     binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_A});
 
-    input->AddBinding(binding);
+    input->AddGlobalBinding(binding);
   }
   {
     auto binding = gk::EventBinding{"strg+c"};
     binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_LCTRL});
     binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_C});
 
-    input->AddBinding(binding);
+    input->AddGlobalBinding(binding);
   }
   {
     auto binding = gk::EventBinding{"esc"};
     binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_ESCAPE});
 
-    input->AddBinding(binding);
+    input->AddGlobalBinding(binding);
   }
   {
     auto binding = gk::EventBinding{"leftMouse"};
     binding.events.push_back({gk::EventType::MouseDown});
 
-    input->AddBinding(binding);
+    input->AddGlobalBinding(binding);
   }
   {
     auto binding = gk::EventBinding{"rightMouse"};
     binding.events.push_back({gk::EventType::MouseDown, SDL_SCANCODE_UNKNOWN,
                               gk::MouseButton::Right});
 
-    input->AddBinding(binding);
+    input->AddGlobalBinding(binding);
   }
   {
     auto binding = gk::EventBinding{"motion"};
@@ -44,49 +44,51 @@ int main()
                               gk::MouseButton::Left});
     binding.events.push_back({gk::EventType::MouseMotion});
 
-    input->AddBinding(binding);
+    input->AddGlobalBinding(binding);
   }
   {
     auto binding = gk::EventBinding{"strg+motion"};
     binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_LCTRL});
     binding.events.push_back({gk::EventType::MouseMotion});
 
-    input->AddBinding(binding);
+    input->AddGlobalBinding(binding);
   }
-  input->AddCallback("test",
-                     [](const gk::EventDetails&) { std::cout << "test\n"; });
+  input->AddGlobalCallback("test", [](const gk::EventDetails&)
+                           { std::cout << "test\n"; });
 
-  input->AddCallback("strg+c",
-                     [](const gk::EventDetails&) { std::cout << "strg+c\n"; });
-  input->AddCallback("esc", [&app](const gk::EventDetails&) { app.stop(); });
+  input->AddGlobalCallback("strg+c", [](const gk::EventDetails&)
+                           { std::cout << "strg+c\n"; });
+  input->AddGlobalCallback("esc",
+                           [&app](const gk::EventDetails&) { app.stop(); });
 
-  input->AddCallback("leftMouse",
-                     [&app](const gk::EventDetails& b)
-                     {
-                       std::cout << "left mouse pressed: " << b.mouse_pos.GetX()
+  input->AddGlobalCallback("leftMouse",
+                           [&app](const gk::EventDetails& b)
+                           {
+                             std::cout
+                                 << "left mouse pressed: " << b.mouse_pos.GetX()
                                  << "," << b.mouse_pos.GetY() << "\n";
-                     });
-  input->AddCallback("rightMouse",
-                     [&app](const gk::EventDetails& b)
-                     {
-                       std::cout
-                           << "right mouse pressed: " << b.mouse_pos.GetX()
-                           << "," << b.mouse_pos.GetY() << "\n";
-                     });
-  input->AddCallback("motion",
-                     [&app](const gk::EventDetails& b)
-                     {
-                       std::cout << "motion: " << b.mouse_pos.GetX() << ","
-                                 << b.mouse_pos.GetY() << "\n";
-                     });
-  input->AddCallback("strg+motion",
-                     [&app](const gk::EventDetails& b)
-                     {
-                       std::cout << "STRG+motion: " << b.mouse_pos.GetX() << ","
-                                 << b.mouse_pos.GetY() << "\n";
-                     });
+                           });
+  input->AddGlobalCallback("rightMouse",
+                           [&app](const gk::EventDetails& b)
+                           {
+                             std::cout << "right mouse pressed: "
+                                       << b.mouse_pos.GetX() << ","
+                                       << b.mouse_pos.GetY() << "\n";
+                           });
+  input->AddGlobalCallback("motion",
+                           [&app](const gk::EventDetails& b)
+                           {
+                             std::cout << "motion: " << b.mouse_pos.GetX()
+                                       << "," << b.mouse_pos.GetY() << "\n";
+                           });
+  input->AddGlobalCallback("strg+motion",
+                           [&app](const gk::EventDetails& b)
+                           {
+                             std::cout << "STRG+motion: " << b.mouse_pos.GetX()
+                                       << "," << b.mouse_pos.GetY() << "\n";
+                           });
 
-  app.setInputHandler(std::move(input));
+  app.setInputHandler(input);
   app.run();
   return 0;
 }

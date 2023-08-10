@@ -1,5 +1,6 @@
 #pragma once
-#include "core/InputHandler.hpp"
+#include "core/StateInputHandler.hpp"
+#include "core/StateMachine.hpp"
 #include "vector/Vector2d.hpp"
 #include <memory>
 #include <string>
@@ -9,7 +10,9 @@ class SDL_Window;
 
 namespace gk
 {
-  using InputHandlerPtr = std::unique_ptr<InputHandler>;
+  // using InputHandlerPtr = std::unique_ptr<InputHandler>;
+  using InputHandlerPtr = std::shared_ptr<StateInputHandler>;
+  using StateMachinePtr = std::unique_ptr<StateMachine>;
   class AppConfiguration
   {
   public:
@@ -34,7 +37,8 @@ namespace gk
   class App
   {
   public:
-    App(InputHandlerPtr input_handler, const AppConfiguration& config);
+    App(InputHandlerPtr input_handler, StateMachinePtr stateMachine,
+        const AppConfiguration& config);
     App(const AppConfiguration& config);
     ~App();
 
@@ -42,6 +46,7 @@ namespace gk
     void run();
 
     void setInputHandler(InputHandlerPtr input_handler);
+    void setStateMachine(StateMachinePtr stateMachine);
 
   private:
     void handleEvents();
@@ -52,7 +57,8 @@ namespace gk
     bool m_running{false};
     SDL_Window* m_window{nullptr};
     SDL_Renderer* m_renderer{nullptr};
-    InputHandlerPtr m_input_handler{nullptr};
+    InputHandlerPtr m_inputHandler{nullptr};
+    StateMachinePtr m_stateMachine{nullptr};
   };
 
 } // namespace gk

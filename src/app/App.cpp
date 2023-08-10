@@ -43,10 +43,12 @@ namespace gk
     }
   }
 
-  App::App(InputHandlerPtr input_handler, const AppConfiguration& config)
+  App::App(InputHandlerPtr input_handler, StateMachinePtr stateMachine,
+           const AppConfiguration& config)
       : App(config)
   {
     setInputHandler(std::move(input_handler));
+    setStateMachine(std::move(stateMachine));
   }
 
   App::~App()
@@ -67,9 +69,9 @@ namespace gk
     SDL_Event evnt;
     while (SDL_PollEvent(&evnt) != 0)
     {
-      if (m_input_handler)
+      if (m_inputHandler)
       {
-        m_input_handler->HandleEvent(evnt);
+        m_inputHandler->HandleEvent(evnt);
       }
       if (evnt.type == SDL_QUIT)
       {
@@ -80,27 +82,27 @@ namespace gk
 
   void App::update()
   {
-    if (m_input_handler)
+    if (m_inputHandler)
     {
-      m_input_handler->Update();
+      m_inputHandler->Update();
+    }
+    if (m_stateMachine)
+    {
+      m_stateMachine->update();
     }
   }
 
   void App::draw()
   {
-    static auto x = 320;
     // clear renderer
     SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
     SDL_RenderClear(m_renderer);
 
-    // draw circle
-    gk::Draw::setRendererColor(m_renderer, gk::Color::CRIMSON);
-    gk::Draw::filledCircle(m_renderer, x++, 240, 150);
-    if (x >= 640)
+    if (m_stateMachine)
     {
-      x = 0;
+      m_stateMachine->draw(m_renderer);
     }
-    // draw
+
     SDL_RenderPresent(m_renderer);
   }
 
@@ -151,8 +153,13 @@ namespace gk
       }
 
       draw();
-      lastRenderTime = now;
 
+      if (m_stateMachine)
+      {
+        m_stateMachine->processRequests();
+      }
+
+      lastRenderTime = now;
       if (fps_timer.HasPassed(1000))
       {
         spdlog::info("{}", framecount);
@@ -169,8 +176,16 @@ namespace gk
     }
   }
 
-  void gk::App::setInputHandler(InputHandlerPtr input_handler)
+  void gk::App::setInputHandler(InputHandlerPtr inputHandler)
   {
-    m_input_handler.reset(input_handler.release());
+    m_inputHandler = inputHandler;
+  }
+
+  void App::setStateMachine(StateMachinePtr stateMachine)
+  {
+    if (stateMachine)
+    {
+      m_stateMachine.reset(stateMachine.release());
+    }
   }
 } // namespace gk
