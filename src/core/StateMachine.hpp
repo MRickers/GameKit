@@ -21,7 +21,7 @@ namespace gk
 
   public:
     void update();
-    void draw(const SDL_Renderer*);
+    void draw(SDL_Renderer*);
     void processRequests();
     bool hasState(const StateType state);
     void switchTo(const StateType state);

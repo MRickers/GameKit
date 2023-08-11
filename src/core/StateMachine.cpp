@@ -31,7 +31,7 @@ void gk::StateMachine::update()
   }
 }
 
-void gk::StateMachine::draw(const SDL_Renderer* renderer)
+void gk::StateMachine::draw(SDL_Renderer* renderer)
 {
   if (m_states.empty())
   {
@@ -128,6 +128,10 @@ void gk::StateMachine::registerState(const StateType state,
                                      StateCreator creator)
 {
   m_factory[state] = creator;
+  if (m_states.empty())
+  {
+    switchTo(state);
+  }
 }
 
 StateType gk::StateMachine::currentState() const

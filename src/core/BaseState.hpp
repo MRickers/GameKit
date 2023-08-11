@@ -17,7 +17,7 @@ namespace gk
     virtual void deactivate() = 0;
 
     virtual void update() = 0;
-    virtual void draw(const SDL_Renderer*) = 0;
+    virtual void draw(SDL_Renderer*) = 0;
 
     void setTransparent(const bool transparent)
     {

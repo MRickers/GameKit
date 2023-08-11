@@ -1,19 +1,23 @@
 #pragma once
+#include "vector/Vector2d.hpp"
 #include <cstddef>
 #include <cstdint>
+
 class SDL_Renderer;
 
 namespace gk
 {
 
-struct ColorRGBA {
+  struct ColorRGBA
+  {
     uint8_t r{0};
     uint8_t g{0};
     uint8_t b{0};
     uint8_t a{0};
-};
+  };
 
-enum class Color {
+  enum class Color
+  {
     RED,
     GREEN,
     BLUE,
@@ -44,17 +48,16 @@ enum class Color {
     GRAY,
     AQUA,
     VIOLET
-};
+  };
 
-
-class Draw
-{
-public:
-    static void
-    setRendererColor(SDL_Renderer* renderer, Color);
-    static ColorRGBA
-    getColorRGBA(Color color);
-    static void
-    filledCircle(SDL_Renderer* renderer, int centerX, int centerY, size_t radius);
-};
+  class Draw
+  {
+  public:
+    static void setRendererColor(SDL_Renderer* renderer, Color);
+    static ColorRGBA getColorRGBA(Color color);
+    static void filledCircle(SDL_Renderer* renderer, int centerX, int centerY,
+                             size_t radius);
+    static void filledRect(SDL_Renderer* renderer, const gk::Vector2D& pos,
+                           const gk::Vector2D& size);
+  };
 } // namespace gk

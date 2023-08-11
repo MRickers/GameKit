@@ -26,7 +26,7 @@ public:
   {
     m_input += "Update";
   }
-  void draw(const SDL_Renderer*) override
+  void draw(SDL_Renderer*) override
   {
     m_input += "Draw";
   }

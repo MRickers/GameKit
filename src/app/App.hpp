@@ -10,9 +10,22 @@ class SDL_Window;
 
 namespace gk
 {
-  // using InputHandlerPtr = std::unique_ptr<InputHandler>;
   using InputHandlerPtr = std::shared_ptr<StateInputHandler>;
-  using StateMachinePtr = std::unique_ptr<StateMachine>;
+  using StateMachinePtr = std::shared_ptr<StateMachine>;
+  struct SharedContext
+  {
+    SharedContext(InputHandlerPtr ih, StateMachinePtr sm)
+        : inputHandler{ih}
+        , stateMachine{sm}
+    {
+    }
+
+    InputHandlerPtr inputHandler{nullptr};
+    StateMachinePtr stateMachine{nullptr};
+  };
+
+  using SharedContextPtr = std::shared_ptr<SharedContext>;
+
   class AppConfiguration
   {
   public:

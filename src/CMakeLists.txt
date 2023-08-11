@@ -26,15 +26,22 @@ CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On
 )
 
-add_executable(${PROJECT_NAME}
-main.cpp
-
-app/snake/Snake.hpp
-app/snake/Snake.cpp
+add_executable(inputHandlerExample
+examples/inputHandler.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE libGkCore)
-set_target_properties(${PROJECT_NAME} PROPERTIES
+target_link_libraries(inputHandlerExample PRIVATE libGkCore)
+set_target_properties(inputHandlerExample PROPERTIES
+CXX_STANDARD 17
+CXX_STANDARD_REQUIRED On
+)
+
+add_executable(stateMachineExample
+examples/stateMachine.cpp
+)
+
+target_link_libraries(stateMachineExample PRIVATE libGkCore)
+set_target_properties(stateMachineExample PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On
 )

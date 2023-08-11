@@ -47,8 +47,8 @@ namespace gk
            const AppConfiguration& config)
       : App(config)
   {
-    setInputHandler(std::move(input_handler));
-    setStateMachine(std::move(stateMachine));
+    setInputHandler(input_handler);
+    setStateMachine(stateMachine);
   }
 
   App::~App()
@@ -178,14 +178,17 @@ namespace gk
 
   void gk::App::setInputHandler(InputHandlerPtr inputHandler)
   {
-    m_inputHandler = inputHandler;
+    if (inputHandler)
+    {
+      m_inputHandler = inputHandler;
+    }
   }
 
   void App::setStateMachine(StateMachinePtr stateMachine)
   {
     if (stateMachine)
     {
-      m_stateMachine.reset(stateMachine.release());
+      m_stateMachine = stateMachine;
     }
   }
 } // namespace gk
