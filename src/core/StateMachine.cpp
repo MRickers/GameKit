@@ -128,10 +128,6 @@ void gk::StateMachine::registerState(const StateType state,
                                      StateCreator creator)
 {
   m_factory[state] = creator;
-  if (m_states.empty())
-  {
-    switchTo(state);
-  }
 }
 
 StateType gk::StateMachine::currentState() const

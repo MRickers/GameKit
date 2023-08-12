@@ -99,6 +99,7 @@ int main()
 
   app.setInputHandler(inputHandler);
   app.setStateMachine(stateMachine);
+  stateMachine->switchTo(StateType::INTRO);
 
   try
   {
