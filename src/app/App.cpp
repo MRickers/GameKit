@@ -41,6 +41,7 @@ namespace gk
                    SDL_GetError());
       throw std::runtime_error{"SDL initialize renderer failed"};
     }
+    SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
   }
 
   App::App(InputHandlerPtr input_handler, StateMachinePtr stateMachine,
