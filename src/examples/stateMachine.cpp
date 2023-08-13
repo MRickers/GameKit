@@ -200,14 +200,35 @@ public:
     m_shape.m_pos = {320, 230};
     m_shape.m_size = {20, 0};
 
-    m_sharedContext->inputHandler->AddCallback(
-        StateType::GAME, "MouseMotion",
-        [this](const gk::EventDetails& details) { mouseMotion(details); });
+    {
+      m_sharedContext->inputHandler->AddCallback(
+          StateType::GAME, "MouseMotion",
+          [this](const gk::EventDetails& details) { mouseMotion(details); });
 
-    auto binding = gk::EventBinding{"MouseMotion"};
-    binding.events.push_back({gk::EventType::MouseMotion, SDL_SCANCODE_UNKNOWN,
-                              gk::MouseButton::Motion});
-    m_sharedContext->inputHandler->AddBinding(StateType::GAME, binding);
+      auto binding = gk::EventBinding{"MouseMotion"};
+      binding.events.push_back({gk::EventType::MouseMotion,
+                                SDL_SCANCODE_UNKNOWN, gk::MouseButton::Motion});
+      m_sharedContext->inputHandler->AddBinding(StateType::GAME, binding);
+    }
+    {
+      m_sharedContext->inputHandler->AddCallback(
+          StateType::GAME, "Pause",
+          [this](const gk::EventDetails& details) { paused(details); });
+
+      auto binding = gk::EventBinding{"Pause"};
+      binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_P});
+      m_sharedContext->inputHandler->AddBinding(StateType::GAME, binding);
+    }
+    {
+      m_sharedContext->inputHandler->AddCallback(
+          StateType::GAME, "Quit",
+          [this](const gk::EventDetails& details)
+          { m_sharedContext->app->stop(); });
+
+      auto binding = gk::EventBinding{"Quit"};
+      binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_Q});
+      m_sharedContext->inputHandler->AddBinding(StateType::GAME, binding);
+    }
   }
   void onDestroy() override
   {
@@ -215,6 +236,10 @@ public:
                                                  "MouseMotion");
     m_sharedContext->inputHandler->RemoveCallback(StateType::GAME,
                                                   "MouseMotion");
+    m_sharedContext->inputHandler->RemoveBinding(StateType::GAME, "Pause");
+    m_sharedContext->inputHandler->RemoveCallback(StateType::GAME, "Pause");
+    m_sharedContext->inputHandler->RemoveBinding(StateType::GAME, "Quit");
+    m_sharedContext->inputHandler->RemoveCallback(StateType::GAME, "Quit");
   }
 
   void activate() override
@@ -259,6 +284,70 @@ private:
   gk::Vector2D m_vel;
 };
 
+class PauseState : public gk::IBaseState
+{
+  struct Shape
+  {
+    gk::Vector2D m_pos{0, 0};
+    gk::Vector2D m_size{0, 0};
+  };
+
+public:
+  PauseState(gk::SharedContextPtr sharedContext)
+      : m_sharedContext{sharedContext}
+  {
+  }
+
+  void onCreate() override
+  {
+    setTransparent(true);
+
+    m_shape.m_size = {640, 480};
+    m_shape.m_pos = {0, 0};
+
+    {
+      m_sharedContext->inputHandler->AddCallback(
+          StateType::PAUSED, "Unpause",
+          [this](const gk::EventDetails& details) { unpause(details); });
+
+      auto binding = gk::EventBinding{"Unpause"};
+      binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_P});
+      m_sharedContext->inputHandler->AddBinding(StateType::PAUSED, binding);
+    }
+  }
+  void onDestroy() override
+  {
+    m_sharedContext->inputHandler->RemoveBinding(StateType::PAUSED, "Unpause");
+    m_sharedContext->inputHandler->RemoveCallback(StateType::PAUSED, "Unpause");
+  }
+
+  void activate() override
+  {
+  }
+  void deactivate() override
+  {
+  }
+
+  void update() override
+  {
+  }
+  void draw(SDL_Renderer* renderer) override
+  {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 50);
+    gk::Draw::filledRect(renderer, m_shape.m_pos, m_shape.m_size);
+  }
+
+private:
+  void unpause(const gk::EventDetails&)
+  {
+    m_sharedContext->stateMachine->switchTo(StateType::GAME);
+    m_sharedContext->inputHandler->setCurrentState(StateType::GAME);
+  }
+
+  gk::SharedContextPtr m_sharedContext{nullptr};
+  Shape m_shape;
+};
+
 int main()
 {
   const gk::Vector2D windowSize{640, 480};
@@ -280,14 +369,17 @@ int main()
   stateMachine->registerState(
       StateType::MAIN,
       [sharedContext]() -> gk::BaseStatePtr
-      { return std::make_unique<MainState>(sharedContext); }
-
-  );
+      { return std::make_unique<MainState>(sharedContext); });
 
   stateMachine->registerState(
       StateType::GAME,
       [sharedContext]() -> gk::BaseStatePtr
       { return std::make_unique<GameState>(sharedContext); });
+
+  stateMachine->registerState(
+      StateType::PAUSED,
+      [sharedContext]() -> gk::BaseStatePtr
+      { return std::make_unique<PauseState>(sharedContext); });
 
   app->setInputHandler(inputHandler);
   app->setStateMachine(stateMachine);
