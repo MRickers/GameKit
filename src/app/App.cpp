@@ -147,19 +147,20 @@ namespace gk
       }
 
       // if maybe an update tooks forever we dont want to catch up
-      if (now - lastUpdateTime > update_rate)
+      if (std::chrono::duration_cast<std::chrono::milliseconds>(
+              now - lastUpdateTime) > update_rate)
       {
         lastUpdateTime = now - update_rate;
       }
 
       draw();
+      lastRenderTime = now;
 
       if (m_stateMachine)
       {
         m_stateMachine->processRequests();
       }
 
-      lastRenderTime = now;
       if (fps_timer.HasPassed(1000))
       {
         spdlog::info("{}", framecount);
@@ -167,8 +168,10 @@ namespace gk
         fps_timer.Reset();
       }
 
-      while ((now - lastRenderTime) < update_rate &&
-             (now - lastUpdateTime) < update_rate)
+      while (std::chrono::duration_cast<std::chrono::milliseconds>(
+                 now - lastRenderTime) < update_rate &&
+             std::chrono::duration_cast<std::chrono::milliseconds>(
+                 now - lastUpdateTime) < update_rate)
       {
         std::this_thread::sleep_for(std::chrono::milliseconds{1});
         now = std::chrono::system_clock::now();
