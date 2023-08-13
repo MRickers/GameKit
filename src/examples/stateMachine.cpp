@@ -7,6 +7,7 @@ enum class StateType
 {
   INTRO,
   MAIN,
+  GAME,
 };
 
 class IntroState : public gk::IBaseState
@@ -80,30 +81,137 @@ private:
   gk::Vector2D m_size{200, 100};
 };
 
+class MainState : public gk::IBaseState
+{
+  struct Shape
+  {
+    gk::Vector2D m_pos{0, 0};
+    gk::Vector2D m_size{0, 0};
+  };
+
+public:
+  MainState(gk::SharedContextPtr sharedContext)
+      : m_sharedContext{sharedContext}
+  {
+  }
+
+  void onCreate() override
+  {
+    const auto [x, y] = m_buttonPos.Get();
+    for (int i = 0; i < 3; ++i)
+    {
+      const auto buttonPos =
+          gk::Vector2D{x, y + (i * (m_buttonSize.GetY() + m_buttonPadding))};
+
+      m_shapes[i].m_pos = buttonPos + m_buttonSize / 2;
+      m_shapes[i].m_size = m_buttonSize;
+    }
+    m_sharedContext->inputHandler->AddCallback(
+        StateType::MAIN, "MouseLeft",
+        [this](const gk::EventDetails& details) { mouseClick(details); });
+
+    auto binding = gk::EventBinding{"MouseLeft"};
+    binding.events.push_back({gk::EventType::MouseDown, SDL_SCANCODE_UNKNOWN,
+                              gk::MouseButton::Left});
+    m_sharedContext->inputHandler->AddBinding(StateType::MAIN, binding);
+  }
+  void onDestroy() override
+  {
+    m_sharedContext->inputHandler->RemoveBinding(StateType::INTRO,
+                                                 "IntroContinue");
+    m_sharedContext->inputHandler->RemoveCallback(StateType::INTRO,
+                                                  "IntroContinue");
+  }
+
+  void activate() override
+  {
+  }
+  void deactivate() override
+  {
+  }
+
+  void update() override
+  {
+  }
+  void draw(SDL_Renderer* renderer) override
+  {
+    gk::Draw::setRendererColor(renderer, gk::Color::LIME);
+    for (int i = 0; i < 3; ++i)
+    {
+      gk::Draw::filledRect(renderer, m_shapes[i].m_pos, m_shapes[i].m_size);
+    }
+  }
+
+private:
+  void mouseClick(const gk::EventDetails& details)
+  {
+    const auto [mouseX, mouseY] = details.mouse_pos.Get();
+    const auto [btnSizeX, btnSizeY] = m_buttonSize.Get();
+
+    for (int i = 0; i < 3; ++i)
+    {
+      if (mouseX >= m_shapes[i].m_pos.GetX() &&
+          mouseX <= m_shapes[i].m_pos.GetX() + btnSizeX &&
+          mouseY >= m_shapes[i].m_pos.GetY() &&
+          mouseY <= m_shapes[i].m_pos.GetY() + btnSizeY)
+      {
+        if (i == 0)
+        {
+          m_sharedContext->stateMachine->switchTo(StateType::GAME);
+          m_sharedContext->inputHandler->setCurrentState(StateType::GAME);
+        }
+        else if (i == 1)
+        {
+          std::cout << "Options\n";
+        }
+        else
+        {
+          m_sharedContext->app->stop();
+        }
+      }
+    }
+  }
+
+  gk::SharedContextPtr m_sharedContext{nullptr};
+
+  gk::Vector2D m_buttonSize{100, 50};
+  gk::Vector2D m_buttonPos{220, 90};
+  uint32_t m_buttonPadding{10};
+  Shape m_shapes[3];
+};
+
 int main()
 {
   const gk::Vector2D windowSize{640, 480};
 
-  gk::App app{{"StateMachine", static_cast<size_t>(windowSize.GetX()),
-               static_cast<size_t>(windowSize.GetY())}};
+  auto app = std::make_shared<gk::App>(gk::AppConfiguration{
+      "StateMachine", static_cast<size_t>(windowSize.GetX()),
+      static_cast<size_t>(windowSize.GetY())});
 
   auto inputHandler = std::make_shared<gk::StateInputHandler>();
   auto stateMachine = std::make_shared<gk::StateMachine>();
   gk::SharedContextPtr sharedContext =
-      std::make_shared<gk::SharedContext>(inputHandler, stateMachine);
+      std::make_shared<gk::SharedContext>(inputHandler, stateMachine, app);
 
   stateMachine->registerState(
       StateType::INTRO,
       [sharedContext, &windowSize]() -> gk::BaseStatePtr
       { return std::make_unique<IntroState>(sharedContext, windowSize); });
 
-  app.setInputHandler(inputHandler);
-  app.setStateMachine(stateMachine);
+  stateMachine->registerState(
+      StateType::MAIN,
+      [sharedContext]() -> gk::BaseStatePtr
+      { return std::make_unique<MainState>(sharedContext); }
+
+  );
+
+  app->setInputHandler(inputHandler);
+  app->setStateMachine(stateMachine);
   stateMachine->switchTo(StateType::INTRO);
 
   try
   {
-    app.run();
+    app->run();
   }
   catch (const std::exception& e)
   {

@@ -7,24 +7,10 @@
 
 class SDL_Renderer;
 class SDL_Window;
-
 namespace gk
 {
   using InputHandlerPtr = std::shared_ptr<StateInputHandler>;
   using StateMachinePtr = std::shared_ptr<StateMachine>;
-  struct SharedContext
-  {
-    SharedContext(InputHandlerPtr ih, StateMachinePtr sm)
-        : inputHandler{ih}
-        , stateMachine{sm}
-    {
-    }
-
-    InputHandlerPtr inputHandler{nullptr};
-    StateMachinePtr stateMachine{nullptr};
-  };
-
-  using SharedContextPtr = std::shared_ptr<SharedContext>;
 
   class AppConfiguration
   {
@@ -73,5 +59,23 @@ namespace gk
     InputHandlerPtr m_inputHandler{nullptr};
     StateMachinePtr m_stateMachine{nullptr};
   };
+
+  using AppPtr = std::shared_ptr<App>;
+
+  struct SharedContext
+  {
+    SharedContext(InputHandlerPtr ih, StateMachinePtr sm, AppPtr a)
+        : inputHandler{ih}
+        , stateMachine{sm}
+        , app{a}
+    {
+    }
+
+    InputHandlerPtr inputHandler{nullptr};
+    StateMachinePtr stateMachine{nullptr};
+    AppPtr app{nullptr};
+  };
+
+  using SharedContextPtr = std::shared_ptr<SharedContext>;
 
 } // namespace gk
