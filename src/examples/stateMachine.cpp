@@ -8,6 +8,7 @@ enum class StateType
   INTRO,
   MAIN,
   GAME,
+  PAUSED,
 };
 
 class IntroState : public gk::IBaseState
@@ -180,6 +181,84 @@ private:
   Shape m_shapes[3];
 };
 
+class GameState : public gk::IBaseState
+{
+  struct Shape
+  {
+    gk::Vector2D m_pos{0, 0};
+    gk::Vector2D m_size{0, 0};
+  };
+
+public:
+  GameState(gk::SharedContextPtr sharedContext)
+      : m_sharedContext{sharedContext}
+  {
+  }
+
+  void onCreate() override
+  {
+    m_shape.m_pos = {320, 230};
+    m_shape.m_size = {20, 0};
+
+    m_sharedContext->inputHandler->AddCallback(
+        StateType::GAME, "MouseMotion",
+        [this](const gk::EventDetails& details) { mouseMotion(details); });
+
+    auto binding = gk::EventBinding{"MouseMotion"};
+    binding.events.push_back({gk::EventType::MouseMotion, SDL_SCANCODE_UNKNOWN,
+                              gk::MouseButton::Motion});
+    m_sharedContext->inputHandler->AddBinding(StateType::GAME, binding);
+  }
+  void onDestroy() override
+  {
+    m_sharedContext->inputHandler->RemoveBinding(StateType::GAME,
+                                                 "MouseMotion");
+    m_sharedContext->inputHandler->RemoveCallback(StateType::GAME,
+                                                  "MouseMotion");
+  }
+
+  void activate() override
+  {
+  }
+  void deactivate() override
+  {
+  }
+
+  void update() override
+  {
+    auto acc = m_mousePos - m_shape.m_pos;
+    acc.SetLimit(2);
+
+    m_vel += acc;
+
+    m_vel.SetLimit(10);
+
+    m_shape.m_pos += m_vel;
+  }
+  void draw(SDL_Renderer* renderer) override
+  {
+    gk::Draw::setRendererColor(renderer, gk::Color::OLIVE);
+    gk::Draw::filledCircle(renderer, m_shape.m_pos.GetX(), m_shape.m_pos.GetY(),
+                           m_shape.m_size.GetX());
+  }
+
+private:
+  void paused(const gk::EventDetails&)
+  {
+    m_sharedContext->stateMachine->switchTo(StateType::PAUSED);
+    m_sharedContext->inputHandler->setCurrentState(StateType::PAUSED);
+  }
+  void mouseMotion(const gk::EventDetails& details)
+  {
+    m_mousePos = details.mouse_pos;
+  }
+
+  gk::SharedContextPtr m_sharedContext{nullptr};
+  Shape m_shape;
+  gk::Vector2D m_mousePos;
+  gk::Vector2D m_vel;
+};
+
 int main()
 {
   const gk::Vector2D windowSize{640, 480};
@@ -204,6 +283,11 @@ int main()
       { return std::make_unique<MainState>(sharedContext); }
 
   );
+
+  stateMachine->registerState(
+      StateType::GAME,
+      [sharedContext]() -> gk::BaseStatePtr
+      { return std::make_unique<GameState>(sharedContext); });
 
   app->setInputHandler(inputHandler);
   app->setStateMachine(stateMachine);
