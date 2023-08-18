@@ -14,13 +14,15 @@ core/StateInputHandler.hpp
 core/StateInputHandler.cpp
 core/StateMachine.hpp
 core/StateMachine.cpp
+core/ui/TextBox.hpp
+core/ui/TextBox.cpp
 vector/Vector2d.hpp
 vector/Vector2d.cpp
 app/App.hpp
 app/App.cpp
 )
 target_include_directories(libGkCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(libGkCore PRIVATE SDL2 spdlog::spdlog_header_only)
+target_link_libraries(libGkCore PRIVATE SDL2 SDL2_ttf spdlog::spdlog_header_only)
 set_target_properties(libGkCore PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On
