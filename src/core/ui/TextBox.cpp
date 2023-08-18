@@ -32,6 +32,11 @@ size_t gk::TextCirculareBuffer::size() const
   return m_textBuffer.size();
 }
 
+size_t gk::TextCirculareBuffer::rows() const
+{
+  return m_maxRows;
+}
+
 gk::TextContainer gk::TextCirculareBuffer::get() const
 {
   TextContainer container;

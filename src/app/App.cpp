@@ -1,12 +1,13 @@
 #include "app/App.hpp"
 #include "core/InputHandler.hpp"
+#include "core/ui/TextBox.hpp"
 #include "helpers/Draw.hpp"
 #include "helpers/Timer.hpp"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "App.hpp"
 #include <chrono>
-#include <spdlog/spdlog.h>
 #include <stdexcept>
 #include <thread>
 
@@ -18,10 +19,19 @@ namespace gk
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
-                   "SDL could not initialize! SDL_Error: %s", SDL_GetError());
+                   "SDL could not initialize SDL! SDL_Error: %s",
+                   SDL_GetError());
       throw std::runtime_error{"SDL could not initialize"};
     }
+    if (TTF_Init() < 0)
+    {
+      SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                   "SDL could not initialize TTF! SDL_Error: %s",
+                   TTF_GetError());
+      throw std::runtime_error{"SDL could not initialize ttf"};
+    }
     const auto& [width, height] = config.getSize().Get();
+    m_size = config.getSize();
 
     if (m_window = SDL_CreateWindow(
             config.getTitle().c_str(), SDL_WINDOWPOS_UNDEFINED,
@@ -95,16 +105,19 @@ namespace gk
 
   void App::draw()
   {
-    // clear renderer
-    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-    SDL_RenderClear(m_renderer);
-
     if (m_stateMachine)
     {
       m_stateMachine->draw(m_renderer);
     }
 
     SDL_RenderPresent(m_renderer);
+  }
+
+  void App::clearRenderer()
+  {
+    // clear renderer
+    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+    SDL_RenderClear(m_renderer);
   }
 
   bool App::isRunning() const
@@ -119,8 +132,19 @@ namespace gk
 
   void App::run()
   {
+    constexpr auto fontSize = 20;
+    gk::TextBox fpsText{1};
+
+    fpsText.setPos(gk::Vector2D{2, m_size.GetY() - 2 - fontSize});
+    if (auto* font = TTF_OpenFont("/home/mrickers/projects/c++/"
+                                  "sdl2_snake/assets/Roboto-Regular.ttf",
+                                  fontSize);
+        font != nullptr)
+    {
+
+      fpsText.setFont(font, fontSize);
+    }
     m_running = true;
-    // const time_ms update_rate = 1000 / 60;
     const auto update_rate = std::chrono::milliseconds{1000 / 60};
     const auto max_updates = 5;
 
@@ -154,19 +178,22 @@ namespace gk
         lastUpdateTime = now - update_rate;
       }
 
+      clearRenderer();
+
+      if (fps_timer.HasPassed(1000))
+      {
+        fpsText.add("fps: " + std::to_string(framecount));
+        framecount = 0;
+        fps_timer.Reset();
+      }
+      fpsText.draw(m_renderer);
       draw();
+
       lastRenderTime = now;
 
       if (m_stateMachine)
       {
         m_stateMachine->processRequests();
-      }
-
-      if (fps_timer.HasPassed(1000))
-      {
-        spdlog::info("{}", framecount);
-        framecount = 0;
-        fps_timer.Reset();
       }
 
       while (std::chrono::duration_cast<std::chrono::milliseconds>(

@@ -51,6 +51,7 @@ namespace gk
     void handleEvents();
     void update();
     void draw();
+    void clearRenderer();
     bool isRunning() const;
 
     bool m_running{false};
@@ -58,6 +59,7 @@ namespace gk
     SDL_Renderer* m_renderer{nullptr};
     InputHandlerPtr m_inputHandler{nullptr};
     StateMachinePtr m_stateMachine{nullptr};
+    gk::Vector2D m_size;
   };
 
   using AppPtr = std::shared_ptr<App>;

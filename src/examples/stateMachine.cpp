@@ -1,7 +1,8 @@
 #include "app/App.hpp"
+#include "core/ui/TextBox.hpp"
 #include "helpers/Draw.hpp"
 #include "helpers/Timer.hpp"
-#include <iostream>
+#include <spdlog/spdlog.h>
 
 enum class StateType
 {
@@ -163,7 +164,7 @@ private:
         }
         else if (i == 1)
         {
-          std::cout << "Options\n";
+          spdlog::info("Options");
         }
         else
         {
@@ -229,6 +230,17 @@ public:
       binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_Q});
       m_sharedContext->inputHandler->AddBinding(StateType::GAME, binding);
     }
+
+    if (m_font = TTF_OpenFont(
+            "/home/mrickers/projects/c++/sdl2_snake/assets/Roboto-Regular.ttf",
+            10);
+        m_font == nullptr)
+    {
+      spdlog::info("could not load font: ", TTF_GetError());
+    }
+    m_textBox.setFont(m_font, 12);
+    m_textBox.add("created main state");
+    m_textBox.setPos({4, 4});
   }
   void onDestroy() override
   {
@@ -240,13 +252,16 @@ public:
     m_sharedContext->inputHandler->RemoveCallback(StateType::GAME, "Pause");
     m_sharedContext->inputHandler->RemoveBinding(StateType::GAME, "Quit");
     m_sharedContext->inputHandler->RemoveCallback(StateType::GAME, "Quit");
+    TTF_CloseFont(m_font);
   }
 
   void activate() override
   {
+    m_textBox.add("activating game state");
   }
   void deactivate() override
   {
+    m_textBox.add("deactivating game state");
   }
 
   void update() override
@@ -265,6 +280,7 @@ public:
     gk::Draw::setRendererColor(renderer, gk::Color::OLIVE);
     gk::Draw::filledCircle(renderer, m_shape.m_pos.GetX(), m_shape.m_pos.GetY(),
                            m_shape.m_size.GetX());
+    m_textBox.draw(renderer);
   }
 
 private:
@@ -282,6 +298,8 @@ private:
   Shape m_shape;
   gk::Vector2D m_mousePos;
   gk::Vector2D m_vel;
+  gk::TextBox m_textBox;
+  TTF_Font* m_font{nullptr};
 };
 
 class PauseState : public gk::IBaseState
@@ -391,7 +409,7 @@ int main()
   }
   catch (const std::exception& e)
   {
-    std::cout << e.what();
+    spdlog::error(e.what());
   }
   return 0;
 }

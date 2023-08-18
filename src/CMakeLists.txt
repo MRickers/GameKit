@@ -22,7 +22,7 @@ app/App.hpp
 app/App.cpp
 )
 target_include_directories(libGkCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(libGkCore PRIVATE SDL2 SDL2_ttf spdlog::spdlog_header_only)
+target_link_libraries(libGkCore PRIVATE SDL2 SDL2_ttf)
 set_target_properties(libGkCore PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On
@@ -42,7 +42,7 @@ add_executable(stateMachineExample
 examples/stateMachine.cpp
 )
 
-target_link_libraries(stateMachineExample PRIVATE libGkCore)
+target_link_libraries(stateMachineExample PRIVATE libGkCore spdlog::spdlog_header_only)
 set_target_properties(stateMachineExample PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On
