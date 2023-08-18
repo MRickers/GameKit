@@ -19,7 +19,10 @@ jobs:
     steps:
     - name: Install Ninja
       run: sudo apt-get -y install ninja-build
-      
+
+    - name: Install cmake
+      run: sudo apt-get -y install cmake
+        
     - name: Checkout repository
       uses: actions/checkout@v3
     
