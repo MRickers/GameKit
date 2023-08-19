@@ -8,6 +8,18 @@ game::Snake::Snake(const size_t blocksize)
   reset({5, 7});
 }
 
+void game::Snake::update()
+{
+  if (m_snakeSegments.empty())
+  {
+    return;
+  }
+  move();
+  if (const auto segmentIndex = checkCollision(); segmentIndex != 0)
+  {
+  }
+}
+
 void game::Snake::reset(const gk::Vector2D& startPos)
 {
   m_snakeSegments.clear();
@@ -58,15 +70,105 @@ void game::Snake::extend()
     return;
   }
 
-  auto& tailHead = m_snakeSegments.back();
+  const auto& [tailHeadX, tailHeadY] = m_snakeSegments.back().Get();
 
   if (m_snakeSegments.size() > 1)
   {
     auto& tailBone = m_snakeSegments.at(m_snakeSegments.size() - 2);
 
-    const auto& [tailHeadX, tailHeadY] = tailHead.Get();
+    const auto& [tailBoneX, tailBoneY] = tailBone.Get();
+
+    if (tailHeadX == tailBoneX)
+    {
+      if (tailHeadY > tailBoneY)
+      {
+        m_snakeSegments.push_back({tailHeadX, tailHeadY + 1});
+      }
+      else
+      {
+        m_snakeSegments.push_back({tailHeadX, tailHeadY - 1});
+      }
+    }
+    else if (tailHeadY == tailBoneY)
+    {
+      if (tailHeadX > tailBoneX)
+      {
+        m_snakeSegments.push_back({tailHeadX + 1, tailHeadY});
+      }
+      else
+      {
+        m_snakeSegments.push_back({tailHeadX - 1, tailHeadY});
+      }
+    }
   }
   else
   {
+    if (m_direction == Direction::up)
+    {
+      m_snakeSegments.push_back({tailHeadX, tailHeadY + 1});
+    }
+    else if (m_direction == Direction::down)
+    {
+      m_snakeSegments.push_back({tailHeadX, tailHeadY - 1});
+    }
+    else if (m_direction == Direction::left)
+    {
+      m_snakeSegments.push_back({tailHeadX + 1, tailHeadY});
+    }
+    else if (m_direction == Direction::right)
+    {
+      m_snakeSegments.push_back({tailHeadX - 1, tailHeadY});
+    }
   }
+}
+
+void game::Snake::move()
+{
+  for (int i = m_snakeSegments.size() - 1; i > 0; --i)
+  {
+    m_snakeSegments[i] = m_snakeSegments[i - 1];
+  }
+
+  if (m_direction == Direction::left)
+  {
+    m_snakeSegments[0] -= {1, 0};
+  }
+  else if (m_direction == Direction::right)
+  {
+    m_snakeSegments[0] += {1, 0};
+  }
+  else if (m_direction == Direction::up)
+  {
+    m_snakeSegments[0] -= {0, 1};
+  }
+  else if (m_direction == Direction::down)
+  {
+    m_snakeSegments[0] += {0, 1};
+  }
+}
+
+size_t game::Snake::checkCollision() const
+{
+  if (m_snakeSegments.size() > 4)
+  {
+    const auto& [headX, headY] = m_snakeSegments.front().Get();
+    for (auto it = m_snakeSegments.begin() + 1; it != m_snakeSegments.end();
+         ++it)
+    {
+      const auto& [x, y] = it->Get();
+      if (static_cast<size_t>(x) == static_cast<size_t>(headX) &&
+          static_cast<size_t>(y) == static_cast<size_t>(headY))
+      {
+        return m_snakeSegments.end() - it;
+      }
+    }
+  }
+  return 0;
+}
+
+void game::Snake::cut(const size_t segment)
+{
+  m_snakeSegments.erase(m_snakeSegments.begin() + segment,
+                        m_snakeSegments.end());
+  --m_lives;
 }

@@ -46,5 +46,9 @@ namespace game
     Direction m_direction{Direction::right};
     size_t m_speed;
     size_t m_lives;
+
+    void move();
+    size_t checkCollision() const;
+    void cut(const size_t segment);
   };
 } // namespace game
