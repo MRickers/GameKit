@@ -32,7 +32,11 @@ ${CMAKE_CURRENT_SOURCE_DIR}/../src/app/snake/Snake.hpp
 ${CMAKE_CURRENT_SOURCE_DIR}/../src/app/snake/Snake.cpp
 )
 target_include_directories(TestSnake PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
-target_link_libraries(TestSnake Catch2::Catch2WithMain SDL2)
+target_link_libraries(TestSnake Catch2::Catch2WithMain libGkCore)
+set_target_properties(TestSnake PROPERTIES
+CXX_STANDARD 17
+CXX_STANDARD_REQUIRED ON
+)
 add_test(NAME TestSnakeTest COMMAND TestSnake)
 
 add_executable(TestVector2d

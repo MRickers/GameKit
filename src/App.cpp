@@ -1,4 +1,4 @@
-#include "app/App.hpp"
+#include "App.hpp"
 #include "core/InputHandler.hpp"
 #include "core/ui/TextBox.hpp"
 #include "helpers/Draw.hpp"
@@ -6,7 +6,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
-#include "App.hpp"
 #include <chrono>
 #include <stdexcept>
 #include <thread>

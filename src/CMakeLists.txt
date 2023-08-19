@@ -18,8 +18,8 @@ core/ui/TextBox.hpp
 core/ui/TextBox.cpp
 vector/Vector2d.hpp
 vector/Vector2d.cpp
-app/App.hpp
-app/App.cpp
+App.hpp
+App.cpp
 )
 target_include_directories(libGkCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(libGkCore PRIVATE SDL2 SDL2_ttf)
@@ -47,3 +47,7 @@ set_target_properties(stateMachineExample PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On
 )
+
+# add_executable(${PROJECT_NAME} 
+
+# app/snake/Snake.cpp)

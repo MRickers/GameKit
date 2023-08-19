@@ -1,4 +1,4 @@
-#include "app/App.hpp"
+#include "App.hpp"
 #include "core/ui/TextBox.hpp"
 #include "helpers/Draw.hpp"
 #include "helpers/Timer.hpp"
