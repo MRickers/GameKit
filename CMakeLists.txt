@@ -1,8 +1,18 @@
 cmake_minimum_required(VERSION 3.15)
 project(Sssnake LANGUAGES CXX)
 
+
+find_package(PkgConfig REQUIRED) 
+
 find_package(SDL2 REQUIRED)
+
+if(UNIX)
+# find_package does not find sdl2 ttf under ubuntu
+PKG_SEARCH_MODULE(SDL2TTF REQUIRED SDL2_ttf>=2.0.0)
+else()
 find_package(SDL2_ttf REQUIRED)
+
+endif()
 
 option(BUILD_TESTS "Build all tests" ON)
 
