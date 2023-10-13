@@ -9,7 +9,7 @@
 Install SDL2 dependencies
 ```
 sudo apt-get update
-sudo apt-get install -y libsdl2-dev
+sudo apt-get install -y libsdl2-dev libsdl2-ttf-dev
 ```
 
 #### Build project
