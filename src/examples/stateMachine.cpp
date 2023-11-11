@@ -232,11 +232,11 @@ public:
     }
 
     if (m_font = TTF_OpenFont(
-            "/home/mrickers/projects/c++/sdl2_snake/assets/Roboto-Regular.ttf",
+            "Roboto-Regular.ttf",
             10);
         m_font == nullptr)
     {
-      spdlog::info("could not load font: ", TTF_GetError());
+      spdlog::warn("could not load font: ", TTF_GetError());
     }
     m_textBox.setFont(m_font, 12);
     m_textBox.add("created main state");

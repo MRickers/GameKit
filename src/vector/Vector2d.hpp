@@ -4,6 +4,7 @@
 
 namespace gk
 {
+  // TODO: Make template class for e.g. int type support
   class Vector2D
   {
   public:

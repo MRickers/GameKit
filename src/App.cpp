@@ -71,6 +71,7 @@ namespace gk
     {
       SDL_DestroyWindow(m_window);
     }
+    TTF_Quit();
     SDL_Quit();
   }
 
@@ -135,8 +136,7 @@ namespace gk
     gk::TextBox fpsText{1};
 
     fpsText.setPos(gk::Vector2D{2, m_size.GetY() - 2 - fontSize});
-    if (auto* font = TTF_OpenFont("/home/mrickers/projects/c++/"
-                                  "sdl2_snake/assets/Roboto-Regular.ttf",
+    if (auto* font = TTF_OpenFont("Roboto-Regular.ttf",
                                   fontSize);
         font != nullptr)
     {

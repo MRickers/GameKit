@@ -42,12 +42,12 @@ add_executable(stateMachineExample
 examples/stateMachine.cpp
 )
 
+add_custom_command(TARGET stateMachineExample POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy
+                       ${CMAKE_SOURCE_DIR}/assets/Roboto-Regular.ttf $<TARGET_FILE_DIR:stateMachineExample>)
+
 target_link_libraries(stateMachineExample PRIVATE libGkCore spdlog::spdlog_header_only)
 set_target_properties(stateMachineExample PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On
 )
-
-# add_executable(${PROJECT_NAME} 
-
-# app/snake/Snake.cpp)
