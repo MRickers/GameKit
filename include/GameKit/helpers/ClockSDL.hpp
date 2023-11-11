@@ -1,5 +1,5 @@
 #pragma once
-#include "helpers/Types.hpp"
+#include "GameKit/helpers/Types.hpp"
 #include <SDL2/SDL.h>
 
 namespace gk

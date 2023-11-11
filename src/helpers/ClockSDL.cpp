@@ -1,5 +1,4 @@
-#include "helpers/ClockSDL.hpp"
-#include "ClockSDL.hpp"
+#include "GameKit/helpers/ClockSDL.hpp"
 
 namespace gk
 {

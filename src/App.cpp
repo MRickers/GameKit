@@ -1,8 +1,8 @@
-#include "App.hpp"
-#include "core/InputHandler.hpp"
-#include "core/ui/TextBox.hpp"
-#include "helpers/Draw.hpp"
-#include "helpers/Timer.hpp"
+#include "GameKit/App.hpp"
+#include "GameKit/core/InputHandler.hpp"
+#include "GameKit/core/ui/TextBox.hpp"
+#include "GameKit/helpers/Draw.hpp"
+#include "GameKit/helpers/Timer.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
@@ -136,8 +136,7 @@ namespace gk
     gk::TextBox fpsText{1};
 
     fpsText.setPos(gk::Vector2D{2, m_size.GetY() - 2 - fontSize});
-    if (auto* font = TTF_OpenFont("Roboto-Regular.ttf",
-                                  fontSize);
+    if (auto* font = TTF_OpenFont("Roboto-Regular.ttf", fontSize);
         font != nullptr)
     {
 

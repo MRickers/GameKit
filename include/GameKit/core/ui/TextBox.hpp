@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 
-#include "helpers/Draw.hpp"
-#include "vector/Vector2d.hpp"
+#include "GameKit/helpers/Draw.hpp"
+#include "GameKit/vector/Vector2d.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>

@@ -1,4 +1,4 @@
-#include "core/InputHandler.hpp"
+#include "GameKit/core/InputHandler.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("Add/Remove Callback", "[inputhandler]")

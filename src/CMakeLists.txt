@@ -1,27 +1,16 @@
 add_library(libGkCore STATIC 
-helpers/Draw.hpp
 helpers/Draw.cpp
-helpers/ClockChrono.hpp
 helpers/ClockChrono.cpp
-helpers/ClockSDL.hpp
 helpers/ClockSDL.cpp
-helpers/Types.hpp
-helpers/GameException.hpp
-core/GameObject.hpp
-core/InputHandler.hpp
 core/InputHandler.cpp
-core/StateInputHandler.hpp
 core/StateInputHandler.cpp
-core/StateMachine.hpp
 core/StateMachine.cpp
-core/ui/TextBox.hpp
 core/ui/TextBox.cpp
-vector/Vector2d.hpp
 vector/Vector2d.cpp
-App.hpp
 App.cpp
 )
-target_include_directories(libGkCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+#target_include_directories(libGkCore PUBLIC ${CMAKE_SOURCE_DIR}/include/)
+target_include_directories(libGkCore PUBLIC ${PROJECT_HEADERS})
 target_link_libraries(libGkCore PRIVATE SDL2 SDL2_ttf)
 set_target_properties(libGkCore PROPERTIES
 CXX_STANDARD 17
@@ -44,7 +33,7 @@ examples/stateMachine.cpp
 
 add_custom_command(TARGET stateMachineExample POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy
-                       ${CMAKE_SOURCE_DIR}/assets/Roboto-Regular.ttf $<TARGET_FILE_DIR:stateMachineExample>)
+                       ${CMAKE_CURRENT_SOURCE_DIR}/assets/Roboto-Regular.ttf $<TARGET_FILE_DIR:stateMachineExample>)
 
 target_link_libraries(stateMachineExample PRIVATE libGkCore spdlog::spdlog_header_only)
 set_target_properties(stateMachineExample PROPERTIES

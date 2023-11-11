@@ -1,5 +1,5 @@
-#include "InputHandler.hpp"
-#include "helpers/GameException.hpp"
+#include "GameKit/core/InputHandler.hpp"
+#include "GameKit/helpers/GameException.hpp"
 
 #include <iostream>
 #include <stdexcept>

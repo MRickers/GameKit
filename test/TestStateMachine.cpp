@@ -1,4 +1,4 @@
-#include "../src/core/StateMachine.hpp"
+#include "GameKit/core/StateMachine.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 class StateMock : public gk::IBaseState

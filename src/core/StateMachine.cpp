@@ -1,5 +1,5 @@
-#include "StateMachine.hpp"
-#include "helpers/GameException.hpp"
+#include "GameKit/core/StateMachine.hpp"
+#include "GameKit/helpers/GameException.hpp"
 #include <algorithm>
 
 void gk::StateMachine::update()

@@ -8,7 +8,7 @@ target_link_libraries(TestSpdLog Catch2::Catch2WithMain spdlog::spdlog_header_on
 add_test(NAME TestSpdLogTest COMMAND TestSpdLog)
 
 add_executable(TestGameException TestGameException.cpp)
-target_include_directories(TestGameException PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_include_directories(TestGameException PRIVATE ${PROJECT_HEADERS})
 target_link_libraries(TestGameException Catch2::Catch2WithMain)
 set_target_properties(TestGameException PROPERTIES
 CXX_STANDARD 17
@@ -18,20 +18,17 @@ add_test(NAME TestGameExceptionTest COMMAND TestGameException)
 
 add_executable(TestTimer 
 TestTimer.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/../src/helpers/ClockChrono.hpp
 ${CMAKE_CURRENT_SOURCE_DIR}/../src/helpers/ClockChrono.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/../src/helpers/Timer.hpp
 )
-target_include_directories(TestTimer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_include_directories(TestTimer PRIVATE ${PROJECT_HEADERS})
 target_link_libraries(TestTimer Catch2::Catch2WithMain)
 add_test(NAME TestTimerTest COMMAND TestTimer)
 
 add_executable(TestVector2d
 TestVector2d.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/Vector2d.hpp
 ${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/Vector2d.cpp
 )
-target_include_directories(TestVector2d PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_include_directories(TestVector2d PRIVATE ${PROJECT_HEADERS})
 target_link_libraries(TestVector2d Catch2::Catch2WithMain)
 set_target_properties(TestVector2d PROPERTIES
 CXX_STANDARD 17
@@ -41,12 +38,10 @@ add_test(NAME TestVector2dTest COMMAND TestVector2d)
 
 add_executable(TestInputHandler
 TestInputHandler.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/../src/core/InputHandler.hpp
 ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/InputHandler.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/Vector2d.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/Vector2d.hpp
 )
-target_include_directories(TestInputHandler PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_include_directories(TestInputHandler PRIVATE ${PROJECT_HEADERS})
 target_link_libraries(TestInputHandler Catch2::Catch2WithMain SDL2)
 set_target_properties(TestInputHandler PROPERTIES
 CXX_STANDARD 17
@@ -57,10 +52,9 @@ add_test(NAME TestInputHandlerTest COMMAND TestInputHandler)
 
 add_executable(TestStateMachine
 TestStateMachine.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/../src/core/StateMachine.hpp
 ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/StateMachine.cpp
 )
-target_include_directories(TestStateMachine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_include_directories(TestStateMachine PRIVATE ${PROJECT_HEADERS})
 target_link_libraries(TestStateMachine Catch2::Catch2WithMain spdlog::spdlog_header_only)
 set_target_properties(TestStateMachine PROPERTIES
 CXX_STANDARD 17

@@ -1,7 +1,7 @@
-#include "App.hpp"
-#include "core/ui/TextBox.hpp"
-#include "helpers/Draw.hpp"
-#include "helpers/Timer.hpp"
+#include "GameKit/App.hpp"
+#include "GameKit/core/ui/TextBox.hpp"
+#include "GameKit/helpers/Draw.hpp"
+#include "GameKit/helpers/Timer.hpp"
 #include <spdlog/spdlog.h>
 
 enum class StateType
@@ -231,10 +231,7 @@ public:
       m_sharedContext->inputHandler->AddBinding(StateType::GAME, binding);
     }
 
-    if (m_font = TTF_OpenFont(
-            "Roboto-Regular.ttf",
-            10);
-        m_font == nullptr)
+    if (m_font = TTF_OpenFont("Roboto-Regular.ttf", 10); m_font == nullptr)
     {
       spdlog::warn("could not load font: ", TTF_GetError());
     }

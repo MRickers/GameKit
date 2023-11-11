@@ -1,4 +1,4 @@
-#include "App.hpp"
+#include "GameKit/App.hpp"
 #include <iostream>
 
 int main()

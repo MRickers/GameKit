@@ -1,4 +1,4 @@
-#include "StateInputHandler.hpp"
+#include "GameKit/core/StateInputHandler.hpp"
 
 namespace gk
 {

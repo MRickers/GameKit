@@ -1,4 +1,4 @@
-#include "core/ui/TextBox.hpp"
+#include "GameKit/core/ui/TextBox.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("Add content", "[textboxCircularBuffer]")

@@ -14,6 +14,8 @@ find_package(SDL2_ttf REQUIRED)
 
 endif()
 
+set(PROJECT_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 option(BUILD_TESTS "Build all tests" ON)
 
 

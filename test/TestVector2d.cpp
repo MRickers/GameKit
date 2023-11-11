@@ -1,4 +1,4 @@
-#include "vector/Vector2d.hpp"
+#include "GameKit/vector/Vector2d.hpp"
 #include <catch2/catch_test_macros.hpp>
 using namespace gk;
 

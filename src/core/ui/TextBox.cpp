@@ -1,4 +1,4 @@
-#include "TextBox.hpp"
+#include "GameKit/core/ui/TextBox.hpp"
 
 gk::TextCirculareBuffer::TextCirculareBuffer(size_t maxRows)
     : m_maxRows{maxRows}
