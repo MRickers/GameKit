@@ -133,14 +133,22 @@ namespace gk
   void App::run()
   {
     constexpr auto fontSize = 20;
+#ifndef NDEBUG
+    constexpr auto fontPath = "../GameKit/src/Roboto-Regular.ttf";
+#else
+    constexpr auto fontPath = "Roboto-Regular.ttf";
+#endif
     gk::TextBox fpsText{1};
 
     fpsText.setPos(gk::Vector2D{2, m_size.GetY() - 2 - fontSize});
-    if (auto* font = TTF_OpenFont("Roboto-Regular.ttf", fontSize);
-        font != nullptr)
+    if (auto* font = TTF_OpenFont(fontPath, fontSize); font != nullptr)
     {
-
       fpsText.setFont(font, fontSize);
+    }
+    else
+    {
+      SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                   "could not load fps font from: %s", fontPath);
     }
     m_running = true;
     const auto update_rate = std::chrono::milliseconds{1000 / 60};

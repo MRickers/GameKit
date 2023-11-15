@@ -1,6 +1,4 @@
 cmake_minimum_required(VERSION 3.15)
-project(GameKit LANGUAGES CXX)
-
 
 find_package(PkgConfig REQUIRED) 
 

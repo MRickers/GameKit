@@ -9,13 +9,21 @@ core/ui/TextBox.cpp
 vector/Vector2d.cpp
 App.cpp
 )
-#target_include_directories(libGkCore PUBLIC ${CMAKE_SOURCE_DIR}/include/)
+
 target_include_directories(libGkCore PUBLIC ${PROJECT_HEADERS})
 target_link_libraries(libGkCore PRIVATE SDL2 SDL2_ttf)
 set_target_properties(libGkCore PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On
 )
+
+if(NOT NOT_SUBPROJECT)
+add_custom_command(TARGET libGkCore POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy
+                       ${CMAKE_CURRENT_SOURCE_DIR}/assets/Roboto-Regular.ttf $<TARGET_FILE_DIR:libGkCore>)
+
+endif()
+
 
 add_executable(inputHandlerExample
 examples/inputHandler.cpp
