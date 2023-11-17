@@ -47,6 +47,8 @@ namespace gk
     void setInputHandler(InputHandlerPtr input_handler);
     void setStateMachine(StateMachinePtr stateMachine);
 
+    gk::Vector2D getWindowSize() const;
+
   private:
     void handleEvents();
     void update();

@@ -3,6 +3,8 @@
 #include "GameKit/core/ui/TextBox.hpp"
 #include "GameKit/helpers/Draw.hpp"
 #include "GameKit/helpers/Timer.hpp"
+#include "GameKit/vector/Vector2d.hpp"
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
@@ -229,3 +231,11 @@ namespace gk
     }
   }
 } // namespace gk
+
+gk::Vector2D gk::App::getWindowSize() const
+{
+  int width, height;
+  SDL_GetWindowSize(m_window, &width, &height);
+
+  return {static_cast<float>(width), static_cast<float>(height)};
+}

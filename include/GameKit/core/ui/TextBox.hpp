@@ -48,6 +48,12 @@ namespace gk
         SDL_DestroyTexture(m_texture);
         m_texture = nullptr;
       }
+
+      if (m_font)
+      {
+        TTF_CloseFont(m_font);
+        m_font = nullptr;
+      }
     }
 
     void add(const std::string& content)
@@ -58,6 +64,24 @@ namespace gk
     void clear()
     {
       m_container.clear();
+    }
+
+    bool loadFont(const std::string& filePath, size_t fontSize)
+    {
+      if (!filePath.empty())
+      {
+        if (m_font)
+        {
+          TTF_CloseFont(m_font);
+        }
+        if (m_font = TTF_OpenFont(filePath.c_str(), fontSize);
+            m_font != nullptr)
+        {
+          m_fontSize = fontSize;
+          return true;
+        }
+      }
+      return false;
     }
 
     void setFont(TTF_Font* font, size_t fontSize)
