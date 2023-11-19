@@ -14,6 +14,7 @@
 
 namespace gk
 {
+  static gk::TextBox fpsText{1};
 
   App::App(const AppConfiguration& config)
   {
@@ -112,6 +113,8 @@ namespace gk
       m_stateMachine->draw(m_renderer);
     }
 
+    fpsText.draw(m_renderer);
+
     SDL_RenderPresent(m_renderer);
   }
 
@@ -140,7 +143,6 @@ namespace gk
 #else
     constexpr auto fontPath = "Roboto-Regular.ttf";
 #endif
-    gk::TextBox fpsText{1};
 
     fpsText.setPos(gk::Vector2D{2, m_size.GetY() - 2 - fontSize});
     if (auto* font = TTF_OpenFont(fontPath, fontSize); font != nullptr)
@@ -194,7 +196,6 @@ namespace gk
         framecount = 0;
         fps_timer.Reset();
       }
-      fpsText.draw(m_renderer);
       draw();
 
       lastRenderTime = now;
