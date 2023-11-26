@@ -144,7 +144,7 @@ namespace gk
     constexpr auto fontPath = "Roboto-Regular.ttf";
 #endif
 
-    fpsText.setPos(gk::Vector2D{2, m_size.GetY() - 2 - fontSize});
+    fpsText.setPos(gk::Vector2D{2.f, m_size.GetY<float>() - 2 - fontSize});
     if (auto* font = TTF_OpenFont(fontPath, fontSize); font != nullptr)
     {
       fpsText.setFont(font, fontSize);
@@ -238,5 +238,5 @@ gk::Vector2D gk::App::getWindowSize() const
   int width, height;
   SDL_GetWindowSize(m_window, &width, &height);
 
-  return {static_cast<float>(width), static_cast<float>(height)};
+  return {width, height};
 }

@@ -64,28 +64,29 @@ int main()
   input->AddGlobalCallback("leftMouse",
                            [&app](const gk::EventDetails& b)
                            {
-                             std::cout
-                                 << "left mouse pressed: " << b.mouse_pos.GetX()
-                                 << "," << b.mouse_pos.GetY() << "\n";
+                             std::cout << "left mouse pressed: "
+                                       << b.mouse_pos.GetX<int>() << ","
+                                       << b.mouse_pos.GetY<int>() << "\n";
                            });
   input->AddGlobalCallback("rightMouse",
                            [&app](const gk::EventDetails& b)
                            {
                              std::cout << "right mouse pressed: "
-                                       << b.mouse_pos.GetX() << ","
-                                       << b.mouse_pos.GetY() << "\n";
+                                       << b.mouse_pos.GetX<int>() << ","
+                                       << b.mouse_pos.GetY<int>() << "\n";
                            });
   input->AddGlobalCallback("motion",
                            [&app](const gk::EventDetails& b)
                            {
-                             std::cout << "motion: " << b.mouse_pos.GetX()
-                                       << "," << b.mouse_pos.GetY() << "\n";
+                             std::cout << "motion: " << b.mouse_pos.GetX<int>()
+                                       << "," << b.mouse_pos.GetY<int>() << "\n";
                            });
   input->AddGlobalCallback("strg+motion",
                            [&app](const gk::EventDetails& b)
                            {
-                             std::cout << "STRG+motion: " << b.mouse_pos.GetX()
-                                       << "," << b.mouse_pos.GetY() << "\n";
+                             std::cout
+                                 << "STRG+motion: " << b.mouse_pos.GetX<int>()
+                                 << "," << b.mouse_pos.GetY<int>() << "\n";
                            });
 
   app.setInputHandler(input);

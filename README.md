@@ -1,4 +1,4 @@
-# Sssnake
+# GameKit
 ![Linux Build Status](https://github.com/MRickers/SSsnake/actions/workflows/cmake.yml/badge.svg)
 
 ## Build

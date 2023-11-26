@@ -1,6 +1,6 @@
 #include "GameKit/vector/Vector2d.hpp"
 #include <cmath>
-#include <iostream>
+#include <stdexcept>
 
 gk::Vector2D::Vector2D(const float x, const float y)
     : m_x{x}
@@ -8,6 +8,11 @@ gk::Vector2D::Vector2D(const float x, const float y)
 {
 }
 
+gk::Vector2D::Vector2D(const int x, const int y)
+    : m_x{static_cast<float>(x)}
+    , m_y{static_cast<float>(y)}
+{
+}
 gk::Vector2D gk::Vector2D::operator+(const Vector2D& other) const
 {
   return {m_x + other.m_x, m_y + other.m_y};
@@ -101,12 +106,22 @@ std::pair<float, float> gk::Vector2D::Get() const
   return {m_x, m_y};
 }
 
-float gk::Vector2D::GetX() const
+template <> float gk::Vector2D::GetX<float>() const
 {
   return m_x;
 }
 
-float gk::Vector2D::GetY() const
+template <> int gk::Vector2D::GetX<int>() const
+{
+  return static_cast<int>(m_x);
+}
+
+template <> float gk::Vector2D::GetY<float>() const
 {
   return m_y;
+}
+
+template <> int gk::Vector2D::GetY<int>() const
+{
+  return static_cast<int>(m_y);
 }

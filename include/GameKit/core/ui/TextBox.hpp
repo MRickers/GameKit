@@ -140,7 +140,7 @@ namespace gk
     if (m_texture)
     {
       const SDL_Rect textRect = {
-          static_cast<int>(m_pos.GetX()), static_cast<int>(m_pos.GetY()),
+          m_pos.GetX<int>(), m_pos.GetY<int>(),
           static_cast<int>(textSurface->w),
           static_cast<int>(m_container.size() * m_fontSize)};
       SDL_RenderCopy(renderer, m_texture, NULL, &textRect);

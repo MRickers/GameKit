@@ -65,7 +65,7 @@ add_test(NAME TestStateMachine COMMAND TestStateMachine)
 add_executable(TestTextBox
 TestTextBox.cpp
 )
-target_link_libraries(TestTextBox Catch2::Catch2WithMain libGkCore)
+target_link_libraries(TestTextBox Catch2::Catch2WithMain gkcore)
 set_target_properties(TestTextBox PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED ON

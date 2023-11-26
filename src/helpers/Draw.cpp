@@ -1,4 +1,3 @@
-// #include "GameKit/helpers/Draw.hpp"
 #include <GameKit/helpers/Draw.hpp>
 
 #include <SDL2/SDL_render.h>
@@ -106,7 +105,7 @@ namespace gk
 void gk::Draw::filledRect(SDL_Renderer* renderer, const gk::Vector2D& pos,
                           const gk::Vector2D& size)
 {
-  SDL_Rect rect{static_cast<int>(pos.GetX()), static_cast<int>(pos.GetY()),
-                static_cast<int>(size.GetX()), static_cast<int>(size.GetY())};
+  SDL_Rect rect{pos.GetX<int>(), pos.GetY<int>(), size.GetX<int>(),
+                size.GetY<int>()};
   SDL_RenderFillRect(renderer, &rect);
 }

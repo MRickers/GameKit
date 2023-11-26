@@ -1,14 +1,13 @@
 #pragma once
 #include <limits>
 #include <utility>
-
 namespace gk
 {
-  // TODO: Make template class for e.g. int type support
   class Vector2D
   {
   public:
     Vector2D(const float x, const float y);
+    Vector2D(const int x, const int y);
     Vector2D() = default;
     Vector2D operator+(const Vector2D&) const;
     Vector2D& operator+=(const Vector2D&);
@@ -26,14 +25,14 @@ namespace gk
     /// @param limit
     void SetLimit(const float limit);
 
+    template <typename T> T GetX() const;
+    template <typename T> T GetY() const;
+
     std::pair<float, float> Get() const;
-    float GetX() const;
-    float GetY() const;
 
   private:
     float m_x{0};
     float m_y{0};
     float m_limit{std::numeric_limits<float>::max()};
   };
-
 } // namespace gk

@@ -102,8 +102,8 @@ public:
     const auto [x, y] = m_buttonPos.Get();
     for (int i = 0; i < 3; ++i)
     {
-      const auto buttonPos =
-          gk::Vector2D{x, y + (i * (m_buttonSize.GetY() + m_buttonPadding))};
+      const auto buttonPos = gk::Vector2D{
+          x, y + (i * (m_buttonSize.GetY<int>() + m_buttonPadding))};
 
       m_shapes[i].m_pos = buttonPos + m_buttonSize / 2;
       m_shapes[i].m_size = m_buttonSize;
@@ -152,10 +152,10 @@ private:
 
     for (int i = 0; i < 3; ++i)
     {
-      if (mouseX >= m_shapes[i].m_pos.GetX() &&
-          mouseX <= m_shapes[i].m_pos.GetX() + btnSizeX &&
-          mouseY >= m_shapes[i].m_pos.GetY() &&
-          mouseY <= m_shapes[i].m_pos.GetY() + btnSizeY)
+      if (mouseX >= m_shapes[i].m_pos.GetX<int>() &&
+          mouseX <= m_shapes[i].m_pos.GetX<int>() + btnSizeX &&
+          mouseY >= m_shapes[i].m_pos.GetY<int>() &&
+          mouseY <= m_shapes[i].m_pos.GetY<int>() + btnSizeY)
       {
         if (i == 0)
         {
@@ -275,8 +275,9 @@ public:
   void draw(SDL_Renderer* renderer) override
   {
     gk::Draw::setRendererColor(renderer, gk::Color::OLIVE);
-    gk::Draw::filledCircle(renderer, m_shape.m_pos.GetX(), m_shape.m_pos.GetY(),
-                           m_shape.m_size.GetX());
+    gk::Draw::filledCircle(renderer, m_shape.m_pos.GetX<int>(),
+                           m_shape.m_pos.GetY<int>(),
+                           m_shape.m_size.GetX<int>());
     m_textBox.draw(renderer);
   }
 
@@ -368,8 +369,8 @@ int main()
   const gk::Vector2D windowSize{640, 480};
 
   auto app = std::make_shared<gk::App>(gk::AppConfiguration{
-      "StateMachine", static_cast<size_t>(windowSize.GetX()),
-      static_cast<size_t>(windowSize.GetY())});
+      "StateMachine", static_cast<size_t>(windowSize.GetX<int>()),
+      static_cast<size_t>(windowSize.GetY<int>())});
 
   auto inputHandler = std::make_shared<gk::StateInputHandler>();
   auto stateMachine = std::make_shared<gk::StateMachine>();

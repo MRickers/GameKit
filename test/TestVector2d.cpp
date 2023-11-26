@@ -26,8 +26,8 @@ TEST_CASE("AdditionTo", "[vector2d]")
 
   REQUIRE(x == 9899);
   REQUIRE(y == 1234);
-  REQUIRE(vec1.GetX() == 23);
-  REQUIRE(vec1.GetY() == 1000);
+  REQUIRE(vec1.GetX<int>() == 23);
+  REQUIRE(vec1.GetY<int>() == 1000);
 }
 
 TEST_CASE("Subtraction", "[vector2d]")
@@ -54,8 +54,8 @@ TEST_CASE("SubstractTo", "[vector2d]")
 
   REQUIRE(x == -200);
   REQUIRE(y == -200);
-  REQUIRE(vec2.GetX() == 500);
-  REQUIRE(vec2.GetY() == 600);
+  REQUIRE(vec2.GetX<int>() == 500);
+  REQUIRE(vec2.GetY<int>() == 600);
 }
 
 TEST_CASE("MultiplyScalar", "[vector2d]")
@@ -67,8 +67,8 @@ TEST_CASE("MultiplyScalar", "[vector2d]")
 
   REQUIRE(x == 1200);
   REQUIRE(y == 1600);
-  REQUIRE(vec1.GetX() == 300);
-  REQUIRE(vec1.GetY() == 400);
+  REQUIRE(vec1.GetX<int>() == 300);
+  REQUIRE(vec1.GetY<int>() == 400);
 }
 
 TEST_CASE("MultiplyScalarTo", "[vector2d]")
@@ -91,8 +91,8 @@ TEST_CASE("DivideScalar", "[vector2d]")
 
   REQUIRE(x == 150);
   REQUIRE(y == 200);
-  REQUIRE(vec1.GetX() == 300);
-  REQUIRE(vec1.GetY() == 400);
+  REQUIRE(vec1.GetX<int>() == 300);
+  REQUIRE(vec1.GetY<int>() == 400);
 }
 
 TEST_CASE("DivideScalarTo", "[vector2d]")
