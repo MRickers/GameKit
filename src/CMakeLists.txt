@@ -11,7 +11,7 @@ App.cpp
 )
 
 target_include_directories(gkcore PUBLIC ${PROJECT_HEADERS})
-target_link_libraries(gkcore PRIVATE SDL2 SDL2_ttf)
+target_link_libraries(gkcore PRIVATE SDL2 SDL2_ttf SDL2_image)
 set_target_properties(gkcore PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On

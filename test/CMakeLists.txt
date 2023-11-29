@@ -71,3 +71,17 @@ CXX_STANDARD 17
 CXX_STANDARD_REQUIRED ON
 )
 add_test(NAME TestTextBox COMMAND TestTextBox)
+
+add_executable(TestTextureManager
+TestTextureManager.cpp
+)
+target_link_libraries(TestTextureManager Catch2::Catch2WithMain gkcore)
+set_target_properties(TestTextureManager PROPERTIES
+CXX_STANDARD 17
+CXX_STANDARD_REQUIRED ON
+)
+add_test(NAME TestTextureManager COMMAND TestTextureManager)
+
+add_custom_command(TARGET TestTextureManager POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy
+                    ${CMAKE_CURRENT_SOURCE_DIR}/assets/test_texture.png $<TARGET_FILE_DIR:TestTextureManager>)
