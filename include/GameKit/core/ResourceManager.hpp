@@ -1,6 +1,7 @@
 #pragma once
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 
@@ -70,11 +71,26 @@ namespace gk
 
     void purgeResources()
     {
-      while (m_resources.begin() != m_resources.end())
+      for (auto const& [id, path] : m_paths)
       {
-        delete m_resources.begin()->second.first;
-        m_resources.erase(m_resources.begin());
+        if (find(id) != nullptr)
+        {
+          if (!unload(id))
+          {
+            std::cout << "could not unload " << id << '\n';
+          }
+        }
       }
+      // for (auto it = m_resources.begin();; it != m_resources.end())
+      // {
+      //   it = m_resources.erase(it);
+      // }
+
+      // while (m_resources.begin() != m_resources.end())
+      // {
+      //   delete m_resources.begin()->second.first;
+      //   m_resources.erase(m_resources.begin());
+      // }
     }
 
     T* load(const std::string& path)
@@ -92,7 +108,7 @@ namespace gk
     {
       if (auto itr = m_resources.find(id); itr != m_resources.end())
       {
-        static_cast<Derived*>(this)->unload(itr->second->first);
+        static_cast<Derived*>(this)->unload(itr->second.first);
         m_resources.erase(itr);
         return true;
       }
@@ -102,7 +118,8 @@ namespace gk
     bool loadConfig(const std::string& pathFile)
     {
       std::ifstream paths;
-      paths.open(std::filesystem::current_path().string() + pathFile);
+      auto loadPath = std::filesystem::current_path() / pathFile;
+      paths.open(loadPath.string());
       if (paths.is_open())
       {
         std::string line;

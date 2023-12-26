@@ -85,3 +85,7 @@ add_test(NAME TestTextureManager COMMAND TestTextureManager)
 add_custom_command(TARGET TestTextureManager POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy
                     ${CMAKE_CURRENT_SOURCE_DIR}/assets/test_texture.png $<TARGET_FILE_DIR:TestTextureManager>)
+
+add_custom_command(TARGET TestTextureManager POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy
+                    ${CMAKE_CURRENT_SOURCE_DIR}/assets/texture.cfg $<TARGET_FILE_DIR:TestTextureManager>)
