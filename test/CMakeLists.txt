@@ -26,7 +26,7 @@ add_test(NAME TestTimerTest COMMAND TestTimer)
 
 add_executable(TestVector2d
 TestVector2d.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/Vector2d.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/vector2d.cpp
 )
 target_include_directories(TestVector2d PRIVATE ${PROJECT_HEADERS})
 target_link_libraries(TestVector2d Catch2::Catch2WithMain)
@@ -39,7 +39,7 @@ add_test(NAME TestVector2dTest COMMAND TestVector2d)
 add_executable(TestInputHandler
 TestInputHandler.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/InputHandler.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/Vector2d.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/vector2d.cpp
 )
 target_include_directories(TestInputHandler PRIVATE ${PROJECT_HEADERS})
 target_link_libraries(TestInputHandler Catch2::Catch2WithMain SDL2)

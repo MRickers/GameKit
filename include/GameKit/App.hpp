@@ -1,7 +1,7 @@
 #pragma once
 #include "core/StateInputHandler.hpp"
 #include "core/StateMachine.hpp"
-#include "vector/Vector2d.hpp"
+#include "vector/vector2d.hpp"
 #include <memory>
 #include <string>
 
@@ -24,14 +24,14 @@ namespace gk
     {
       return m_title;
     }
-    Vector2D getSize() const
+    vector2d getSize() const
     {
       return m_size;
     }
 
   private:
     std::string m_title{"Title"};
-    gk::Vector2D m_size{640, 480};
+    gk::vector2d m_size{640, 480};
   };
   class App
   {
@@ -47,7 +47,7 @@ namespace gk
     void setInputHandler(InputHandlerPtr input_handler);
     void setStateMachine(StateMachinePtr stateMachine);
 
-    gk::Vector2D getWindowSize() const;
+    gk::vector2d getWindowSize() const;
 
   private:
     void handleEvents();
@@ -61,7 +61,7 @@ namespace gk
     SDL_Renderer* m_renderer{nullptr};
     InputHandlerPtr m_inputHandler{nullptr};
     StateMachinePtr m_stateMachine{nullptr};
-    gk::Vector2D m_size;
+    gk::vector2d m_size;
   };
 
   using AppPtr = std::shared_ptr<App>;

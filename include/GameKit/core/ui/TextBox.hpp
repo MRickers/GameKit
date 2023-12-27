@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "GameKit/helpers/Draw.hpp"
-#include "GameKit/vector/Vector2d.hpp"
+#include "GameKit/vector/vector2d.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -93,7 +93,7 @@ namespace gk
       }
     }
 
-    void setPos(const gk::Vector2D& pos)
+    void setPos(const gk::vector2d& pos)
     {
       m_pos = pos;
     }
@@ -105,7 +105,7 @@ namespace gk
     _TTF_Font* m_font{nullptr};
     SDL_Texture* m_texture{nullptr};
     Color m_textColor{Color::WHITE};
-    gk::Vector2D m_pos{0, 0};
+    gk::vector2d m_pos{0, 0};
     size_t m_fontSize;
   };
 

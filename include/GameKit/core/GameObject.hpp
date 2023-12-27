@@ -1,5 +1,5 @@
 #pragma once
-#include "vector/Vector2d.hpp"
+#include "vector/vector2d.hpp"
 
 class SDL_Renderer;
 namespace gk
@@ -7,15 +7,15 @@ namespace gk
   class LoadParams
   {
   public:
-    LoadParams(const Vector2D& pos, const Vector2D& size)
+    LoadParams(const vector2d& pos, const vector2d& size)
         : m_pos{pos}
         , m_size{size}
     {
     }
 
   private:
-    Vector2D m_pos{0, 0};
-    Vector2D m_size{0, 0};
+    vector2d m_pos{0, 0};
+    vector2d m_size{0, 0};
   };
 
   class IGameObject

@@ -3,20 +3,20 @@
 #include <utility>
 namespace gk
 {
-  class Vector2D
+  class vector2d
   {
   public:
-    Vector2D(const float x, const float y);
-    Vector2D(const int x, const int y);
-    Vector2D() = default;
-    Vector2D operator+(const Vector2D&) const;
-    Vector2D& operator+=(const Vector2D&);
-    Vector2D operator-(const Vector2D&) const;
-    Vector2D& operator-=(const Vector2D&);
-    Vector2D operator*(const float) const;
-    Vector2D& operator*=(const float);
-    Vector2D operator/(const float) const;
-    Vector2D& operator/=(const float);
+    vector2d(const float x, const float y);
+    vector2d(const int x, const int y);
+    vector2d() = default;
+    vector2d operator+(const vector2d&) const;
+    vector2d& operator+=(const vector2d&);
+    vector2d operator-(const vector2d&) const;
+    vector2d& operator-=(const vector2d&);
+    vector2d operator*(const float) const;
+    vector2d& operator*=(const float);
+    vector2d operator/(const float) const;
+    vector2d& operator/=(const float);
 
     float Length() const;
     void SetLength(const float len);

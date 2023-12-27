@@ -6,7 +6,7 @@ core/InputHandler.cpp
 core/StateInputHandler.cpp
 core/StateMachine.cpp
 core/ui/TextBox.cpp
-vector/Vector2d.cpp
+vector/vector2d.cpp
 App.cpp
 )
 

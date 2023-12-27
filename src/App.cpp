@@ -3,7 +3,7 @@
 #include "GameKit/core/ui/TextBox.hpp"
 #include "GameKit/helpers/Draw.hpp"
 #include "GameKit/helpers/Timer.hpp"
-#include "GameKit/vector/Vector2d.hpp"
+#include "GameKit/vector/vector2d.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -144,7 +144,7 @@ namespace gk
     constexpr auto fontPath = "Roboto-Regular.ttf";
 #endif
 
-    fpsText.setPos(gk::Vector2D{2.f, m_size.GetY<float>() - 2 - fontSize});
+    fpsText.setPos(gk::vector2d{2.f, m_size.GetY<float>() - 2 - fontSize});
     if (auto* font = TTF_OpenFont(fontPath, fontSize); font != nullptr)
     {
       fpsText.setFont(font, fontSize);
@@ -233,7 +233,7 @@ namespace gk
   }
 } // namespace gk
 
-gk::Vector2D gk::App::getWindowSize() const
+gk::vector2d gk::App::getWindowSize() const
 {
   int width, height;
   SDL_GetWindowSize(m_window, &width, &height);

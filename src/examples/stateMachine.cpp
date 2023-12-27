@@ -15,7 +15,7 @@ enum class StateType
 class IntroState : public gk::IBaseState
 {
 public:
-  IntroState(gk::SharedContextPtr sharedContext, const gk::Vector2D& windowSize)
+  IntroState(gk::SharedContextPtr sharedContext, const gk::vector2d& windowSize)
       : m_sharedContext{sharedContext}
       , m_windowSize{windowSize}
   {
@@ -53,7 +53,7 @@ public:
   {
     if (!m_timer.HasPassed(2000))
     {
-      m_pos += gk::Vector2D{0, 1};
+      m_pos += gk::vector2d{0, 1};
     }
   }
   void draw(SDL_Renderer* renderer) override
@@ -78,17 +78,17 @@ private:
 
   gk::SharedContextPtr m_sharedContext{nullptr};
   gk::Timer m_timer;
-  gk::Vector2D m_windowSize{0, 0};
-  gk::Vector2D m_pos{0, 0};
-  gk::Vector2D m_size{200, 100};
+  gk::vector2d m_windowSize{0, 0};
+  gk::vector2d m_pos{0, 0};
+  gk::vector2d m_size{200, 100};
 };
 
 class MainState : public gk::IBaseState
 {
   struct Shape
   {
-    gk::Vector2D m_pos{0, 0};
-    gk::Vector2D m_size{0, 0};
+    gk::vector2d m_pos{0, 0};
+    gk::vector2d m_size{0, 0};
   };
 
 public:
@@ -102,7 +102,7 @@ public:
     const auto [x, y] = m_buttonPos.Get();
     for (int i = 0; i < 3; ++i)
     {
-      const auto buttonPos = gk::Vector2D{
+      const auto buttonPos = gk::vector2d{
           x, y + (i * (m_buttonSize.GetY<int>() + m_buttonPadding))};
 
       m_shapes[i].m_pos = buttonPos + m_buttonSize / 2;
@@ -176,8 +176,8 @@ private:
 
   gk::SharedContextPtr m_sharedContext{nullptr};
 
-  gk::Vector2D m_buttonSize{100, 50};
-  gk::Vector2D m_buttonPos{220, 90};
+  gk::vector2d m_buttonSize{100, 50};
+  gk::vector2d m_buttonPos{220, 90};
   uint32_t m_buttonPadding{10};
   Shape m_shapes[3];
 };
@@ -186,8 +186,8 @@ class GameState : public gk::IBaseState
 {
   struct Shape
   {
-    gk::Vector2D m_pos{0, 0};
-    gk::Vector2D m_size{0, 0};
+    gk::vector2d m_pos{0, 0};
+    gk::vector2d m_size{0, 0};
   };
 
 public:
@@ -294,8 +294,8 @@ private:
 
   gk::SharedContextPtr m_sharedContext{nullptr};
   Shape m_shape;
-  gk::Vector2D m_mousePos;
-  gk::Vector2D m_vel;
+  gk::vector2d m_mousePos;
+  gk::vector2d m_vel;
   gk::TextBox m_textBox;
   TTF_Font* m_font{nullptr};
 };
@@ -304,8 +304,8 @@ class PauseState : public gk::IBaseState
 {
   struct Shape
   {
-    gk::Vector2D m_pos{0, 0};
-    gk::Vector2D m_size{0, 0};
+    gk::vector2d m_pos{0, 0};
+    gk::vector2d m_size{0, 0};
   };
 
 public:
@@ -366,7 +366,7 @@ private:
 
 int main()
 {
-  const gk::Vector2D windowSize{640, 480};
+  const gk::vector2d windowSize{640, 480};
 
   auto app = std::make_shared<gk::App>(gk::AppConfiguration{
       "StateMachine", static_cast<size_t>(windowSize.GetX<int>()),

@@ -1,5 +1,5 @@
 #pragma once
-#include "GameKit/vector/Vector2d.hpp"
+#include "GameKit/vector/vector2d.hpp"
 #include <cstddef>
 #include <cstdint>
 
@@ -57,7 +57,7 @@ namespace gk
     static ColorRGBA getColorRGBA(Color color);
     static void filledCircle(SDL_Renderer* renderer, int centerX, int centerY,
                              size_t radius);
-    static void filledRect(SDL_Renderer* renderer, const gk::Vector2D& pos,
-                           const gk::Vector2D& size);
+    static void filledRect(SDL_Renderer* renderer, const gk::vector2d& pos,
+                           const gk::vector2d& size);
   };
 } // namespace gk

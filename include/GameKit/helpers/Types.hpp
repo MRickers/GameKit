@@ -1,5 +1,5 @@
 #pragma once
-#include "GameKit/vector/Vector2d.hpp"
+#include "GameKit/vector/vector2d.hpp"
 #include <cstdint>
 
 namespace gk
@@ -8,8 +8,8 @@ namespace gk
 
   struct Shape
   {
-    gk::Vector2D m_pos{0, 0};
-    gk::Vector2D m_size{0, 0};
+    gk::vector2d m_pos{0, 0};
+    gk::vector2d m_size{0, 0};
   };
 
 } // namespace gk

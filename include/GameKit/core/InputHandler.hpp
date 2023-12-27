@@ -1,5 +1,5 @@
 #pragma once
-#include "GameKit/vector/Vector2d.hpp"
+#include "GameKit/vector/vector2d.hpp"
 #include <array>
 #include <functional>
 #include <memory>
@@ -41,7 +41,7 @@ namespace gk
   struct EventDetails
   {
     std::string id{""};
-    Vector2D mouse_pos{0, 0};
+    vector2d mouse_pos{0, 0};
 
     void Reset()
     {

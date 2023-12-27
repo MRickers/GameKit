@@ -102,8 +102,8 @@ namespace gk
   }
 } // namespace gk
 
-void gk::Draw::filledRect(SDL_Renderer* renderer, const gk::Vector2D& pos,
-                          const gk::Vector2D& size)
+void gk::Draw::filledRect(SDL_Renderer* renderer, const gk::vector2d& pos,
+                          const gk::vector2d& size)
 {
   SDL_Rect rect{pos.GetX<int>(), pos.GetY<int>(), size.GetX<int>(),
                 size.GetY<int>()};
