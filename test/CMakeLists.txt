@@ -38,7 +38,7 @@ add_test(NAME TestVector2dTest COMMAND TestVector2d)
 
 add_executable(TestInputHandler
 TestInputHandler.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/../src/core/InputHandler.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/core/input_handler.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/../src/vector/vector2d.cpp
 )
 target_include_directories(TestInputHandler PRIVATE ${PROJECT_HEADERS})

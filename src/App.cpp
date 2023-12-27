@@ -1,5 +1,5 @@
 #include "GameKit/App.hpp"
-#include "GameKit/core/InputHandler.hpp"
+#include "GameKit/core/input_handler.hpp"
 #include "GameKit/core/ui/TextBox.hpp"
 #include "GameKit/helpers/Draw.hpp"
 #include "GameKit/helpers/Timer.hpp"
@@ -85,7 +85,7 @@ namespace gk
     {
       if (m_inputHandler)
       {
-        m_inputHandler->HandleEvent(evnt);
+        m_inputHandler->handle_event(evnt);
       }
       if (evnt.type == SDL_QUIT)
       {

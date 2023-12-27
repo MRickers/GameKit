@@ -1,5 +1,5 @@
 #pragma once
-#include "InputHandler.hpp"
+#include "GameKit/core/input_handler.hpp"
 #include <unordered_map>
 
 enum class StateType;
@@ -9,32 +9,32 @@ namespace gk
 
   class StateInputHandler
   {
-    using InputHandlerOwner = std::unique_ptr<InputHandler>;
+    using InputHandlerOwner = std::unique_ptr<input_handler>;
     using InputHandlers = std::unordered_map<StateType, InputHandlerOwner>;
 
   public:
     void setCurrentState(const StateType state);
     StateType currentState() const;
 
-    bool AddGlobalCallback(const std::string& id, EventCallback);
+    bool AddGlobalCallback(const std::string& id, event_callback);
     bool RemoveGlobalCallback(const std::string& id);
 
-    bool AddGlobalBinding(const EventBinding&);
+    bool AddGlobalBinding(const event_binding&);
     bool RemoveGlobalBinding(const std::string& id);
 
-    bool AddCallback(const StateType state, const std::string& id,
-                     EventCallback);
-    bool RemoveCallback(const StateType state, const std::string& id);
+    bool add_callback(const StateType state, const std::string& id,
+                      event_callback);
+    bool remove_callback(const StateType state, const std::string& id);
 
-    bool AddBinding(const StateType state, const EventBinding&);
-    bool RemoveBinding(const StateType state, const std::string& id);
+    bool add_binding(const StateType state, const event_binding&);
+    bool remove_binding(const StateType state, const std::string& id);
 
-    void HandleEvent(const SDL_Event&);
+    void handle_event(const SDL_Event&);
     void Update();
 
   private:
     InputHandlers m_handlers;
-    InputHandler m_globalInputs;
+    input_handler m_globalInputs;
     StateType m_currentState;
   };
 

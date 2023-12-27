@@ -13,93 +13,93 @@ namespace gk
   }
 
   bool StateInputHandler::AddGlobalCallback(const std::string& id,
-                                            EventCallback callback)
+                                            event_callback callback)
   {
-    return m_globalInputs.AddCallback(id, callback);
+    return m_globalInputs.add_callback(id, callback);
   }
 
   bool StateInputHandler::RemoveGlobalCallback(const std::string& id)
   {
-    return m_globalInputs.RemoveCallback(id);
+    return m_globalInputs.remove_callback(id);
   }
 
-  bool StateInputHandler::AddGlobalBinding(const EventBinding& binding)
+  bool StateInputHandler::AddGlobalBinding(const event_binding& binding)
   {
-    return m_globalInputs.AddBinding(binding);
+    return m_globalInputs.add_binding(binding);
   }
 
   bool StateInputHandler::RemoveGlobalBinding(const std::string& id)
   {
-    return m_globalInputs.RemoveBinding(id);
+    return m_globalInputs.remove_binding(id);
   }
 
-  bool StateInputHandler::AddCallback(const StateType state,
-                                      const std::string& id,
-                                      EventCallback callback)
+  bool StateInputHandler::add_callback(const StateType state,
+                                       const std::string& id,
+                                       event_callback callback)
   {
     if (auto foundState = m_handlers.find(state);
         foundState == m_handlers.end())
     {
-      if (!m_handlers.try_emplace(state, std::make_unique<InputHandler>())
+      if (!m_handlers.try_emplace(state, std::make_unique<input_handler>())
                .second)
       {
         return false;
       }
     }
-    return m_handlers[state]->AddCallback(id, callback);
+    return m_handlers[state]->add_callback(id, callback);
   }
 
-  bool StateInputHandler::RemoveCallback(const StateType state,
+  bool StateInputHandler::remove_callback(const StateType state,
+                                          const std::string& id)
+  {
+    if (auto foundState = m_handlers.find(state);
+        foundState != m_handlers.end())
+    {
+      return m_handlers[state]->remove_callback(id);
+    }
+    return false;
+  }
+
+  bool StateInputHandler::add_binding(const StateType state,
+                                      const event_binding& binding)
+  {
+    if (auto foundState = m_handlers.find(state);
+        foundState == m_handlers.end())
+    {
+      if (!m_handlers.try_emplace(state, std::make_unique<input_handler>())
+               .second)
+      {
+        return false;
+      }
+    }
+    return m_handlers[state]->add_binding(binding);
+  }
+
+  bool StateInputHandler::remove_binding(const StateType state,
                                          const std::string& id)
   {
     if (auto foundState = m_handlers.find(state);
         foundState != m_handlers.end())
     {
-      return m_handlers[state]->RemoveCallback(id);
+      return m_handlers[state]->remove_binding(id);
     }
     return false;
   }
 
-  bool StateInputHandler::AddBinding(const StateType state,
-                                     const EventBinding& binding)
-  {
-    if (auto foundState = m_handlers.find(state);
-        foundState == m_handlers.end())
-    {
-      if (!m_handlers.try_emplace(state, std::make_unique<InputHandler>())
-               .second)
-      {
-        return false;
-      }
-    }
-    return m_handlers[state]->AddBinding(binding);
-  }
-
-  bool StateInputHandler::RemoveBinding(const StateType state,
-                                        const std::string& id)
-  {
-    if (auto foundState = m_handlers.find(state);
-        foundState != m_handlers.end())
-    {
-      return m_handlers[state]->RemoveBinding(id);
-    }
-    return false;
-  }
-
-  void StateInputHandler::HandleEvent(const SDL_Event& evnt)
+  void StateInputHandler::handle_event(const SDL_Event& evnt)
   {
     if (m_handlers.find(m_currentState) != m_handlers.end())
     {
-      m_handlers[m_currentState]->HandleEvent(evnt);
+      m_handlers[m_currentState]->handle_event(evnt);
     }
-    m_globalInputs.HandleEvent(evnt);
+    m_globalInputs.handle_event(evnt);
   }
   void StateInputHandler::Update()
   {
     if (m_handlers.find(m_currentState) != m_handlers.end())
     {
-      m_handlers[m_currentState]->Update();
+      m_handlers[m_currentState]->update();
     }
-    m_globalInputs.Update();
+    m_globalInputs.update();
   }
 } // namespace gk

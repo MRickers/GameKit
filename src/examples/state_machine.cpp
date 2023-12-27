@@ -25,19 +25,19 @@ public:
   {
     m_pos = m_windowSize / 2 - m_size / 2;
 
-    m_sharedContext->inputHandler->AddCallback(
+    m_sharedContext->inputHandler->add_callback(
         StateType::INTRO, "IntroContinue",
-        [this](const gk::EventDetails& details) { changeState(details); });
+        [this](const gk::event_details& details) { changeState(details); });
 
-    auto binding = gk::EventBinding{"IntroContinue"};
+    auto binding = gk::event_binding{"IntroContinue"};
     binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_SPACE});
-    m_sharedContext->inputHandler->AddBinding(StateType::INTRO, binding);
+    m_sharedContext->inputHandler->add_binding(StateType::INTRO, binding);
   }
   void on_destroy() override
   {
-    m_sharedContext->inputHandler->RemoveBinding(StateType::INTRO,
+    m_sharedContext->inputHandler->remove_binding(StateType::INTRO,
                                                  "IntroContinue");
-    m_sharedContext->inputHandler->RemoveCallback(StateType::INTRO,
+    m_sharedContext->inputHandler->remove_callback(StateType::INTRO,
                                                   "IntroContinue");
   }
 
@@ -63,7 +63,7 @@ public:
   }
 
 private:
-  void changeState(const gk::EventDetails&)
+  void changeState(const gk::event_details&)
   {
     if (m_timer.HasPassed(2000))
     {
@@ -108,20 +108,20 @@ public:
       m_shapes[i].m_pos = buttonPos + m_buttonSize / 2;
       m_shapes[i].m_size = m_buttonSize;
     }
-    m_sharedContext->inputHandler->AddCallback(
+    m_sharedContext->inputHandler->add_callback(
         StateType::MAIN, "MouseLeft",
-        [this](const gk::EventDetails& details) { mouseClick(details); });
+        [this](const gk::event_details& details) { mouseClick(details); });
 
-    auto binding = gk::EventBinding{"MouseLeft"};
+    auto binding = gk::event_binding{"MouseLeft"};
     binding.events.push_back({gk::EventType::MouseDown, SDL_SCANCODE_UNKNOWN,
                               gk::MouseButton::Left});
-    m_sharedContext->inputHandler->AddBinding(StateType::MAIN, binding);
+    m_sharedContext->inputHandler->add_binding(StateType::MAIN, binding);
   }
   void on_destroy() override
   {
-    m_sharedContext->inputHandler->RemoveBinding(StateType::INTRO,
+    m_sharedContext->inputHandler->remove_binding(StateType::INTRO,
                                                  "IntroContinue");
-    m_sharedContext->inputHandler->RemoveCallback(StateType::INTRO,
+    m_sharedContext->inputHandler->remove_callback(StateType::INTRO,
                                                   "IntroContinue");
   }
 
@@ -145,7 +145,7 @@ public:
   }
 
 private:
-  void mouseClick(const gk::EventDetails& details)
+  void mouseClick(const gk::event_details& details)
   {
     const auto [mouseX, mouseY] = details.mouse_pos.Get();
     const auto [btnSizeX, btnSizeY] = m_buttonSize.Get();
@@ -202,33 +202,33 @@ public:
     m_shape.m_size = {20, 0};
 
     {
-      m_sharedContext->inputHandler->AddCallback(
+      m_sharedContext->inputHandler->add_callback(
           StateType::GAME, "MouseMotion",
-          [this](const gk::EventDetails& details) { mouseMotion(details); });
+          [this](const gk::event_details& details) { mouseMotion(details); });
 
-      auto binding = gk::EventBinding{"MouseMotion"};
+      auto binding = gk::event_binding{"MouseMotion"};
       binding.events.push_back({gk::EventType::MouseMotion,
                                 SDL_SCANCODE_UNKNOWN, gk::MouseButton::Motion});
-      m_sharedContext->inputHandler->AddBinding(StateType::GAME, binding);
+      m_sharedContext->inputHandler->add_binding(StateType::GAME, binding);
     }
     {
-      m_sharedContext->inputHandler->AddCallback(
+      m_sharedContext->inputHandler->add_callback(
           StateType::GAME, "Pause",
-          [this](const gk::EventDetails& details) { paused(details); });
+          [this](const gk::event_details& details) { paused(details); });
 
-      auto binding = gk::EventBinding{"Pause"};
+      auto binding = gk::event_binding{"Pause"};
       binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_P});
-      m_sharedContext->inputHandler->AddBinding(StateType::GAME, binding);
+      m_sharedContext->inputHandler->add_binding(StateType::GAME, binding);
     }
     {
-      m_sharedContext->inputHandler->AddCallback(
+      m_sharedContext->inputHandler->add_callback(
           StateType::GAME, "Quit",
-          [this](const gk::EventDetails& details)
+          [this](const gk::event_details& details)
           { m_sharedContext->app->stop(); });
 
-      auto binding = gk::EventBinding{"Quit"};
+      auto binding = gk::event_binding{"Quit"};
       binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_Q});
-      m_sharedContext->inputHandler->AddBinding(StateType::GAME, binding);
+      m_sharedContext->inputHandler->add_binding(StateType::GAME, binding);
     }
 
     if (m_font = TTF_OpenFont("Roboto-Regular.ttf", 10); m_font == nullptr)
@@ -241,14 +241,14 @@ public:
   }
   void on_destroy() override
   {
-    m_sharedContext->inputHandler->RemoveBinding(StateType::GAME,
+    m_sharedContext->inputHandler->remove_binding(StateType::GAME,
                                                  "MouseMotion");
-    m_sharedContext->inputHandler->RemoveCallback(StateType::GAME,
+    m_sharedContext->inputHandler->remove_callback(StateType::GAME,
                                                   "MouseMotion");
-    m_sharedContext->inputHandler->RemoveBinding(StateType::GAME, "Pause");
-    m_sharedContext->inputHandler->RemoveCallback(StateType::GAME, "Pause");
-    m_sharedContext->inputHandler->RemoveBinding(StateType::GAME, "Quit");
-    m_sharedContext->inputHandler->RemoveCallback(StateType::GAME, "Quit");
+    m_sharedContext->inputHandler->remove_binding(StateType::GAME, "Pause");
+    m_sharedContext->inputHandler->remove_callback(StateType::GAME, "Pause");
+    m_sharedContext->inputHandler->remove_binding(StateType::GAME, "Quit");
+    m_sharedContext->inputHandler->remove_callback(StateType::GAME, "Quit");
     TTF_CloseFont(m_font);
   }
 
@@ -282,12 +282,12 @@ public:
   }
 
 private:
-  void paused(const gk::EventDetails&)
+  void paused(const gk::event_details&)
   {
     m_sharedContext->state_machine->switchTo(StateType::PAUSED);
     m_sharedContext->inputHandler->setCurrentState(StateType::PAUSED);
   }
-  void mouseMotion(const gk::EventDetails& details)
+  void mouseMotion(const gk::event_details& details)
   {
     m_mousePos = details.mouse_pos;
   }
@@ -322,19 +322,19 @@ public:
     m_shape.m_pos = {0, 0};
 
     {
-      m_sharedContext->inputHandler->AddCallback(
+      m_sharedContext->inputHandler->add_callback(
           StateType::PAUSED, "Unpause",
-          [this](const gk::EventDetails& details) { unpause(details); });
+          [this](const gk::event_details& details) { unpause(details); });
 
-      auto binding = gk::EventBinding{"Unpause"};
+      auto binding = gk::event_binding{"Unpause"};
       binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_P});
-      m_sharedContext->inputHandler->AddBinding(StateType::PAUSED, binding);
+      m_sharedContext->inputHandler->add_binding(StateType::PAUSED, binding);
     }
   }
   void on_destroy() override
   {
-    m_sharedContext->inputHandler->RemoveBinding(StateType::PAUSED, "Unpause");
-    m_sharedContext->inputHandler->RemoveCallback(StateType::PAUSED, "Unpause");
+    m_sharedContext->inputHandler->remove_binding(StateType::PAUSED, "Unpause");
+    m_sharedContext->inputHandler->remove_callback(StateType::PAUSED, "Unpause");
   }
 
   void activate() override
@@ -354,7 +354,7 @@ public:
   }
 
 private:
-  void unpause(const gk::EventDetails&)
+  void unpause(const gk::event_details&)
   {
     m_sharedContext->state_machine->switchTo(StateType::GAME);
     m_sharedContext->inputHandler->setCurrentState(StateType::GAME);

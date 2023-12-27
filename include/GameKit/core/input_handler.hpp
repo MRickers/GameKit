@@ -29,40 +29,40 @@ namespace gk
     Right = 3,
     Motion = 4,
   };
-  struct Event
+  struct event
   {
     EventType type{Idle};
     SDL_Scancode scancode{SDL_SCANCODE_UNKNOWN};
-    MouseButton mouseButton{Left};
+    MouseButton mouse_button{Left};
   };
 
-  using Events = std::vector<Event>;
+  using event_array = std::vector<event>;
 
-  struct EventDetails
+  struct event_details
   {
     std::string id{""};
     vector2d mouse_pos{0, 0};
 
-    void Reset()
+    void reset()
     {
       mouse_pos = {};
     }
   };
 
-  struct EventBinding
+  struct event_binding
   {
     std::string id{""};
-    Events events{};
+    event_array events{};
     size_t event_counter{0};
-    EventDetails event_details{};
+    event_details details{};
     bool already_invoked{false};
   };
-  using EventCallback = std::function<void(const EventDetails&)>;
-  class InputHandler
-  {
+  using event_callback = std::function<void(const event_details&)>;
 
-    using Callbacks = std::unordered_map<std::string, EventCallback>;
-    using Bindings = std::unordered_map<std::string, EventBinding>;
+  class input_handler
+  {
+    using callbacks = std::unordered_map<std::string, event_callback>;
+    using bindings = std::unordered_map<std::string, event_binding>;
     // Index 0 = left mouse button pressed
     // Index 1 = middle mouse button pressed
     // Index 2 = right mouse button pressed
@@ -70,24 +70,24 @@ namespace gk
     using MouseButtonState = std::array<bool, MouseButton::Motion>;
 
   public:
-    InputHandler();
-    ~InputHandler();
+    input_handler();
+    ~input_handler();
 
-    bool AddCallback(const std::string& id, EventCallback);
-    bool RemoveCallback(const std::string& id);
+    bool add_callback(const std::string& id, event_callback);
+    bool remove_callback(const std::string& id);
 
-    bool AddBinding(const EventBinding&);
-    bool RemoveBinding(const std::string& id);
+    bool add_binding(const event_binding&);
+    bool remove_binding(const std::string& id);
 
-    void HandleEvent(const SDL_Event&);
-    void Update();
+    void handle_event(const SDL_Event&);
+    void update();
 
   private:
-    Callbacks m_callbacks{};
-    Bindings m_bindings{};
+    callbacks m_callbacks{};
+    bindings m_bindings{};
 
-    class Details;
-    std::unique_ptr<Details> m_details{nullptr};
+    class details;
+    std::unique_ptr<details> m_details{nullptr};
 
     const Uint8* m_keystates{nullptr};
     MouseButtonState m_mouseEvents{};

@@ -1,26 +1,26 @@
-#include "GameKit/core/InputHandler.hpp"
+#include "GameKit/core/input_handler.hpp"
 #include "GameKit/helpers/GameException.hpp"
 
 #include <iostream>
 #include <stdexcept>
 static constexpr auto s_index_offset = 1;
-class gk::InputHandler::Details
+class gk::input_handler::details
 {
 public:
   std::unordered_map<std::string, bool> m_invoked{};
 };
 
-gk::InputHandler::InputHandler()
-    : m_details{std::make_unique<InputHandler::Details>()}
+gk::input_handler::input_handler()
+    : m_details{std::make_unique<input_handler::details>()}
 {
 }
 
-gk::InputHandler::~InputHandler()
+gk::input_handler::~input_handler()
 {
 }
 
-bool gk::InputHandler::AddCallback(const std::string& id,
-                                   EventCallback callback)
+bool gk::input_handler::add_callback(const std::string& id,
+                                     event_callback callback)
 {
   std::exception_ptr eptr = nullptr;
   try
@@ -35,7 +35,7 @@ bool gk::InputHandler::AddCallback(const std::string& id,
   return false;
 }
 
-bool gk::InputHandler::RemoveCallback(const std::string& id)
+bool gk::input_handler::remove_callback(const std::string& id)
 {
   std::exception_ptr eptr = nullptr;
   try
@@ -50,7 +50,7 @@ bool gk::InputHandler::RemoveCallback(const std::string& id)
   return false;
 }
 
-bool gk::InputHandler::AddBinding(const EventBinding& binding)
+bool gk::input_handler::add_binding(const event_binding& binding)
 {
   std::exception_ptr eptr = nullptr;
   try
@@ -75,7 +75,7 @@ bool gk::InputHandler::AddBinding(const EventBinding& binding)
   return false;
 }
 
-bool gk::InputHandler::RemoveBinding(const std::string& id)
+bool gk::input_handler::remove_binding(const std::string& id)
 {
   std::exception_ptr eptr = nullptr;
   try
@@ -96,7 +96,7 @@ bool gk::InputHandler::RemoveBinding(const std::string& id)
 
 /// @brief If no event happens, this method will not be invoked.
 /// @param evnt
-void gk::InputHandler::HandleEvent(const SDL_Event& evnt)
+void gk::input_handler::handle_event(const SDL_Event& evnt)
 {
   switch (evnt.type)
   {
@@ -125,7 +125,7 @@ void gk::InputHandler::HandleEvent(const SDL_Event& evnt)
   }
 }
 
-void gk::InputHandler::Update()
+void gk::input_handler::update()
 {
   for (auto& [id, binding] : m_bindings)
   {
@@ -144,7 +144,7 @@ void gk::InputHandler::Update()
       }
       else if (isMouseButtonEvent(event.type))
       {
-        if (isMouseButtonDown(event.mouseButton))
+        if (isMouseButtonDown(event.mouse_button))
         {
           ++binding.event_counter;
         }
@@ -170,12 +170,12 @@ void gk::InputHandler::Update()
       {
         if (!wasInvoked(binding.id))
         {
-          binding.event_details.mouse_pos = {static_cast<float>(m_mouseX),
-                                             static_cast<float>(m_mouseY)};
-          callback->second(binding.event_details);
+          binding.details.mouse_pos = {static_cast<float>(m_mouseX),
+                                       static_cast<float>(m_mouseY)};
+          callback->second(binding.details);
           setInvoked(binding.id);
         }
-        binding.event_details.Reset();
+        binding.details.reset();
       }
     }
     binding.event_counter = 0;
@@ -183,22 +183,22 @@ void gk::InputHandler::Update()
   m_mouseEvents[MouseButton::Motion - s_index_offset] = false;
 }
 
-bool gk::InputHandler::isKeyEvent(const uint32_t event_type)
+bool gk::input_handler::isKeyEvent(const uint32_t event_type)
 {
   return event_type == SDL_KEYDOWN || event_type == SDL_KEYUP;
 }
 
-bool gk::InputHandler::isMouseButtonEvent(const uint32_t event_type)
+bool gk::input_handler::isMouseButtonEvent(const uint32_t event_type)
 {
   return event_type == SDL_MOUSEBUTTONDOWN || event_type == SDL_MOUSEBUTTONUP;
 }
 
-bool gk::InputHandler::isMouseMotionEvent(const uint32_t event_type)
+bool gk::input_handler::isMouseMotionEvent(const uint32_t event_type)
 {
   return event_type == SDL_MOUSEMOTION;
 }
 
-void gk::InputHandler::updateMouseStates(const uint32_t event_type)
+void gk::input_handler::updateMouseStates(const uint32_t event_type)
 {
   const auto mouseButtons = SDL_GetMouseState(&m_mouseX, &m_mouseY);
 
@@ -232,12 +232,12 @@ void gk::InputHandler::updateMouseStates(const uint32_t event_type)
   }
 }
 
-void gk::InputHandler::updateKeyStates()
+void gk::input_handler::updateKeyStates()
 {
   m_keystates = SDL_GetKeyboardState(NULL);
 }
 
-bool gk::InputHandler::isKeyDown(SDL_Scancode key) const
+bool gk::input_handler::isKeyDown(SDL_Scancode key) const
 {
   if (m_keystates != nullptr)
   {
@@ -246,22 +246,22 @@ bool gk::InputHandler::isKeyDown(SDL_Scancode key) const
   return false;
 }
 
-bool gk::InputHandler::isKeyUp(SDL_Scancode key) const
+bool gk::input_handler::isKeyUp(SDL_Scancode key) const
 {
   return !isKeyDown(key);
 }
 
-bool gk::InputHandler::isMouseButtonDown(const MouseButton button) const
+bool gk::input_handler::isMouseButtonDown(const MouseButton button) const
 {
   return m_mouseEvents[button - s_index_offset];
 }
 
-bool gk::InputHandler::isMotion() const
+bool gk::input_handler::isMotion() const
 {
   return m_mouseEvents[MouseButton::Motion - s_index_offset];
 }
 
-bool gk::InputHandler::setInvoked(const std::string id)
+bool gk::input_handler::setInvoked(const std::string id)
 {
   if (const auto invoked = m_details->m_invoked.find(id);
       invoked != m_details->m_invoked.end())
@@ -272,7 +272,7 @@ bool gk::InputHandler::setInvoked(const std::string id)
   return false;
 }
 
-bool gk::InputHandler::resetInvoked(const std::string id)
+bool gk::input_handler::resetInvoked(const std::string id)
 {
   if (const auto invoked = m_details->m_invoked.find(id);
       invoked != m_details->m_invoked.end())
@@ -283,7 +283,7 @@ bool gk::InputHandler::resetInvoked(const std::string id)
   return false;
 }
 
-bool gk::InputHandler::wasInvoked(const std::string& id) const
+bool gk::input_handler::wasInvoked(const std::string& id) const
 {
   if (const auto invoked = m_details->m_invoked.find(id);
       invoked != m_details->m_invoked.end())

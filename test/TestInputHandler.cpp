@@ -1,38 +1,40 @@
-#include "GameKit/core/InputHandler.hpp"
+#include "GameKit/core/input_handler.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("Add/Remove Callback", "[inputhandler]")
 {
-  gk::InputHandler input_handler;
-  SECTION("AddCallback")
+  gk::input_handler input_handler;
+  SECTION("add_callback")
   {
-    REQUIRE(input_handler.AddCallback("test", [](const gk::EventDetails&) {}));
+    REQUIRE(
+        input_handler.add_callback("test", [](const gk::event_details&) {}));
   }
-  SECTION("RemoveCallback")
+  SECTION("remove_callback")
   {
-    REQUIRE(input_handler.AddCallback("test", [](const gk::EventDetails&) {}));
-    REQUIRE(input_handler.RemoveCallback("test"));
+    REQUIRE(
+        input_handler.add_callback("test", [](const gk::event_details&) {}));
+    REQUIRE(input_handler.remove_callback("test"));
   }
   SECTION("RemoveInvalidCallback")
   {
-    REQUIRE(!input_handler.RemoveCallback("test"));
+    REQUIRE(!input_handler.remove_callback("test"));
   }
 }
 
 TEST_CASE("Add/Remove Binding", "[inputhandler]")
 {
-  gk::InputHandler input_handler;
-  SECTION("AddBinding")
+  gk::input_handler input_handler;
+  SECTION("add_binding")
   {
-    REQUIRE(input_handler.AddBinding({"test"}));
+    REQUIRE(input_handler.add_binding({"test"}));
   }
-  SECTION("RemoveBinding")
+  SECTION("remove_binding")
   {
-    REQUIRE(input_handler.AddBinding({"test"}));
-    REQUIRE(input_handler.RemoveBinding("test"));
+    REQUIRE(input_handler.add_binding({"test"}));
+    REQUIRE(input_handler.remove_binding("test"));
   }
   SECTION("RemoveInvalidBinding")
   {
-    REQUIRE(!input_handler.RemoveBinding("test"));
+    REQUIRE(!input_handler.remove_binding("test"));
   }
 }
