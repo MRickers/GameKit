@@ -22,11 +22,11 @@ namespace gk
   public:
     void update();
     void draw(SDL_Renderer*);
-    void processRequests();
-    bool hasState(const StateType state);
-    void switchTo(const StateType state);
+    void process_requests();
+    bool has_state(const StateType state);
+    void switch_to(const StateType state);
     void remove(const StateType state);
-    void registerState(const StateType state, state_creator creator);
+    void register_state(const StateType state, state_creator creator);
     StateType current_state() const;
 
   private:
@@ -35,8 +35,8 @@ namespace gk
     type_container m_toRemove;
     state_factory m_factory;
 
-    void createState(const StateType state);
-    void removeState(const StateType state);
+    void create_state(const StateType state);
+    void remove_state(const StateType state);
   };
 
 } // namespace gk

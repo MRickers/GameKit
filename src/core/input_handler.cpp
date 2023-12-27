@@ -1,5 +1,5 @@
 #include "GameKit/core/input_handler.hpp"
-#include "GameKit/helpers/GameException.hpp"
+#include "GameKit/helpers/game_exception.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -31,7 +31,7 @@ bool gk::input_handler::add_callback(const std::string& id,
   {
     eptr = std::current_exception();
   }
-  HandleException(eptr);
+  handle_exception(eptr);
   return false;
 }
 
@@ -46,7 +46,7 @@ bool gk::input_handler::remove_callback(const std::string& id)
   {
     eptr = std::current_exception();
   }
-  HandleException(eptr);
+  handle_exception(eptr);
   return false;
 }
 
@@ -71,7 +71,7 @@ bool gk::input_handler::add_binding(const event_binding& binding)
   {
     eptr = std::current_exception();
   }
-  HandleException(eptr);
+  handle_exception(eptr);
   return false;
 }
 
@@ -90,7 +90,7 @@ bool gk::input_handler::remove_binding(const std::string& id)
   {
     eptr = std::current_exception();
   }
-  HandleException(eptr);
+  handle_exception(eptr);
   return false;
 }
 

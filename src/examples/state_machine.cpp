@@ -1,7 +1,7 @@
 #include "GameKit/App.hpp"
 #include "GameKit/core/ui/text_box.hpp"
-#include "GameKit/helpers/Draw.hpp"
-#include "GameKit/helpers/Timer.hpp"
+#include "GameKit/helpers/drawer.hpp"
+#include "GameKit/helpers/timer.hpp"
 #include <spdlog/spdlog.h>
 
 enum class StateType
@@ -43,7 +43,7 @@ public:
 
   void activate() override
   {
-    m_timer.Start();
+    m_timer.start();
   }
   void deactivate() override
   {
@@ -58,8 +58,8 @@ public:
   }
   void draw(SDL_Renderer* renderer) override
   {
-    gk::Draw::setRendererColor(renderer, gk::Color::MAROON);
-    gk::Draw::filledRect(renderer, m_pos, m_size);
+    gk::drawer::set_render_color(renderer, gk::Color::MAROON);
+    gk::drawer::draw_filled_rect(renderer, m_pos, m_size);
   }
 
 private:
@@ -69,7 +69,7 @@ private:
     {
       if (m_sharedContext)
       {
-        m_sharedContext->state_machine->switchTo(StateType::MAIN);
+        m_sharedContext->state_machine->switch_to(StateType::MAIN);
         m_sharedContext->state_machine->remove(StateType::INTRO);
         m_sharedContext->inputHandler->set_current_state(StateType::MAIN);
       }
@@ -137,10 +137,11 @@ public:
   }
   void draw(SDL_Renderer* renderer) override
   {
-    gk::Draw::setRendererColor(renderer, gk::Color::LIME);
+    gk::drawer::set_render_color(renderer, gk::Color::LIME);
     for (int i = 0; i < 3; ++i)
     {
-      gk::Draw::filledRect(renderer, m_shapes[i].m_pos, m_shapes[i].m_size);
+      gk::drawer::draw_filled_rect(renderer, m_shapes[i].m_pos,
+                                   m_shapes[i].m_size);
     }
   }
 
@@ -159,7 +160,7 @@ private:
       {
         if (i == 0)
         {
-          m_sharedContext->state_machine->switchTo(StateType::GAME);
+          m_sharedContext->state_machine->switch_to(StateType::GAME);
           m_sharedContext->inputHandler->set_current_state(StateType::GAME);
         }
         else if (i == 1)
@@ -274,17 +275,17 @@ public:
   }
   void draw(SDL_Renderer* renderer) override
   {
-    gk::Draw::setRendererColor(renderer, gk::Color::OLIVE);
-    gk::Draw::filledCircle(renderer, m_shape.m_pos.GetX<int>(),
-                           m_shape.m_pos.GetY<int>(),
-                           m_shape.m_size.GetX<int>());
+    gk::drawer::set_render_color(renderer, gk::Color::OLIVE);
+    gk::drawer::draw_filled_circle(renderer, m_shape.m_pos.GetX<int>(),
+                                   m_shape.m_pos.GetY<int>(),
+                                   m_shape.m_size.GetX<int>());
     m_textBox.draw(renderer);
   }
 
 private:
   void paused(const gk::event_details&)
   {
-    m_sharedContext->state_machine->switchTo(StateType::PAUSED);
+    m_sharedContext->state_machine->switch_to(StateType::PAUSED);
     m_sharedContext->inputHandler->set_current_state(StateType::PAUSED);
   }
   void mouseMotion(const gk::event_details& details)
@@ -351,13 +352,13 @@ public:
   void draw(SDL_Renderer* renderer) override
   {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 50);
-    gk::Draw::filledRect(renderer, m_shape.m_pos, m_shape.m_size);
+    gk::drawer::draw_filled_rect(renderer, m_shape.m_pos, m_shape.m_size);
   }
 
 private:
   void unpause(const gk::event_details&)
   {
-    m_sharedContext->state_machine->switchTo(StateType::GAME);
+    m_sharedContext->state_machine->switch_to(StateType::GAME);
     m_sharedContext->inputHandler->set_current_state(StateType::GAME);
   }
 
@@ -378,29 +379,29 @@ int main()
   gk::SharedContextPtr sharedContext =
       std::make_shared<gk::SharedContext>(inputHandler, state_machine, app);
 
-  state_machine->registerState(
+  state_machine->register_state(
       StateType::INTRO,
       [sharedContext, &windowSize]() -> gk::base_state_ptr
       { return std::make_unique<IntroState>(sharedContext, windowSize); });
 
-  state_machine->registerState(
+  state_machine->register_state(
       StateType::MAIN,
       [sharedContext]() -> gk::base_state_ptr
       { return std::make_unique<MainState>(sharedContext); });
 
-  state_machine->registerState(
+  state_machine->register_state(
       StateType::GAME,
       [sharedContext]() -> gk::base_state_ptr
       { return std::make_unique<GameState>(sharedContext); });
 
-  state_machine->registerState(
+  state_machine->register_state(
       StateType::PAUSED,
       [sharedContext]() -> gk::base_state_ptr
       { return std::make_unique<PauseState>(sharedContext); });
 
   app->setInputHandler(inputHandler);
   app->setstate_machine(state_machine);
-  state_machine->switchTo(StateType::INTRO);
+  state_machine->switch_to(StateType::INTRO);
 
   try
   {

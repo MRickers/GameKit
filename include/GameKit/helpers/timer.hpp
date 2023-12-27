@@ -15,13 +15,13 @@ namespace gk
     {
       return m_clock.round();
     }
-    void Reset()
+    void reset()
     {
       m_clock.start();
       m_started = true;
     }
 
-    void Start()
+    void start()
     {
       if (!m_started)
       {
@@ -30,7 +30,7 @@ namespace gk
       }
     }
 
-    void Stop()
+    void stop()
     {
       if (m_started)
       {
@@ -44,7 +44,7 @@ namespace gk
       return m_clock.time_passed();
     }
 
-    bool IsStarted() const
+    bool is_started() const
     {
       return m_started;
     }

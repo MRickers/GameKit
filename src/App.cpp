@@ -1,8 +1,8 @@
 #include "GameKit/App.hpp"
 #include "GameKit/core/input_handler.hpp"
 #include "GameKit/core/ui/text_box.hpp"
-#include "GameKit/helpers/Draw.hpp"
-#include "GameKit/helpers/Timer.hpp"
+#include "GameKit/helpers/drawer.hpp"
+#include "GameKit/helpers/timer.hpp"
 #include "GameKit/vector/vector2d.hpp"
 
 #include <SDL2/SDL.h>
@@ -162,7 +162,7 @@ namespace gk
     auto lastRenderTime = std::chrono::system_clock::now();
 
     auto fps_timer = gk::Timer{};
-    fps_timer.Start();
+    fps_timer.start();
     auto framecount = 0;
 
     while (m_running)
@@ -194,7 +194,7 @@ namespace gk
       {
         fpsText.add("fps: " + std::to_string(framecount));
         framecount = 0;
-        fps_timer.Reset();
+        fps_timer.reset();
       }
       draw();
 
@@ -202,7 +202,7 @@ namespace gk
 
       if (m_state_machine)
       {
-        m_state_machine->processRequests();
+        m_state_machine->process_requests();
       }
 
       while (std::chrono::duration_cast<std::chrono::milliseconds>(

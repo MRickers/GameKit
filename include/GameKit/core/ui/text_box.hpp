@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "GameKit/helpers/Draw.hpp"
+#include "GameKit/helpers/drawer.hpp"
 #include "GameKit/vector/vector2d.hpp"
 
 #include <SDL2/SDL.h>
@@ -123,7 +123,7 @@ namespace gk
     {
       formattedText += line + "\n";
     }
-    const auto colorTmp = gk::Draw::getColorRGBA(m_textColor);
+    const auto colorTmp = gk::drawer::get_color_rgba(m_textColor);
     SDL_Color textColor;
     textColor.r = colorTmp.r;
     textColor.g = colorTmp.g;

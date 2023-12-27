@@ -1,5 +1,5 @@
 add_library(gkcore STATIC 
-helpers/Draw.cpp
+helpers/drawer.cpp
 helpers/clock_chrono.cpp
 helpers/clock_sdl.cpp
 core/input_handler.cpp

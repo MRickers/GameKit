@@ -50,14 +50,15 @@ namespace gk
     VIOLET
   };
 
-  class Draw
+  class drawer
   {
   public:
-    static void setRendererColor(SDL_Renderer* renderer, Color);
-    static ColorRGBA getColorRGBA(Color color);
-    static void filledCircle(SDL_Renderer* renderer, int centerX, int centerY,
-                             size_t radius);
-    static void filledRect(SDL_Renderer* renderer, const gk::vector2d& pos,
-                           const gk::vector2d& size);
+    static void set_render_color(SDL_Renderer* renderer, Color);
+    static ColorRGBA get_color_rgba(Color color);
+    static void draw_filled_circle(SDL_Renderer* renderer, int centerX,
+                                   int centerY, size_t radius);
+    static void draw_filled_rect(SDL_Renderer* renderer,
+                                 const gk::vector2d& pos,
+                                 const gk::vector2d& size);
   };
 } // namespace gk
