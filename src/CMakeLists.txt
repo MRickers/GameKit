@@ -1,9 +1,9 @@
 add_library(gkcore STATIC 
 helpers/Draw.cpp
-helpers/ClockChrono.cpp
-helpers/ClockSDL.cpp
+helpers/clock_chrono.cpp
+helpers/clock_sdl.cpp
 core/input_handler.cpp
-core/StateInputHandler.cpp
+core/state_input_handler.cpp
 core/state_machine.cpp
 core/ui/text_box.cpp
 vector/vector2d.cpp

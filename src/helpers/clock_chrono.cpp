@@ -1,35 +1,35 @@
-#include "GameKit/helpers/ClockChrono.hpp"
+#include "GameKit/helpers/clock_chrono.hpp"
 
 namespace gk
 {
 
-  time_ms gk::ChronoClock::TimePassed()
+  time_ms gk::chrono_clock::time_passed()
   {
     return std::chrono::duration_cast<std::chrono::milliseconds>(m_stop_time -
                                                                  m_start_time)
         .count();
   }
 
-  void ChronoClock::Start()
+  void chrono_clock::start()
   {
     m_start_time = std::chrono::system_clock::now();
   }
 
-  void ChronoClock::Stop()
+  void chrono_clock::stop()
   {
     m_stop_time = std::chrono::system_clock::now();
   }
 
-  time_ms ChronoClock::Round()
+  time_ms chrono_clock::round()
   {
     return std::chrono::duration_cast<std::chrono::milliseconds>(
                std::chrono::system_clock::now() - m_start_time)
         .count();
   }
 
-  bool ChronoClock::HasPassed(const time_ms delta)
+  bool chrono_clock::has_passed(const time_ms delta)
   {
-    return Round() >= delta ? true : false;
+    return round() >= delta ? true : false;
   }
 
 } // namespace gk

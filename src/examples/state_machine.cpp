@@ -51,7 +51,7 @@ public:
 
   void update() override
   {
-    if (!m_timer.HasPassed(2000))
+    if (!m_timer.has_passed(2000))
     {
       m_pos += gk::vector2d{0, 1};
     }
@@ -65,7 +65,7 @@ public:
 private:
   void changeState(const gk::event_details&)
   {
-    if (m_timer.HasPassed(2000))
+    if (m_timer.has_passed(2000))
     {
       if (m_sharedContext)
       {

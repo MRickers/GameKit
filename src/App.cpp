@@ -190,7 +190,7 @@ namespace gk
 
       clearRenderer();
 
-      if (fps_timer.HasPassed(1000))
+      if (fps_timer.has_passed(1000))
       {
         fpsText.add("fps: " + std::to_string(framecount));
         framecount = 0;

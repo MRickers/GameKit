@@ -6,10 +6,10 @@ namespace gk
 {
   using time_ms = uint32_t;
 
-  struct Shape
+  struct shape
   {
-    gk::vector2d m_pos{0, 0};
-    gk::vector2d m_size{0, 0};
+    gk::vector2d pos{0, 0};
+    gk::vector2d size{0, 0};
   };
 
 } // namespace gk

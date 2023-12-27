@@ -18,7 +18,7 @@ add_test(NAME TestGameExceptionTest COMMAND TestGameException)
 
 add_executable(TestTimer 
 TestTimer.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/../src/helpers/ClockChrono.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/helpers/clock_chrono.cpp
 )
 target_include_directories(TestTimer PRIVATE ${PROJECT_HEADERS})
 target_link_libraries(TestTimer Catch2::Catch2WithMain)

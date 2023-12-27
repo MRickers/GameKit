@@ -1,23 +1,23 @@
 #pragma once
-#include "ClockChrono.hpp"
-#include "ClockSDL.hpp"
+#include "GameKit/helpers/clock_chrono.hpp"
+#include "GameKit/helpers/clock_sdl.hpp"
 
 namespace gk
 {
-  template <typename Clock> class ITimer
+  template <typename clock> class timer_interface
   {
   private:
     bool m_started{false};
-    Clock m_clock{};
+    clock m_clock{};
 
   public:
-    time_ms Round()
+    time_ms round()
     {
-      return m_clock.Round();
+      return m_clock.round();
     }
     void Reset()
     {
-      m_clock.Start();
+      m_clock.start();
       m_started = true;
     }
 
@@ -25,7 +25,7 @@ namespace gk
     {
       if (!m_started)
       {
-        m_clock.Start();
+        m_clock.start();
         m_started = true;
       }
     }
@@ -35,13 +35,13 @@ namespace gk
       if (m_started)
       {
         m_started = false;
-        m_clock.Stop();
+        m_clock.stop();
       }
     }
 
-    time_ms TimePassed()
+    time_ms time_passed()
     {
-      return m_clock.TimePassed();
+      return m_clock.time_passed();
     }
 
     bool IsStarted() const
@@ -49,13 +49,13 @@ namespace gk
       return m_started;
     }
 
-    bool HasPassed(time_ms delta)
+    bool has_passed(time_ms delta)
     {
-      return m_clock.HasPassed(delta);
+      return m_clock.has_passed(delta);
     }
   };
 
-  using Timer = ITimer<ChronoClock>;
-  using TimerSdl = ITimer<SDLClock>;
+  using Timer = timer_interface<chrono_clock>;
+  using TimerSdl = timer_interface<sdl_clock>;
 
 } // namespace gk
