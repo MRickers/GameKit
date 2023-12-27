@@ -12,7 +12,7 @@ enum class StateType
   PAUSED,
 };
 
-class IntroState : public gk::IBaseState
+class IntroState : public gk::base_state
 {
 public:
   IntroState(gk::SharedContextPtr sharedContext, const gk::vector2d& windowSize)
@@ -69,8 +69,8 @@ private:
     {
       if (m_sharedContext)
       {
-        m_sharedContext->stateMachine->switchTo(StateType::MAIN);
-        m_sharedContext->stateMachine->remove(StateType::INTRO);
+        m_sharedContext->state_machine->switchTo(StateType::MAIN);
+        m_sharedContext->state_machine->remove(StateType::INTRO);
         m_sharedContext->inputHandler->setCurrentState(StateType::MAIN);
       }
     }
@@ -83,7 +83,7 @@ private:
   gk::vector2d m_size{200, 100};
 };
 
-class MainState : public gk::IBaseState
+class MainState : public gk::base_state
 {
   struct Shape
   {
@@ -159,7 +159,7 @@ private:
       {
         if (i == 0)
         {
-          m_sharedContext->stateMachine->switchTo(StateType::GAME);
+          m_sharedContext->state_machine->switchTo(StateType::GAME);
           m_sharedContext->inputHandler->setCurrentState(StateType::GAME);
         }
         else if (i == 1)
@@ -182,7 +182,7 @@ private:
   Shape m_shapes[3];
 };
 
-class GameState : public gk::IBaseState
+class GameState : public gk::base_state
 {
   struct Shape
   {
@@ -284,7 +284,7 @@ public:
 private:
   void paused(const gk::EventDetails&)
   {
-    m_sharedContext->stateMachine->switchTo(StateType::PAUSED);
+    m_sharedContext->state_machine->switchTo(StateType::PAUSED);
     m_sharedContext->inputHandler->setCurrentState(StateType::PAUSED);
   }
   void mouseMotion(const gk::EventDetails& details)
@@ -300,7 +300,7 @@ private:
   TTF_Font* m_font{nullptr};
 };
 
-class PauseState : public gk::IBaseState
+class PauseState : public gk::base_state
 {
   struct Shape
   {
@@ -356,7 +356,7 @@ public:
 private:
   void unpause(const gk::EventDetails&)
   {
-    m_sharedContext->stateMachine->switchTo(StateType::GAME);
+    m_sharedContext->state_machine->switchTo(StateType::GAME);
     m_sharedContext->inputHandler->setCurrentState(StateType::GAME);
   }
 
@@ -369,37 +369,37 @@ int main()
   const gk::vector2d windowSize{640, 480};
 
   auto app = std::make_shared<gk::App>(gk::AppConfiguration{
-      "StateMachine", static_cast<size_t>(windowSize.GetX<int>()),
+      "state_machine", static_cast<size_t>(windowSize.GetX<int>()),
       static_cast<size_t>(windowSize.GetY<int>())});
 
   auto inputHandler = std::make_shared<gk::StateInputHandler>();
-  auto stateMachine = std::make_shared<gk::StateMachine>();
+  auto state_machine = std::make_shared<gk::state_machine>();
   gk::SharedContextPtr sharedContext =
-      std::make_shared<gk::SharedContext>(inputHandler, stateMachine, app);
+      std::make_shared<gk::SharedContext>(inputHandler, state_machine, app);
 
-  stateMachine->registerState(
+  state_machine->registerState(
       StateType::INTRO,
-      [sharedContext, &windowSize]() -> gk::BaseStatePtr
+      [sharedContext, &windowSize]() -> gk::base_state_ptr
       { return std::make_unique<IntroState>(sharedContext, windowSize); });
 
-  stateMachine->registerState(
+  state_machine->registerState(
       StateType::MAIN,
-      [sharedContext]() -> gk::BaseStatePtr
+      [sharedContext]() -> gk::base_state_ptr
       { return std::make_unique<MainState>(sharedContext); });
 
-  stateMachine->registerState(
+  state_machine->registerState(
       StateType::GAME,
-      [sharedContext]() -> gk::BaseStatePtr
+      [sharedContext]() -> gk::base_state_ptr
       { return std::make_unique<GameState>(sharedContext); });
 
-  stateMachine->registerState(
+  state_machine->registerState(
       StateType::PAUSED,
-      [sharedContext]() -> gk::BaseStatePtr
+      [sharedContext]() -> gk::base_state_ptr
       { return std::make_unique<PauseState>(sharedContext); });
 
   app->setInputHandler(inputHandler);
-  app->setStateMachine(stateMachine);
-  stateMachine->switchTo(StateType::INTRO);
+  app->setstate_machine(state_machine);
+  state_machine->switchTo(StateType::INTRO);
 
   try
   {

@@ -56,12 +56,12 @@ namespace gk
     SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
   }
 
-  App::App(InputHandlerPtr input_handler, StateMachinePtr stateMachine,
+  App::App(InputHandlerPtr input_handler, state_machinePtr state_machine,
            const AppConfiguration& config)
       : App(config)
   {
     setInputHandler(input_handler);
-    setStateMachine(stateMachine);
+    setstate_machine(state_machine);
   }
 
   App::~App()
@@ -100,17 +100,17 @@ namespace gk
     {
       m_inputHandler->Update();
     }
-    if (m_stateMachine)
+    if (m_state_machine)
     {
-      m_stateMachine->update();
+      m_state_machine->update();
     }
   }
 
   void App::draw()
   {
-    if (m_stateMachine)
+    if (m_state_machine)
     {
-      m_stateMachine->draw(m_renderer);
+      m_state_machine->draw(m_renderer);
     }
 
     fpsText.draw(m_renderer);
@@ -139,7 +139,7 @@ namespace gk
   {
     constexpr auto fontSize = 20;
 #ifndef NDEBUG
-    constexpr auto fontPath = "../GameKit/src/Roboto-Regular.ttf";
+    constexpr auto fontPath = "Roboto-Regular.ttf";
 #else
     constexpr auto fontPath = "Roboto-Regular.ttf";
 #endif
@@ -200,9 +200,9 @@ namespace gk
 
       lastRenderTime = now;
 
-      if (m_stateMachine)
+      if (m_state_machine)
       {
-        m_stateMachine->processRequests();
+        m_state_machine->processRequests();
       }
 
       while (std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -224,11 +224,11 @@ namespace gk
     }
   }
 
-  void App::setStateMachine(StateMachinePtr stateMachine)
+  void App::setstate_machine(state_machinePtr state_machine)
   {
-    if (stateMachine)
+    if (state_machine)
     {
-      m_stateMachine = stateMachine;
+      m_state_machine = state_machine;
     }
   }
 } // namespace gk

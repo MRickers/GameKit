@@ -52,7 +52,7 @@ add_test(NAME TestInputHandlerTest COMMAND TestInputHandler)
 
 add_executable(TestStateMachine
 TestStateMachine.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/../src/core/StateMachine.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/../src/core/state_machine.cpp
 )
 target_include_directories(TestStateMachine PRIVATE ${PROJECT_HEADERS})
 target_link_libraries(TestStateMachine Catch2::Catch2WithMain spdlog::spdlog_header_only)

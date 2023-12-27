@@ -1,6 +1,6 @@
 #pragma once
 #include "core/StateInputHandler.hpp"
-#include "core/StateMachine.hpp"
+#include "core/state_machine.hpp"
 #include "vector/vector2d.hpp"
 #include <memory>
 #include <string>
@@ -10,7 +10,7 @@ class SDL_Window;
 namespace gk
 {
   using InputHandlerPtr = std::shared_ptr<StateInputHandler>;
-  using StateMachinePtr = std::shared_ptr<StateMachine>;
+  using state_machinePtr = std::shared_ptr<state_machine>;
 
   class AppConfiguration
   {
@@ -36,7 +36,7 @@ namespace gk
   class App
   {
   public:
-    App(InputHandlerPtr input_handler, StateMachinePtr stateMachine,
+    App(InputHandlerPtr input_handler, state_machinePtr state_machine,
         const AppConfiguration& config);
     App(const AppConfiguration& config);
     ~App();
@@ -45,7 +45,7 @@ namespace gk
     void run();
 
     void setInputHandler(InputHandlerPtr input_handler);
-    void setStateMachine(StateMachinePtr stateMachine);
+    void setstate_machine(state_machinePtr state_machine);
 
     gk::vector2d getWindowSize() const;
 
@@ -60,7 +60,7 @@ namespace gk
     SDL_Window* m_window{nullptr};
     SDL_Renderer* m_renderer{nullptr};
     InputHandlerPtr m_inputHandler{nullptr};
-    StateMachinePtr m_stateMachine{nullptr};
+    state_machinePtr m_state_machine{nullptr};
     gk::vector2d m_size;
   };
 
@@ -68,15 +68,15 @@ namespace gk
 
   struct SharedContext
   {
-    SharedContext(InputHandlerPtr ih, StateMachinePtr sm, AppPtr a)
+    SharedContext(InputHandlerPtr ih, state_machinePtr sm, AppPtr a)
         : inputHandler{ih}
-        , stateMachine{sm}
+        , state_machine{sm}
         , app{a}
     {
     }
 
     InputHandlerPtr inputHandler{nullptr};
-    StateMachinePtr stateMachine{nullptr};
+    state_machinePtr state_machine{nullptr};
     AppPtr app{nullptr};
   };
 

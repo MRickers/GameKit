@@ -4,7 +4,7 @@ helpers/ClockChrono.cpp
 helpers/ClockSDL.cpp
 core/InputHandler.cpp
 core/StateInputHandler.cpp
-core/StateMachine.cpp
+core/state_machine.cpp
 core/ui/TextBox.cpp
 vector/vector2d.cpp
 App.cpp
@@ -35,16 +35,16 @@ CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On
 )
 
-add_executable(stateMachineExample
-examples/stateMachine.cpp
+add_executable(state_machine_example
+examples/state_machine.cpp
 )
 
-add_custom_command(TARGET stateMachineExample POST_BUILD
+add_custom_command(TARGET state_machine_example POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy
-                       ${CMAKE_CURRENT_SOURCE_DIR}/assets/Roboto-Regular.ttf $<TARGET_FILE_DIR:stateMachineExample>)
+                       ${CMAKE_CURRENT_SOURCE_DIR}/assets/Roboto-Regular.ttf $<TARGET_FILE_DIR:state_machine_example>)
 
-target_link_libraries(stateMachineExample PRIVATE gkcore spdlog::spdlog_header_only)
-set_target_properties(stateMachineExample PROPERTIES
+target_link_libraries(state_machine_example PRIVATE gkcore spdlog::spdlog_header_only)
+set_target_properties(state_machine_example PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On
 )

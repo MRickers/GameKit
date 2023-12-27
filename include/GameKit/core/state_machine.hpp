@@ -3,21 +3,21 @@
 #include <memory>
 #include <vector>
 
-#include "BaseState.hpp"
+#include "GameKit/core/base_state.hpp"
 
 enum class StateType;
 class SDL_Renderer;
 
 namespace gk
 {
-  using BaseStatePtr = std::unique_ptr<IBaseState>;
-  using StateCreator = std::function<BaseStatePtr()>;
+  using base_state_ptr = std::unique_ptr<base_state>;
+  using state_creator = std::function<base_state_ptr()>;
 
-  class StateMachine
+  class state_machine
   {
-    using StateContainer = std::vector<std::pair<StateType, BaseStatePtr>>;
-    using TypeContainer = std::vector<StateType>;
-    using StateFactory = std::unordered_map<StateType, StateCreator>;
+    using state_container = std::vector<std::pair<StateType, base_state_ptr>>;
+    using type_container = std::vector<StateType>;
+    using state_factory = std::unordered_map<StateType, state_creator>;
 
   public:
     void update();
@@ -26,14 +26,14 @@ namespace gk
     bool hasState(const StateType state);
     void switchTo(const StateType state);
     void remove(const StateType state);
-    void registerState(const StateType state, StateCreator creator);
+    void registerState(const StateType state, state_creator creator);
     StateType currentState() const;
 
   private:
     StateType m_currentState{};
-    StateContainer m_states;
-    TypeContainer m_toRemove;
-    StateFactory m_factory;
+    state_container m_states;
+    type_container m_toRemove;
+    state_factory m_factory;
 
     void createState(const StateType state);
     void removeState(const StateType state);
