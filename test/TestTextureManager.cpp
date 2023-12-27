@@ -1,7 +1,7 @@
-#include "GameKit/core/TextureManager.hpp"
+#include "GameKit/core/texture_manager.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("Interface", "[textureManager]")
+TEST_CASE("Interface", "[texture_manager]")
 {
   SDL_Window* window =
       SDL_CreateWindow("Texturemanager test", SDL_WINDOWPOS_UNDEFINED,
@@ -10,65 +10,65 @@ TEST_CASE("Interface", "[textureManager]")
 
   SECTION("Default construct")
   {
-    gk::TextureManager textureManager{renderer};
-    SDL_Texture* t = textureManager.load("test_texture.png");
+    gk::texture_manager texture_manager{renderer};
+    SDL_Texture* t = texture_manager.load("test_texture.png");
     REQUIRE(t != nullptr);
   }
 
   SECTION("load invalid config constructor")
   {
-    gk::TextureManager textureManager{renderer, "test_texture.png"};
-    SDL_Texture* t = textureManager.getResource("test_texture.png");
+    gk::texture_manager texture_manager{renderer, "test_texture.png"};
+    SDL_Texture* t = texture_manager.get_resource("test_texture.png");
     REQUIRE(t == nullptr);
   }
 
   SECTION("load config constructor")
   {
-    gk::TextureManager textureManager{renderer, "texture.cfg"};
-    REQUIRE(textureManager.requireResource("schiggy"));
-    SDL_Texture* t = textureManager.getResource("schiggy");
+    gk::texture_manager texture_manager{renderer, "texture.cfg"};
+    REQUIRE(texture_manager.require_resource("schiggy"));
+    SDL_Texture* t = texture_manager.get_resource("schiggy");
     REQUIRE(t != nullptr);
   }
 
   SECTION("unload texture")
   {
-    gk::TextureManager textureManager{renderer, "texture.cfg"};
-    REQUIRE(textureManager.requireResource("schiggy"));
-    SDL_Texture* t = textureManager.getResource("schiggy");
+    gk::texture_manager texture_manager{renderer, "texture.cfg"};
+    REQUIRE(texture_manager.require_resource("schiggy"));
+    SDL_Texture* t = texture_manager.get_resource("schiggy");
     REQUIRE(t != nullptr);
-    REQUIRE(textureManager.releaseResource("schiggy"));
-    REQUIRE(textureManager.find("schiggy") == nullptr);
+    REQUIRE(texture_manager.release_resource("schiggy"));
+    REQUIRE(texture_manager.find("schiggy") == nullptr);
   }
 
   SECTION("unload multiple texture")
   {
-    gk::TextureManager textureManager{renderer, "texture.cfg"};
-    REQUIRE(textureManager.requireResource("schiggy"));
-    REQUIRE(textureManager.requireResource("schiggy"));
-    REQUIRE(textureManager.find("schiggy")->second == 2);
-    REQUIRE(textureManager.releaseResource("schiggy"));
-    REQUIRE(textureManager.find("schiggy"));
-    REQUIRE(textureManager.releaseResource("schiggy"));
-    REQUIRE(textureManager.find("schiggy") == nullptr);
+    gk::texture_manager texture_manager{renderer, "texture.cfg"};
+    REQUIRE(texture_manager.require_resource("schiggy"));
+    REQUIRE(texture_manager.require_resource("schiggy"));
+    REQUIRE(texture_manager.find("schiggy")->second == 2);
+    REQUIRE(texture_manager.release_resource("schiggy"));
+    REQUIRE(texture_manager.find("schiggy"));
+    REQUIRE(texture_manager.release_resource("schiggy"));
+    REQUIRE(texture_manager.find("schiggy") == nullptr);
   }
 
   SECTION("purge")
   {
-    gk::TextureManager textureManager{renderer, "texture.cfg"};
-    textureManager.loadConfig("texture.cfg");
-    textureManager.requireResource("schiggy");
-    textureManager.requireResource("a");
-    textureManager.requireResource("b");
-    textureManager.requireResource("c");
-    REQUIRE(textureManager.find("schiggy") != nullptr);
-    REQUIRE(textureManager.find("a") != nullptr);
-    REQUIRE(textureManager.find("b") != nullptr);
-    REQUIRE(textureManager.find("c") != nullptr);
-    textureManager.purgeResources();
-    REQUIRE(textureManager.find("schiggy") == nullptr);
-    REQUIRE(textureManager.find("a") == nullptr);
-    REQUIRE(textureManager.find("b") == nullptr);
-    REQUIRE(textureManager.find("c") == nullptr);
+    gk::texture_manager texture_manager{renderer};
+    texture_manager.load_config("texture.cfg");
+    texture_manager.require_resource("schiggy");
+    texture_manager.require_resource("a");
+    texture_manager.require_resource("b");
+    texture_manager.require_resource("c");
+    REQUIRE(texture_manager.find("schiggy") != nullptr);
+    REQUIRE(texture_manager.find("a") != nullptr);
+    REQUIRE(texture_manager.find("b") != nullptr);
+    REQUIRE(texture_manager.find("c") != nullptr);
+    texture_manager.purge_resource();
+    REQUIRE(texture_manager.find("schiggy") == nullptr);
+    REQUIRE(texture_manager.find("a") == nullptr);
+    REQUIRE(texture_manager.find("b") == nullptr);
+    REQUIRE(texture_manager.find("c") == nullptr);
   }
 
   SDL_DestroyWindow(window);

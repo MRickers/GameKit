@@ -7,35 +7,35 @@
 
 namespace gk
 {
-  template <typename Derived, typename T> class ResourceManager
+  template <typename Derived, typename T> class resource_manager
   {
   public:
-    ResourceManager() = default;
+    resource_manager() = default;
 
-    ResourceManager(const std::string& loadFile)
+    resource_manager(const std::string& loadFile)
         : m_resources{}
         , m_paths{}
     {
-      loadConfig(loadFile);
+      load_config(loadFile);
     }
 
-    virtual ~ResourceManager()
+    virtual ~resource_manager()
     {
     }
 
-    T* getResource(const std::string& id)
+    T* get_resource(const std::string& id)
     {
       auto res = find(id);
       return (res ? res->first : nullptr);
     }
 
-    std::string getPath(const std::string& id)
+    std::string get_path(const std::string& id)
     {
       auto path = m_paths.find(id);
       return (path != m_paths.end() ? path->second : "");
     }
 
-    bool requireResource(const std::string& id)
+    bool require_resource(const std::string& id)
     {
       if (auto res = find(id); res)
       {
@@ -55,7 +55,7 @@ namespace gk
       return false;
     }
 
-    bool releaseResource(const std::string& id)
+    bool release_resource(const std::string& id)
     {
       if (auto res = find(id); res)
       {
@@ -69,7 +69,7 @@ namespace gk
       return false;
     }
 
-    void purgeResources()
+    void purge_resource()
     {
       for (auto const& [id, path] : m_paths)
       {
@@ -81,16 +81,6 @@ namespace gk
           }
         }
       }
-      // for (auto it = m_resources.begin();; it != m_resources.end())
-      // {
-      //   it = m_resources.erase(it);
-      // }
-
-      // while (m_resources.begin() != m_resources.end())
-      // {
-      //   delete m_resources.begin()->second.first;
-      //   m_resources.erase(m_resources.begin());
-      // }
     }
 
     T* load(const std::string& path)
@@ -115,7 +105,7 @@ namespace gk
       return false;
     }
 
-    bool loadConfig(const std::string& pathFile)
+    bool load_config(const std::string& pathFile)
     {
       std::ifstream paths;
       auto loadPath = std::filesystem::current_path() / pathFile;

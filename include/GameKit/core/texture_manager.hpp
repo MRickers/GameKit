@@ -1,21 +1,21 @@
 #pragma once
-#include "GameKit/core/ResourceManager.hpp"
+#include "GameKit/core/resource_manager.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 namespace gk
 {
-  class TextureManager : public ResourceManager<TextureManager, SDL_Texture>
+  class texture_manager : public resource_manager<texture_manager, SDL_Texture>
   {
   public:
-    TextureManager(SDL_Renderer* renderer)
-        : ResourceManager()
+    texture_manager(SDL_Renderer* renderer)
+        : resource_manager()
         , m_renderer{renderer}
     {
     }
 
-    TextureManager(SDL_Renderer* renderer, const std::string& loadFile)
-        : ResourceManager{loadFile}
+    texture_manager(SDL_Renderer* renderer, const std::string& loadFile)
+        : resource_manager{loadFile}
         , m_renderer{renderer}
     {
     }
