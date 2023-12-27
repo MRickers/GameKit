@@ -10,8 +10,8 @@ namespace gk
     virtual ~base_state()
     {
     }
-    virtual void onCreate() = 0;
-    virtual void onDestroy() = 0;
+    virtual void on_create() = 0;
+    virtual void on_destroy() = 0;
 
     virtual void activate() = 0;
     virtual void deactivate() = 0;
@@ -19,22 +19,22 @@ namespace gk
     virtual void update() = 0;
     virtual void draw(SDL_Renderer*) = 0;
 
-    void setTransparent(const bool transparent)
+    void set_transparent(const bool transparent)
     {
       m_transparent = transparent;
     }
 
-    void setTranscendent(const bool transcendent)
+    void set_transcendent(const bool transcendent)
     {
       m_transcendent = transcendent;
     }
 
-    bool isTransparent() const
+    bool is_transparent() const
     {
       return m_transparent;
     }
 
-    bool isTranscendent() const
+    bool is_transcendent() const
     {
       return m_transcendent;
     }

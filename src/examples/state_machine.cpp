@@ -21,7 +21,7 @@ public:
   {
   }
 
-  void onCreate() override
+  void on_create() override
   {
     m_pos = m_windowSize / 2 - m_size / 2;
 
@@ -33,7 +33,7 @@ public:
     binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_SPACE});
     m_sharedContext->inputHandler->AddBinding(StateType::INTRO, binding);
   }
-  void onDestroy() override
+  void on_destroy() override
   {
     m_sharedContext->inputHandler->RemoveBinding(StateType::INTRO,
                                                  "IntroContinue");
@@ -97,7 +97,7 @@ public:
   {
   }
 
-  void onCreate() override
+  void on_create() override
   {
     const auto [x, y] = m_buttonPos.Get();
     for (int i = 0; i < 3; ++i)
@@ -117,7 +117,7 @@ public:
                               gk::MouseButton::Left});
     m_sharedContext->inputHandler->AddBinding(StateType::MAIN, binding);
   }
-  void onDestroy() override
+  void on_destroy() override
   {
     m_sharedContext->inputHandler->RemoveBinding(StateType::INTRO,
                                                  "IntroContinue");
@@ -196,7 +196,7 @@ public:
   {
   }
 
-  void onCreate() override
+  void on_create() override
   {
     m_shape.m_pos = {320, 230};
     m_shape.m_size = {20, 0};
@@ -239,7 +239,7 @@ public:
     m_textBox.add("created main state");
     m_textBox.setPos({4, 4});
   }
-  void onDestroy() override
+  void on_destroy() override
   {
     m_sharedContext->inputHandler->RemoveBinding(StateType::GAME,
                                                  "MouseMotion");
@@ -314,9 +314,9 @@ public:
   {
   }
 
-  void onCreate() override
+  void on_create() override
   {
-    setTransparent(true);
+    set_transparent(true);
 
     m_shape.m_size = {640, 480};
     m_shape.m_pos = {0, 0};
@@ -331,7 +331,7 @@ public:
       m_sharedContext->inputHandler->AddBinding(StateType::PAUSED, binding);
     }
   }
-  void onDestroy() override
+  void on_destroy() override
   {
     m_sharedContext->inputHandler->RemoveBinding(StateType::PAUSED, "Unpause");
     m_sharedContext->inputHandler->RemoveCallback(StateType::PAUSED, "Unpause");

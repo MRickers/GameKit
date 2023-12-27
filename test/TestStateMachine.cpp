@@ -4,13 +4,13 @@
 class StateMock : public gk::base_state
 {
 public:
-  void onCreate() override
+  void on_create() override
   {
-    m_input += "OnCreate";
+    m_input += "on_create";
   }
-  void onDestroy() override
+  void on_destroy() override
   {
-    m_input += "OnDestroy";
+    m_input += "on_destroy";
   }
 
   void activate() override
@@ -77,7 +77,7 @@ TEST_CASE("Add/Switch State", "[statemanager]")
     state_machine.switchTo(StateType::MENU);
     REQUIRE(state_machine.hasState(StateType::MENU));
     REQUIRE(state_machine.currentState() == StateType::MENU);
-    REQUIRE(statePtr->m_input == "OnCreateActivate");
+    REQUIRE(statePtr->m_input == "on_createActivate");
   }
   SECTION("SwitchStates")
   {
@@ -104,8 +104,8 @@ TEST_CASE("Add/Switch State", "[statemanager]")
     REQUIRE(state_machine.hasState(StateType::MENU));
     REQUIRE(state_machine.hasState(StateType::INIT));
     REQUIRE(state_machine.currentState() == StateType::INIT);
-    REQUIRE(menuStatePtr->m_input == "OnCreateActivateDeactivate");
-    REQUIRE(initStatePtr->m_input == "OnCreateActivate");
+    REQUIRE(menuStatePtr->m_input == "on_createActivateDeactivate");
+    REQUIRE(initStatePtr->m_input == "on_createActivate");
   }
 }
 
@@ -126,7 +126,7 @@ TEST_CASE("Remove", "[statemanager]")
                                 });
     state_machine.switchTo(StateType::PAUSE);
     state_machine.remove(StateType::PAUSE);
-    REQUIRE(statePtr->m_input == "OnCreateActivate");
+    REQUIRE(statePtr->m_input == "on_createActivate");
     state_machine.processRequests();
     REQUIRE(!state_machine.hasState(StateType::PAUSE));
   }
@@ -149,7 +149,7 @@ TEST_CASE("Update", "[statemanager]")
                                 });
     state_machine.switchTo(StateType::PAUSE);
     state_machine.update();
-    REQUIRE(statePtr->m_input == "OnCreateActivateUpdate");
+    REQUIRE(statePtr->m_input == "on_createActivateUpdate");
   }
   SECTION("Transcendent")
   {
@@ -162,7 +162,7 @@ TEST_CASE("Update", "[statemanager]")
                                 {
                                   auto state = std::make_unique<StateMock>();
                                   pauseStatePtr = state.get();
-                                  state->setTranscendent(true);
+                                  state->set_transcendent(true);
                                   return std::move(state);
                                 });
     state_machine.registerState(StateType::PLAY,
@@ -183,14 +183,14 @@ TEST_CASE("Update", "[statemanager]")
     state_machine.switchTo(StateType::MENU);
     state_machine.switchTo(StateType::PLAY);
     state_machine.switchTo(StateType::PAUSE);
-    REQUIRE(menuStatePtr->m_input == "OnCreateActivateDeactivate");
-    REQUIRE(playStatePtr->m_input == "OnCreateActivateDeactivate");
-    REQUIRE(pauseStatePtr->m_input == "OnCreateActivate");
+    REQUIRE(menuStatePtr->m_input == "on_createActivateDeactivate");
+    REQUIRE(playStatePtr->m_input == "on_createActivateDeactivate");
+    REQUIRE(pauseStatePtr->m_input == "on_createActivate");
     state_machine.update();
 
-    REQUIRE(menuStatePtr->m_input == "OnCreateActivateDeactivate");
-    REQUIRE(playStatePtr->m_input == "OnCreateActivateDeactivateUpdate");
-    REQUIRE(pauseStatePtr->m_input == "OnCreateActivateUpdate");
+    REQUIRE(menuStatePtr->m_input == "on_createActivateDeactivate");
+    REQUIRE(playStatePtr->m_input == "on_createActivateDeactivateUpdate");
+    REQUIRE(pauseStatePtr->m_input == "on_createActivateUpdate");
   }
 }
 
@@ -211,7 +211,7 @@ TEST_CASE("Draw", "[statemanager]")
                                 });
     state_machine.switchTo(StateType::PAUSE);
     state_machine.draw(nullptr);
-    REQUIRE(statePtr->m_input == "OnCreateActivateDraw");
+    REQUIRE(statePtr->m_input == "on_createActivateDraw");
   }
   SECTION("Transparent")
   {
@@ -224,7 +224,7 @@ TEST_CASE("Draw", "[statemanager]")
                                 {
                                   auto state = std::make_unique<StateMock>();
                                   pauseStatePtr = state.get();
-                                  state->setTransparent(true);
+                                  state->set_transparent(true);
                                   return std::move(state);
                                 });
     state_machine.registerState(StateType::PLAY,
@@ -245,13 +245,13 @@ TEST_CASE("Draw", "[statemanager]")
     state_machine.switchTo(StateType::MENU);
     state_machine.switchTo(StateType::PLAY);
     state_machine.switchTo(StateType::PAUSE);
-    REQUIRE(menuStatePtr->m_input == "OnCreateActivateDeactivate");
-    REQUIRE(playStatePtr->m_input == "OnCreateActivateDeactivate");
-    REQUIRE(pauseStatePtr->m_input == "OnCreateActivate");
+    REQUIRE(menuStatePtr->m_input == "on_createActivateDeactivate");
+    REQUIRE(playStatePtr->m_input == "on_createActivateDeactivate");
+    REQUIRE(pauseStatePtr->m_input == "on_createActivate");
     state_machine.draw(nullptr);
 
-    REQUIRE(menuStatePtr->m_input == "OnCreateActivateDeactivate");
-    REQUIRE(playStatePtr->m_input == "OnCreateActivateDeactivateDraw");
-    REQUIRE(pauseStatePtr->m_input == "OnCreateActivateDraw");
+    REQUIRE(menuStatePtr->m_input == "on_createActivateDeactivate");
+    REQUIRE(playStatePtr->m_input == "on_createActivateDeactivateDraw");
+    REQUIRE(pauseStatePtr->m_input == "on_createActivateDraw");
   }
 }

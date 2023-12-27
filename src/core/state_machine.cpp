@@ -9,12 +9,12 @@ void gk::state_machine::update()
     return;
   }
 
-  if (m_states.back().second->isTranscendent() && m_states.size() > 1)
+  if (m_states.back().second->is_transcendent() && m_states.size() > 1)
   {
     auto itr = m_states.end() - 1;
     while (itr != m_states.begin())
     {
-      if (!itr->second->isTranscendent())
+      if (!itr->second->is_transcendent())
       {
         break;
       }
@@ -38,12 +38,12 @@ void gk::state_machine::draw(SDL_Renderer* renderer)
     return;
   }
 
-  if (m_states.back().second->isTransparent() && m_states.size() > 1)
+  if (m_states.back().second->is_transparent() && m_states.size() > 1)
   {
     auto itr = m_states.end() - 1;
     while (itr != m_states.begin())
     {
-      if (!itr->second->isTransparent())
+      if (!itr->second->is_transparent())
       {
         break;
       }
@@ -144,7 +144,7 @@ void gk::state_machine::createState(const StateType state)
     auto* newStatePtr = newState.get();
 
     m_states.emplace_back(state, std::move(newState));
-    newStatePtr->onCreate();
+    newStatePtr->on_create();
     return;
   }
   throw gk::GameException(std::string{"could not create state: "} +
@@ -160,7 +160,7 @@ void gk::state_machine::removeState(const StateType state)
                    { return state == p.first; });
   if (stateToRemove != m_states.end())
   {
-    stateToRemove->second->onDestroy();
+    stateToRemove->second->on_destroy();
     m_states.erase(stateToRemove);
   }
 }
