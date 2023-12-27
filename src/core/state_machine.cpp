@@ -115,7 +115,7 @@ void gk::state_machine::switchTo(const StateType state)
     createState(state);
     m_states.back().second->activate();
 
-    m_currentState = state;
+    m_current_state = state;
   }
 }
 
@@ -130,9 +130,9 @@ void gk::state_machine::registerState(const StateType state,
   m_factory[state] = creator;
 }
 
-StateType gk::state_machine::currentState() const
+StateType gk::state_machine::current_state() const
 {
-  return m_currentState;
+  return m_current_state;
 }
 
 void gk::state_machine::createState(const StateType state)

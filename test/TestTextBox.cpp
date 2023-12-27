@@ -1,9 +1,9 @@
-#include "GameKit/core/ui/TextBox.hpp"
+#include "GameKit/core/ui/text_box.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("Add content", "[textboxCircularBuffer]")
 {
-  gk::TextCirculareBuffer buffer{4};
+  gk::text_curcular_buffer buffer{4};
 
   SECTION("Simple push")
   {
@@ -42,7 +42,7 @@ TEST_CASE("Add content", "[textboxCircularBuffer]")
 
 TEST_CASE("Remove", "[textboxCircularBuffer]")
 {
-  gk::TextCirculareBuffer buffer{4};
+  gk::text_curcular_buffer buffer{4};
   SECTION("Push Pop simple")
   {
     buffer.push("test");

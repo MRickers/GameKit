@@ -11,37 +11,37 @@
 
 namespace gk
 {
-  using TextContainer = std::vector<std::string>;
-  using TextBuffer = std::deque<std::string>;
+  using text_container = std::vector<std::string>;
+  using text_buffer = std::deque<std::string>;
 
-  class TextCirculareBuffer
+  class text_curcular_buffer
   {
   public:
-    TextCirculareBuffer(size_t maxRows = 6);
+    text_curcular_buffer(size_t maxRows = 6);
     void push(const std::string& content);
     void pop();
     void clear();
     size_t size() const;
     size_t rows() const;
-    TextContainer get() const;
+    text_container get() const;
 
   private:
-    TextBuffer m_textBuffer{};
+    text_buffer m_textBuffer{};
     size_t m_maxRows{6};
   };
 
-  template <typename Container> class TextField
+  template <typename Container> class text_field
   {
   public:
-    TextField(size_t lineCount = 6, _TTF_Font* font = nullptr,
-              size_t fontSize = 0)
+    text_field(size_t lineCount = 6, _TTF_Font* font = nullptr,
+               size_t fontSize = 0)
         : m_container{lineCount}
         , m_font{font}
         , m_fontSize{fontSize}
     {
     }
 
-    ~TextField()
+    ~text_field()
     {
       if (m_texture)
       {
@@ -110,7 +110,7 @@ namespace gk
   };
 
   template <typename Container>
-  inline void gk::TextField<Container>::draw(SDL_Renderer* renderer)
+  inline void gk::text_field<Container>::draw(SDL_Renderer* renderer)
   {
     if (m_texture)
     {
@@ -147,5 +147,5 @@ namespace gk
       SDL_FreeSurface(textSurface);
     }
   }
-  using TextBox = TextField<TextCirculareBuffer>;
+  using TextBox = text_field<text_curcular_buffer>;
 } // namespace gk

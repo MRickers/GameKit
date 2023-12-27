@@ -1,6 +1,6 @@
 #include "GameKit/App.hpp"
 #include "GameKit/core/input_handler.hpp"
-#include "GameKit/core/ui/TextBox.hpp"
+#include "GameKit/core/ui/text_box.hpp"
 #include "GameKit/helpers/Draw.hpp"
 #include "GameKit/helpers/Timer.hpp"
 #include "GameKit/vector/vector2d.hpp"
@@ -56,7 +56,7 @@ namespace gk
     SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
   }
 
-  App::App(InputHandlerPtr input_handler, state_machinePtr state_machine,
+  App::App(input_handler_ptr input_handler, state_machinePtr state_machine,
            const AppConfiguration& config)
       : App(config)
   {
@@ -98,7 +98,7 @@ namespace gk
   {
     if (m_inputHandler)
     {
-      m_inputHandler->Update();
+      m_inputHandler->update();
     }
     if (m_state_machine)
     {
@@ -216,7 +216,7 @@ namespace gk
     }
   }
 
-  void gk::App::setInputHandler(InputHandlerPtr inputHandler)
+  void gk::App::setInputHandler(input_handler_ptr inputHandler)
   {
     if (inputHandler)
     {

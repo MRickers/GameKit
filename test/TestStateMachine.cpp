@@ -53,7 +53,7 @@ TEST_CASE("Add/Switch State", "[statemanager]")
 
   SECTION("InitState")
   {
-    REQUIRE(state_machine.currentState() == StateType::INIT);
+    REQUIRE(state_machine.current_state() == StateType::INIT);
   }
   SECTION("RegisterState")
   {
@@ -76,7 +76,7 @@ TEST_CASE("Add/Switch State", "[statemanager]")
                                 });
     state_machine.switchTo(StateType::MENU);
     REQUIRE(state_machine.hasState(StateType::MENU));
-    REQUIRE(state_machine.currentState() == StateType::MENU);
+    REQUIRE(state_machine.current_state() == StateType::MENU);
     REQUIRE(statePtr->m_input == "on_createActivate");
   }
   SECTION("SwitchStates")
@@ -103,7 +103,7 @@ TEST_CASE("Add/Switch State", "[statemanager]")
     state_machine.switchTo(StateType::INIT);
     REQUIRE(state_machine.hasState(StateType::MENU));
     REQUIRE(state_machine.hasState(StateType::INIT));
-    REQUIRE(state_machine.currentState() == StateType::INIT);
+    REQUIRE(state_machine.current_state() == StateType::INIT);
     REQUIRE(menuStatePtr->m_input == "on_createActivateDeactivate");
     REQUIRE(initStatePtr->m_input == "on_createActivate");
   }

@@ -5,7 +5,7 @@ helpers/ClockSDL.cpp
 core/input_handler.cpp
 core/StateInputHandler.cpp
 core/state_machine.cpp
-core/ui/TextBox.cpp
+core/ui/text_box.cpp
 vector/vector2d.cpp
 App.cpp
 )

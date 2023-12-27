@@ -1,5 +1,5 @@
 #include "GameKit/App.hpp"
-#include "GameKit/core/ui/TextBox.hpp"
+#include "GameKit/core/ui/text_box.hpp"
 #include "GameKit/helpers/Draw.hpp"
 #include "GameKit/helpers/Timer.hpp"
 #include <spdlog/spdlog.h>
@@ -36,9 +36,9 @@ public:
   void on_destroy() override
   {
     m_sharedContext->inputHandler->remove_binding(StateType::INTRO,
-                                                 "IntroContinue");
-    m_sharedContext->inputHandler->remove_callback(StateType::INTRO,
                                                   "IntroContinue");
+    m_sharedContext->inputHandler->remove_callback(StateType::INTRO,
+                                                   "IntroContinue");
   }
 
   void activate() override
@@ -71,7 +71,7 @@ private:
       {
         m_sharedContext->state_machine->switchTo(StateType::MAIN);
         m_sharedContext->state_machine->remove(StateType::INTRO);
-        m_sharedContext->inputHandler->setCurrentState(StateType::MAIN);
+        m_sharedContext->inputHandler->set_current_state(StateType::MAIN);
       }
     }
   }
@@ -120,9 +120,9 @@ public:
   void on_destroy() override
   {
     m_sharedContext->inputHandler->remove_binding(StateType::INTRO,
-                                                 "IntroContinue");
-    m_sharedContext->inputHandler->remove_callback(StateType::INTRO,
                                                   "IntroContinue");
+    m_sharedContext->inputHandler->remove_callback(StateType::INTRO,
+                                                   "IntroContinue");
   }
 
   void activate() override
@@ -160,7 +160,7 @@ private:
         if (i == 0)
         {
           m_sharedContext->state_machine->switchTo(StateType::GAME);
-          m_sharedContext->inputHandler->setCurrentState(StateType::GAME);
+          m_sharedContext->inputHandler->set_current_state(StateType::GAME);
         }
         else if (i == 1)
         {
@@ -242,9 +242,9 @@ public:
   void on_destroy() override
   {
     m_sharedContext->inputHandler->remove_binding(StateType::GAME,
-                                                 "MouseMotion");
-    m_sharedContext->inputHandler->remove_callback(StateType::GAME,
                                                   "MouseMotion");
+    m_sharedContext->inputHandler->remove_callback(StateType::GAME,
+                                                   "MouseMotion");
     m_sharedContext->inputHandler->remove_binding(StateType::GAME, "Pause");
     m_sharedContext->inputHandler->remove_callback(StateType::GAME, "Pause");
     m_sharedContext->inputHandler->remove_binding(StateType::GAME, "Quit");
@@ -285,7 +285,7 @@ private:
   void paused(const gk::event_details&)
   {
     m_sharedContext->state_machine->switchTo(StateType::PAUSED);
-    m_sharedContext->inputHandler->setCurrentState(StateType::PAUSED);
+    m_sharedContext->inputHandler->set_current_state(StateType::PAUSED);
   }
   void mouseMotion(const gk::event_details& details)
   {
@@ -334,7 +334,8 @@ public:
   void on_destroy() override
   {
     m_sharedContext->inputHandler->remove_binding(StateType::PAUSED, "Unpause");
-    m_sharedContext->inputHandler->remove_callback(StateType::PAUSED, "Unpause");
+    m_sharedContext->inputHandler->remove_callback(StateType::PAUSED,
+                                                   "Unpause");
   }
 
   void activate() override
@@ -357,7 +358,7 @@ private:
   void unpause(const gk::event_details&)
   {
     m_sharedContext->state_machine->switchTo(StateType::GAME);
-    m_sharedContext->inputHandler->setCurrentState(StateType::GAME);
+    m_sharedContext->inputHandler->set_current_state(StateType::GAME);
   }
 
   gk::SharedContextPtr m_sharedContext{nullptr};
@@ -372,7 +373,7 @@ int main()
       "state_machine", static_cast<size_t>(windowSize.GetX<int>()),
       static_cast<size_t>(windowSize.GetY<int>())});
 
-  auto inputHandler = std::make_shared<gk::StateInputHandler>();
+  auto inputHandler = std::make_shared<gk::state_input_handler>();
   auto state_machine = std::make_shared<gk::state_machine>();
   gk::SharedContextPtr sharedContext =
       std::make_shared<gk::SharedContext>(inputHandler, state_machine, app);
