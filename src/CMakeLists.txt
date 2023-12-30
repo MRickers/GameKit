@@ -6,6 +6,9 @@ core/input_handler.cpp
 core/state_input_handler.cpp
 core/state_machine.cpp
 core/ui/text_box.cpp
+core/sprite_sheet.cpp
+core/base_animation.cpp
+core/animation_directional.cpp
 vector/vector2d.cpp
 App.cpp
 )
@@ -48,3 +51,8 @@ set_target_properties(state_machine_example PROPERTIES
 CXX_STANDARD 17
 CXX_STANDARD_REQUIRED On
 )
+
+set(SPRITE_SHEET_EXAMPLE sprite_sheet_example)
+
+add_executable(${SPRITE_SHEET_EXAMPLE} examples/sprite_sheet_example.cpp)
+target_link_libraries(${SPRITE_SHEET_EXAMPLE} PRIVATE gkcore)

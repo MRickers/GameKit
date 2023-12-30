@@ -1,3 +1,4 @@
 .vscode
 build
 Testing
+cmake-build-debug

@@ -66,6 +66,8 @@ namespace gk
 
   App::~App()
   {
+    fpsText.destroy();
+
     if (m_renderer != nullptr)
     {
       SDL_DestroyRenderer(m_renderer);
@@ -145,11 +147,7 @@ namespace gk
 #endif
 
     fpsText.setPos(gk::vector2d{2.f, m_size.GetY<float>() - 2 - fontSize});
-    if (auto* font = TTF_OpenFont(fontPath, fontSize); font != nullptr)
-    {
-      fpsText.setFont(font, fontSize);
-    }
-    else
+    if (!fpsText.loadFont(fontPath, fontSize))
     {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                    "could not load fps font from: %s", fontPath);
@@ -216,7 +214,7 @@ namespace gk
     }
   }
 
-  void gk::App::setInputHandler(input_handler_ptr inputHandler)
+  void gk::App::setInputHandler(input_handler_ptr const& inputHandler)
   {
     if (inputHandler)
     {
@@ -224,7 +222,7 @@ namespace gk
     }
   }
 
-  void App::setstate_machine(state_machinePtr state_machine)
+  void App::setstate_machine(state_machinePtr const& state_machine)
   {
     if (state_machine)
     {

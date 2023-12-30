@@ -38,14 +38,14 @@ namespace gk
   public:
     App(input_handler_ptr input_handler, state_machinePtr state_machine,
         const AppConfiguration& config);
-    App(const AppConfiguration& config);
+    explicit App(const AppConfiguration& config);
     ~App();
 
     void stop();
     void run();
 
-    void setInputHandler(input_handler_ptr input_handler);
-    void setstate_machine(state_machinePtr state_machine);
+    void setInputHandler(input_handler_ptr const &input_handler);
+    void setstate_machine(state_machinePtr const & state_machine);
 
     gk::vector2d getWindowSize() const;
 

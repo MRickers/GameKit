@@ -84,6 +84,25 @@ namespace gk
       return false;
     }
 
+    void unloadFont()
+    {
+      if (m_font)
+      {
+        TTF_CloseFont(m_font);
+        m_font = nullptr;
+      }
+    }
+
+    void destroy()
+    {
+      unloadFont();
+      if (m_texture)
+      {
+        SDL_DestroyTexture(m_texture);
+        m_texture = nullptr;
+      }
+    }
+
     void setFont(TTF_Font* font, size_t fontSize)
     {
       if (font)
