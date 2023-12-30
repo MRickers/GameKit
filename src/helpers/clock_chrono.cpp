@@ -29,7 +29,7 @@ namespace gk
 
   bool chrono_clock::has_passed(const time_ms delta)
   {
-    return round() >= delta ? true : false;
+    return round() >= delta;
   }
 
 } // namespace gk
