@@ -2,6 +2,7 @@
 #include "GameKit/core/input_handler.hpp"
 #include "GameKit/core/ui/text_box.hpp"
 #include "GameKit/helpers/drawer.hpp"
+#include "GameKit/helpers/game_exception.hpp"
 #include "GameKit/helpers/timer.hpp"
 #include "GameKit/vector/vector2d.hpp"
 
@@ -23,14 +24,14 @@ namespace gk
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                    "SDL could not initialize SDL! SDL_Error: %s",
                    SDL_GetError());
-      throw std::runtime_error{"SDL could not initialize"};
+      throw gk::game_exception{"SDL could not initialize", -123};
     }
     if (TTF_Init() < 0)
     {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                    "SDL could not initialize TTF! SDL_Error: %s",
                    TTF_GetError());
-      throw std::runtime_error{"SDL could not initialize ttf"};
+      throw gk::game_exception{"SDL could not initialize ttf", -123};
     }
     const auto& [width, height] = config.getSize().Get();
     m_size = config.getSize();
@@ -43,7 +44,7 @@ namespace gk
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                    "SDL could not initialize window! SDL_Error: %s",
                    SDL_GetError());
-      throw std::runtime_error{"SDL initialize window failed"};
+      throw gk::game_exception{"SDL initialize window failed", -123};
     }
     if (m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
         m_renderer == nullptr)
@@ -51,17 +52,20 @@ namespace gk
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                    "SDL could not initialize renderer! SDL_Error: %s",
                    SDL_GetError());
-      throw std::runtime_error{"SDL initialize renderer failed"};
+      throw gk::game_exception{"SDL initialize renderer failed", -123};
     }
     SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
-  }
 
-  App::App(input_handler_ptr input_handler, state_machinePtr state_machine,
-           const AppConfiguration& config)
-      : App(config)
-  {
-    setInputHandler(input_handler);
-    setstate_machine(state_machine);
+    // TODO: shared context should live within app. bad_weak_ptr exception. Use
+    // unique_ptr
+    m_inputHandler = std::make_unique<state_input_handler>();
+    m_state_machine = std::make_unique<state_machine>();
+    m_texture_manager = std::make_unique<texture_manager>(m_renderer);
+
+    m_shared_context.inputHandler_ptr = m_inputHandler.get();
+    m_shared_context.state_machine_ptr = m_state_machine.get();
+    m_shared_context.texture_manager_ptr = m_texture_manager.get();
+    m_shared_context.app = this;
   }
 
   App::~App()
@@ -76,8 +80,6 @@ namespace gk
     {
       SDL_DestroyWindow(m_window);
     }
-    TTF_Quit();
-    SDL_Quit();
   }
 
   void App::handleEvents()
@@ -214,21 +216,6 @@ namespace gk
     }
   }
 
-  void gk::App::setInputHandler(input_handler_ptr const& inputHandler)
-  {
-    if (inputHandler)
-    {
-      m_inputHandler = inputHandler;
-    }
-  }
-
-  void App::setstate_machine(state_machinePtr const& state_machine)
-  {
-    if (state_machine)
-    {
-      m_state_machine = state_machine;
-    }
-  }
 } // namespace gk
 
 gk::vector2d gk::App::getWindowSize() const
@@ -237,4 +224,26 @@ gk::vector2d gk::App::getWindowSize() const
   SDL_GetWindowSize(m_window, &width, &height);
 
   return {width, height};
+}
+SDL_Renderer* gk::App::get_renderer() const
+{
+  return m_renderer;
+}
+gk::SharedContext gk::App::get_shared_context() const
+{
+  return m_shared_context;
+}
+std::unique_ptr<gk::state_input_handler> const&
+gk::App::get_input_handler() const
+{
+  return m_inputHandler;
+}
+std::unique_ptr<gk::state_machine> const& gk::App::get_state_machine() const
+{
+  return m_state_machine;
+}
+void gk::App::shutdown()
+{
+  TTF_Quit();
+  SDL_Quit();
 }
