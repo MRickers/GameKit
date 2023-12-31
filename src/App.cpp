@@ -56,7 +56,6 @@ namespace gk
     }
     SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
 
-    // TODO: shared context should live within app. bad_weak_ptr exception. Use
     // unique_ptr
     m_inputHandler = std::make_unique<state_input_handler>();
     m_state_machine = std::make_unique<state_machine>();
