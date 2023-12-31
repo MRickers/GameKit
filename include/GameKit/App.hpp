@@ -37,8 +37,6 @@ namespace gk
   };
 
   class App;
-  using app_ptr = std::shared_ptr<App>;
-
   struct SharedContext
   {
     state_input_handler* inputHandler_ptr{nullptr};
@@ -47,7 +45,7 @@ namespace gk
     App* app{nullptr};
   };
 
-  class App : public std::enable_shared_from_this<App>
+  class App
   {
   public:
     explicit App(const AppConfiguration& config);
