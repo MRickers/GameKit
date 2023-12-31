@@ -55,4 +55,14 @@ CXX_STANDARD_REQUIRED On
 set(SPRITE_SHEET_EXAMPLE sprite_sheet_example)
 
 add_executable(${SPRITE_SHEET_EXAMPLE} examples/sprite_sheet_example.cpp)
-target_link_libraries(${SPRITE_SHEET_EXAMPLE} PRIVATE gkcore)
+target_link_libraries(${SPRITE_SHEET_EXAMPLE} PRIVATE gkcore spdlog::spdlog_header_only)
+set_target_properties(${SPRITE_SHEET_EXAMPLE} PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED On
+)
+add_custom_command(TARGET ${SPRITE_SHEET_EXAMPLE} POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/sprite.sheet $<TARGET_FILE_DIR:${SPRITE_SHEET_EXAMPLE}>
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/gobby.png $<TARGET_FILE_DIR:${SPRITE_SHEET_EXAMPLE}>
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/sprite_texture.cfg $<TARGET_FILE_DIR:${SPRITE_SHEET_EXAMPLE}>
+)

@@ -57,6 +57,10 @@ namespace gk
 
     bool release_resource(const std::string& id)
     {
+      if (id.empty())
+      {
+        return false;
+      }
       if (auto res = find(id); res)
       {
         --res->second;
