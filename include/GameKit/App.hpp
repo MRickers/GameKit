@@ -30,10 +30,15 @@ namespace gk
     {
       return m_size;
     }
+    std::chrono::milliseconds const& get_update_rate() const
+    {
+      return m_update_rate;
+    }
 
   private:
     std::string m_title{"Title"};
     gk::vector2d m_size{640, 480};
+    std::chrono::milliseconds m_update_rate{1000 / 60};
   };
 
   class App;
@@ -57,8 +62,10 @@ namespace gk
 
     gk::vector2d getWindowSize() const;
     gk::SharedContext get_shared_context() const;
-    std::unique_ptr<state_input_handler> const& get_input_handler() const;
-    std::unique_ptr<state_machine> const& get_state_machine() const;
+    std::unique_ptr<state_input_handler>& get_input_handler();
+    std::unique_ptr<state_machine>& get_state_machine();
+    std::unique_ptr<texture_manager>& get_texture_manager();
+    std::chrono::milliseconds const& get_update_rate() const;
     static void shutdown();
 
   private:
@@ -67,13 +74,13 @@ namespace gk
     void draw();
     void clearRenderer();
     bool isRunning() const;
-
+    std::chrono::milliseconds m_update_rate;
     bool m_running{false};
     SDL_Window* m_window{nullptr};
     SDL_Renderer* m_renderer{nullptr};
+    std::unique_ptr<texture_manager> m_texture_manager{nullptr};
     std::unique_ptr<state_input_handler> m_inputHandler{nullptr};
     std::unique_ptr<state_machine> m_state_machine{nullptr};
-    std::unique_ptr<texture_manager> m_texture_manager{nullptr};
 
     gk::vector2d m_size;
     SharedContext m_shared_context;

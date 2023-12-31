@@ -56,7 +56,8 @@ namespace gk
     }
     SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
 
-    // unique_ptr
+    m_update_rate = config.get_update_rate();
+
     m_inputHandler = std::make_unique<state_input_handler>();
     m_state_machine = std::make_unique<state_machine>();
     m_texture_manager = std::make_unique<texture_manager>(m_renderer);
@@ -170,21 +171,21 @@ namespace gk
       auto now = std::chrono::system_clock::now();
 
       while (std::chrono::duration_cast<std::chrono::milliseconds>(
-                 now - lastUpdateTime) > update_rate &&
+                 now - lastUpdateTime) > m_update_rate &&
              updates < max_updates)
       {
         handleEvents();
         update();
-        lastUpdateTime += update_rate;
+        lastUpdateTime += m_update_rate;
         updates++;
         framecount++;
       }
 
       // if maybe an update tooks forever we dont want to catch up
       if (std::chrono::duration_cast<std::chrono::milliseconds>(
-              now - lastUpdateTime) > update_rate)
+              now - lastUpdateTime) > m_update_rate)
       {
-        lastUpdateTime = now - update_rate;
+        lastUpdateTime = now - m_update_rate;
       }
 
       clearRenderer();
@@ -205,9 +206,9 @@ namespace gk
       }
 
       while (std::chrono::duration_cast<std::chrono::milliseconds>(
-                 now - lastRenderTime) < update_rate &&
+                 now - lastRenderTime) < m_update_rate &&
              std::chrono::duration_cast<std::chrono::milliseconds>(
-                 now - lastUpdateTime) < update_rate)
+                 now - lastUpdateTime) < m_update_rate)
       {
         std::this_thread::sleep_for(std::chrono::milliseconds{1});
         now = std::chrono::system_clock::now();
@@ -232,12 +233,11 @@ gk::SharedContext gk::App::get_shared_context() const
 {
   return m_shared_context;
 }
-std::unique_ptr<gk::state_input_handler> const&
-gk::App::get_input_handler() const
+std::unique_ptr<gk::state_input_handler>& gk::App::get_input_handler()
 {
   return m_inputHandler;
 }
-std::unique_ptr<gk::state_machine> const& gk::App::get_state_machine() const
+std::unique_ptr<gk::state_machine>& gk::App::get_state_machine()
 {
   return m_state_machine;
 }
@@ -245,4 +245,12 @@ void gk::App::shutdown()
 {
   TTF_Quit();
   SDL_Quit();
+}
+std::unique_ptr<gk::texture_manager>& gk::App::get_texture_manager()
+{
+  return m_texture_manager;
+}
+std::chrono::milliseconds const& gk::App::get_update_rate() const
+{
+  return m_update_rate;
 }
