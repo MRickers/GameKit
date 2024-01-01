@@ -30,7 +30,9 @@ public:
         [this](const gk::event_details& details) { changeState(details); });
 
     auto binding = gk::event_binding{"IntroContinue"};
-    binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_SPACE});
+    binding.events.push_back({gk::EventType::KeyDown,
+                              gk::event::on_keyhold_behaviour::invoke_once,
+                              SDL_SCANCODE_SPACE});
     m_sharedContext.inputHandler_ptr->add_binding(StateType::INTRO, binding);
   }
   void on_destroy() override
@@ -110,8 +112,9 @@ public:
         [this](const gk::event_details& details) { mouseClick(details); });
 
     auto binding = gk::event_binding{"MouseLeft"};
-    binding.events.push_back({gk::EventType::MouseDown, SDL_SCANCODE_UNKNOWN,
-                              gk::MouseButton::Left});
+    binding.events.push_back({gk::EventType::MouseDown,
+                              gk::event::on_keyhold_behaviour::invoke_once,
+                              SDL_SCANCODE_UNKNOWN, gk::MouseButton::Left});
     m_sharedContext.inputHandler_ptr->add_binding(StateType::MAIN, binding);
   }
   void on_destroy() override
@@ -206,6 +209,7 @@ public:
 
       auto binding = gk::event_binding{"MouseMotion"};
       binding.events.push_back({gk::EventType::MouseMotion,
+                                gk::event::on_keyhold_behaviour::invoke_once,
                                 SDL_SCANCODE_UNKNOWN, gk::MouseButton::Motion});
       m_sharedContext.inputHandler_ptr->add_binding(StateType::GAME, binding);
     }
@@ -215,7 +219,9 @@ public:
           [this](const gk::event_details& details) { paused(details); });
 
       auto binding = gk::event_binding{"Pause"};
-      binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_P});
+      binding.events.push_back({gk::EventType::KeyDown,
+                                gk::event::on_keyhold_behaviour::invoke_once,
+                                SDL_SCANCODE_P});
       m_sharedContext.inputHandler_ptr->add_binding(StateType::GAME, binding);
     }
     {
@@ -224,7 +230,9 @@ public:
           { m_sharedContext.app->stop(); });
 
       auto binding = gk::event_binding{"Quit"};
-      binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_Q});
+      binding.events.push_back({gk::EventType::KeyDown,
+                                gk::event::on_keyhold_behaviour::invoke_once,
+                                SDL_SCANCODE_Q});
       m_sharedContext.inputHandler_ptr->add_binding(StateType::GAME, binding);
     }
 
@@ -324,7 +332,9 @@ public:
           [this](const gk::event_details& details) { unpause(details); });
 
       auto binding = gk::event_binding{"Unpause"};
-      binding.events.push_back({gk::EventType::KeyDown, SDL_SCANCODE_P});
+      binding.events.push_back({gk::EventType::KeyDown,
+                                gk::event::on_keyhold_behaviour::invoke_once,
+                                SDL_SCANCODE_P});
       m_sharedContext.inputHandler_ptr->add_binding(StateType::PAUSED, binding);
     }
   }
