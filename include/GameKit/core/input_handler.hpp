@@ -30,6 +30,7 @@ namespace gk
     Motion = 4,
   };
 
+  // TODO: method need for convient creation of event
   struct event
   {
     enum class on_keyhold_behaviour
@@ -38,6 +39,8 @@ namespace gk
       invoke_repeat,
     };
     EventType type{Idle};
+    // only relevant for keydown events. If multiple keys are used and one is
+    // set to "invoke_repeat" this behaviour is used for that binding
     on_keyhold_behaviour on_keyhold{on_keyhold_behaviour::invoke_once};
     SDL_Scancode scancode{SDL_SCANCODE_UNKNOWN};
     MouseButton mouse_button{Left};
@@ -50,7 +53,7 @@ namespace gk
     std::string id{""};
     vector2d mouse_pos{0, 0};
 
-    void reset()
+    void reset() // private
     {
       mouse_pos = {};
     }
@@ -60,9 +63,9 @@ namespace gk
   {
     std::string id{""};
     event_array events{};
-    size_t event_counter{0};
-    event_details details{};
-    bool already_invoked{false};
+    size_t event_counter{0};  // TODO: private
+    event_details details{};  // TODO: private
+    bool already_invoked{false};  // TODO: private
   };
   using event_callback = std::function<void(const event_details&)>;
 
@@ -100,14 +103,14 @@ namespace gk
     int m_mouseX{0};
     int m_mouseY{0};
 
-    bool isKeyEvent(const uint32_t event_type);
-    bool isMouseButtonEvent(const uint32_t event_type);
-    bool isMouseMotionEvent(const uint32_t event_type);
-    void updateMouseStates(const uint32_t event_type);
+    bool isKeyEvent(uint32_t event_type);
+    bool isMouseButtonEvent(uint32_t event_type);
+    bool isMouseMotionEvent(uint32_t event_type);
+    void updateMouseStates(uint32_t event_type);
     void updateKeyStates();
     bool isKeyDown(SDL_Scancode key) const;
     bool isKeyUp(SDL_Scancode key) const;
-    bool isMouseButtonDown(const MouseButton button) const;
+    bool isMouseButtonDown(MouseButton button) const;
     bool isMotion() const;
 
     bool setInvoked(std::string const& id);

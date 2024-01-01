@@ -42,7 +42,7 @@ int main()
     }
     {
       auto binding = gk::event_binding{"motion"};
-      binding.events.push_back({gk::EventType::MouseDown, gk::event::on_keyhold_behaviour::invoke_once,SDL_SCANCODE_UNKNOWN,
+      binding.events.push_back({gk::EventType::MouseDown, gk::event::on_keyhold_behaviour::invoke_repeat,SDL_SCANCODE_UNKNOWN,
                                 gk::MouseButton::Left});
       binding.events.push_back({gk::EventType::MouseMotion});
 
