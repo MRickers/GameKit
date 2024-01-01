@@ -116,6 +116,11 @@ template <> int gk::vector2d::GetX<int>() const
   return static_cast<int>(m_x);
 }
 
+template <> uint16_t gk::vector2d::GetX<uint16_t>() const
+{
+  return static_cast<uint16_t>(m_x);
+}
+
 template <> float gk::vector2d::GetY<float>() const
 {
   return m_y;
@@ -124,4 +129,9 @@ template <> float gk::vector2d::GetY<float>() const
 template <> int gk::vector2d::GetY<int>() const
 {
   return static_cast<int>(m_y);
+}
+
+template <> uint16_t gk::vector2d::GetY<uint16_t>() const
+{
+  return static_cast<uint16_t>(m_y);
 }

@@ -1,24 +1,14 @@
 #include "GameKit/core/input_handler.hpp"
 #include "GameKit/helpers/game_exception.hpp"
 
-#include <iostream>
 #include <stdexcept>
 static constexpr auto s_index_offset = 1;
-class gk::input_handler::details
-{
-public:
-  std::unordered_map<std::string, bool> m_invoked{};
-};
-
-gk::input_handler::input_handler()
-    : m_details{std::make_unique<input_handler::details>()}
-{
-}
-
-gk::input_handler::~input_handler()
-{
-}
-
+//
+// class gk::input_handler::details
+//{
+// public:
+//  std::unordered_map<std::string, bool> m_invoked{};
+//};
 bool gk::input_handler::add_callback(const std::string& id,
                                      event_callback callback)
 {
@@ -59,8 +49,7 @@ bool gk::input_handler::add_binding(const event_binding& binding)
     {
       return false;
     }
-    if (const auto added =
-            m_details->m_invoked.try_emplace(binding.id, false).second;
+    if (const auto added = m_details.try_emplace(binding.id, false).second;
         !added)
     {
       return false;
@@ -80,7 +69,7 @@ bool gk::input_handler::remove_binding(const std::string& id)
   std::exception_ptr eptr = nullptr;
   try
   {
-    if (const auto removed = m_details->m_invoked.erase(id); removed != 1)
+    if (const auto removed = m_details.erase(id); removed != 1)
     {
       return false;
     }
@@ -136,6 +125,10 @@ void gk::input_handler::update()
         if (isKeyDown(event.scancode))
         {
           ++binding.event_counter;
+          if (event.on_keyhold == event::on_keyhold_behaviour::invoke_repeat)
+          {
+            resetInvoked(binding.id);
+          }
         }
         else
         {
@@ -147,6 +140,10 @@ void gk::input_handler::update()
         if (isMouseButtonDown(event.mouse_button))
         {
           ++binding.event_counter;
+          if (event.on_keyhold == event::on_keyhold_behaviour::invoke_repeat)
+          {
+            resetInvoked(binding.id);
+          }
         }
         else
         {
@@ -261,10 +258,9 @@ bool gk::input_handler::isMotion() const
   return m_mouseEvents[MouseButton::Motion - s_index_offset];
 }
 
-bool gk::input_handler::setInvoked(const std::string id)
+bool gk::input_handler::setInvoked(std::string const& id)
 {
-  if (const auto invoked = m_details->m_invoked.find(id);
-      invoked != m_details->m_invoked.end())
+  if (const auto invoked = m_details.find(id); invoked != m_details.end())
   {
     invoked->second = true;
     return true;
@@ -272,10 +268,9 @@ bool gk::input_handler::setInvoked(const std::string id)
   return false;
 }
 
-bool gk::input_handler::resetInvoked(const std::string id)
+bool gk::input_handler::resetInvoked(std::string const& id)
 {
-  if (const auto invoked = m_details->m_invoked.find(id);
-      invoked != m_details->m_invoked.end())
+  if (const auto invoked = m_details.find(id); invoked != m_details.end())
   {
     invoked->second = false;
     return true;
@@ -285,8 +280,7 @@ bool gk::input_handler::resetInvoked(const std::string id)
 
 bool gk::input_handler::wasInvoked(const std::string& id) const
 {
-  if (const auto invoked = m_details->m_invoked.find(id);
-      invoked != m_details->m_invoked.end())
+  if (const auto invoked = m_details.find(id); invoked != m_details.end())
   {
     return invoked->second;
   }

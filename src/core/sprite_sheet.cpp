@@ -8,7 +8,7 @@ gk::sprite_sheet::sprite_sheet(
     : m_sprite{nullptr}
     , m_sprite_size{}
     , m_sprite_scale{1.f, 1.f}
-    , m_direction{sprite_sheet::direction::RIGHT}
+    , m_direction{sprite_sheet::direction::LEFT}
     , m_texture_manager{texture_manager}
     , m_clip{}
 {
@@ -28,7 +28,7 @@ void gk::sprite_sheet::release_sheet()
 {
   if (!m_texture_manager->release_resource(m_texture_name))
   {
-    SDL_LogWarn(SDL_LOG_PRIORITY_WARN, "could not release resource: %s",
+    SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "could not release resource: %s",
                 m_texture_name.c_str());
     return;
   }
@@ -57,7 +57,7 @@ void gk::sprite_sheet::set_direction(sprite_sheet::direction t_direction)
     return;
   }
   m_direction = t_direction;
-  // TODO: crop_animation?!
+  m_current_animation->crop_sprite();
 }
 
 gk::vector2d gk::sprite_sheet::get_sprite_size() const
@@ -70,18 +70,16 @@ gk::sprite_sheet::direction gk::sprite_sheet::get_direction() const
   return m_direction;
 }
 
-[[maybe_unused]] bool gk::sprite_sheet::set_animation(std::string const& t_name,
-                                                      bool const t_play,
-                                                      bool const t_loop)
+bool gk::sprite_sheet::set_animation(std::string const& t_name,
+                                     bool const t_play, bool const t_loop)
 {
   if (auto itr = m_animations.find(t_name); itr != m_animations.end())
   {
-    auto const name = itr->first;
     auto const animation = itr->second.get();
 
     if (!animation)
     {
-      SDL_LogError(SDL_LOG_PRIORITY_ERROR, "invalid animation");
+      SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "invalid animation");
       return false;
     }
     if (animation == m_current_animation)
@@ -118,16 +116,17 @@ void gk::sprite_sheet::draw(SDL_Renderer* renderer)
       m_clip.size.GetY<int>(),
   };
 
-  const SDL_Rect dst = {
+  const SDL_Rect dest = {
       m_sprite_pos.GetX<int>(),
       m_sprite_pos.GetY<int>(),
       m_clip.size.GetX<int>(),
       m_clip.size.GetY<int>(),
   };
 
-  if (auto ret = SDL_RenderCopy(renderer, m_sprite, &src, &dst); ret != 0)
+  if (auto ret = SDL_RenderCopy(renderer, m_sprite, &src, &dest); ret != 0)
   {
-    SDL_LogError(SDL_LOG_PRIORITY_WARN, "could not render sprite: %d", ret);
+    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "could not render sprite: %s",
+                 SDL_GetError());
   }
 }
 
@@ -154,15 +153,16 @@ bool gk::sprite_sheet::load_sheet(std::filesystem::path const& t_filename)
       {
         if (!m_texture_name.empty())
         {
-          SDL_LogWarn(SDL_LOG_PRIORITY_WARN, "duplicated texture entries");
+          SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION,
+                      "duplicated texture entries");
           continue;
         }
         std::string texture;
         key_stream >> texture;
         if (!m_texture_manager->require_resource(texture))
         {
-          SDL_LogError(SDL_LOG_PRIORITY_ERROR, "could not set up texture: %s",
-                       texture.c_str());
+          SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                       "could not set up texture: %s", texture.c_str());
           continue;
         }
         m_texture_name = texture;
@@ -192,7 +192,7 @@ bool gk::sprite_sheet::load_sheet(std::filesystem::path const& t_filename)
 
         if (m_animations.find(name) != m_animations.end())
         {
-          SDL_LogWarn(SDL_LOG_PRIORITY_WARN,
+          SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION,
                       "duplicated animation %s in file %s", name.c_str(),
                       t_filename.string().c_str());
           continue;
@@ -213,8 +213,8 @@ bool gk::sprite_sheet::load_sheet(std::filesystem::path const& t_filename)
         }
         else
         {
-          SDL_LogWarn(SDL_LOG_PRIORITY_WARN, "invalid animation type: %s",
-                      m_animation_type.c_str());
+          SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION,
+                      "invalid animation type: %s", m_animation_type.c_str());
           continue;
         }
       }
@@ -223,4 +223,8 @@ bool gk::sprite_sheet::load_sheet(std::filesystem::path const& t_filename)
     return true;
   }
   return false;
+}
+gk::base_animation* gk::sprite_sheet::get_current_animation() const
+{
+  return m_current_animation;
 }

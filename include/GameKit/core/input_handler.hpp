@@ -29,9 +29,16 @@ namespace gk
     Right = 3,
     Motion = 4,
   };
+
   struct event
   {
+    enum class on_keyhold_behaviour
+    {
+      invoke_once,
+      invoke_repeat,
+    };
     EventType type{Idle};
+    on_keyhold_behaviour on_keyhold{on_keyhold_behaviour::invoke_once};
     SDL_Scancode scancode{SDL_SCANCODE_UNKNOWN};
     MouseButton mouse_button{Left};
   };
@@ -70,8 +77,7 @@ namespace gk
     using MouseButtonState = std::array<bool, MouseButton::Motion>;
 
   public:
-    input_handler();
-    ~input_handler();
+    input_handler() = default;
 
     bool add_callback(const std::string& id, event_callback);
     bool remove_callback(const std::string& id);
@@ -86,8 +92,7 @@ namespace gk
     callbacks m_callbacks{};
     bindings m_bindings{};
 
-    class details;
-    std::unique_ptr<details> m_details{nullptr};
+    std::unordered_map<std::string, bool> m_details{};
 
     const Uint8* m_keystates{nullptr};
     MouseButtonState m_mouseEvents{};
@@ -105,8 +110,8 @@ namespace gk
     bool isMouseButtonDown(const MouseButton button) const;
     bool isMotion() const;
 
-    bool setInvoked(const std::string id);
-    bool resetInvoked(const std::string id);
+    bool setInvoked(std::string const& id);
+    bool resetInvoked(std::string const& id);
     bool wasInvoked(const std::string& id) const;
   };
 } // namespace gk

@@ -19,8 +19,8 @@ namespace gk
   public:
     enum class direction
     {
-      RIGHT,
       LEFT,
+      RIGHT,
     };
 
     explicit sprite_sheet(std::unique_ptr<gk::texture_manager> &texture_manager);
@@ -31,13 +31,13 @@ namespace gk
     void release_sheet();
 
     void set_sprite_size(gk::vector2d const& t_size);
-    [[maybe_unused]] void set_sprite_position(gk::vector2d const& t_pos);
-    [[maybe_unused]] void set_direction(sprite_sheet::direction t_direction);
-    [[maybe_unused]] bool set_animation(std::string const& t_name, bool t_play,
+    void set_sprite_position(gk::vector2d const& t_pos);
+    void set_direction(sprite_sheet::direction t_direction);
+    bool set_animation(std::string const& t_name, bool t_play,
                        bool t_loop);
     gk::vector2d get_sprite_size() const;
     direction get_direction() const;
-
+    base_animation* get_current_animation() const;
     void update(time_ms t_dt);
     void draw(SDL_Renderer* renderer);
 
