@@ -29,11 +29,7 @@ public:
       spdlog::error("could not load sprite_texture.cfg");
     }
     {
-      auto binding = gk::event_binding{"left"};
-      binding.events.push_back({gk::EventType::KeyDown,
-                                gk::event::on_keyhold_behaviour::invoke_repeat,
-                                SDL_SCANCODE_A});
-      t_input_handler->add_binding(StateType::MAIN, binding);
+      t_input_handler->add_binding(StateType::MAIN, gk::make_keydown_repeat_binding("left", SDL_SCANCODE_A));
       t_input_handler->add_callback(StateType::MAIN, "left",
                                     [this](gk::event_details const&)
                                     {
@@ -44,11 +40,7 @@ public:
                                     });
     }
     {
-      auto binding = gk::event_binding{"right"};
-      binding.events.push_back({gk::EventType::KeyDown,
-                                gk::event::on_keyhold_behaviour::invoke_repeat,
-                                SDL_SCANCODE_D});
-      t_input_handler->add_binding(StateType::MAIN, binding);
+      t_input_handler->add_binding(StateType::MAIN, gk::make_keydown_repeat_binding("right", SDL_SCANCODE_D));
       t_input_handler->add_callback(StateType::MAIN, "right",
                                     [this](gk::event_details const&)
                                     {
@@ -112,11 +104,7 @@ int main(int argc, const char** argv)
     auto& input_handler = app.get_input_handler();
 
     {
-      auto binding = gk::event_binding{"quit"};
-      binding.events.push_back({gk::EventType::KeyDown,
-                                gk::event::on_keyhold_behaviour::invoke_repeat,
-                                SDL_SCANCODE_Q});
-      input_handler->add_global_binding(binding);
+      input_handler->add_global_binding(gk::make_keydown_binding("quit", SDL_SCANCODE_Q));
       input_handler->add_global_callback(
           "quit", [&](gk::event_details const& t_details) { app.stop(); });
     }

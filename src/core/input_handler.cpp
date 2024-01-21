@@ -286,3 +286,23 @@ bool gk::input_handler::wasInvoked(const std::string& id) const
   }
   return false;
 }
+gk::event_binding gk::make_keydown_binding(std::string_view const& t_id,
+                                           SDL_Scancode t_scancode)
+{
+  auto binding = gk::event_binding{std::string{t_id}};
+  binding.events.push_back({gk::EventType::KeyDown,
+                            gk::event::on_keyhold_behaviour::invoke_once,
+                            t_scancode});
+
+  return binding;
+}
+gk::event_binding gk::make_keydown_repeat_binding(std::string_view const& t_id,
+                                                  SDL_Scancode t_scancode)
+{
+  auto binding = gk::event_binding{std::string{t_id}};
+  binding.events.push_back({gk::EventType::KeyDown,
+                            gk::event::on_keyhold_behaviour::invoke_repeat,
+                            t_scancode});
+
+  return binding;
+}

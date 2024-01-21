@@ -27,7 +27,7 @@ namespace gk
     ~sprite_sheet();
 
     void crop_sprite(gk::rect const& t_rect);
-    [[maybe_unused]] bool load_sheet(std::filesystem::path const& t_filename);
+    bool load_sheet(std::filesystem::path const& t_filename);
     void release_sheet();
 
     void set_sprite_size(gk::vector2d const& t_size);

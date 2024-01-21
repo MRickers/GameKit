@@ -29,8 +29,7 @@ namespace gk
     Right = 3,
     Motion = 4,
   };
-
-  // TODO: method need for convient creation of event
+  
   struct event
   {
     enum class on_keyhold_behaviour
@@ -67,6 +66,10 @@ namespace gk
     event_details details{};  // TODO: private
     bool already_invoked{false};  // TODO: private
   };
+
+  event_binding make_keydown_binding(std::string_view const& t_id, SDL_Scancode t_scancode);
+  event_binding make_keydown_repeat_binding(std::string_view const& t_id, SDL_Scancode t_scancode);
+
   using event_callback = std::function<void(const event_details&)>;
 
   class input_handler
