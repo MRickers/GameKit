@@ -26,11 +26,11 @@ TEST_CASE("Add/Remove Binding", "[inputhandler]")
   gk::input_handler input_handler;
   SECTION("add_binding")
   {
-    REQUIRE(input_handler.add_binding({"test"}));
+    REQUIRE(input_handler.add_keydown_binding("test", {}));
   }
   SECTION("remove_binding")
   {
-    REQUIRE(input_handler.add_binding({"test"}));
+    REQUIRE(input_handler.add_keydown_binding("test", {}));
     REQUIRE(input_handler.remove_binding("test"));
   }
   SECTION("RemoveInvalidBinding")
