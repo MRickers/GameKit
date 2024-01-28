@@ -16,17 +16,26 @@ namespace gk
     void set_current_state(const StateType state);
     StateType current_state() const;
 
+    bool add_global_keydown_binding(std::string_view id, keys const&,
+                                    mouse_buttons const& t_mouse_buttons = {});
+    bool
+    add_global_keydown_repeat_binding(std::string_view id, keys const&,
+                                      mouse_buttons const& t_mouse_button = {});
+
     bool add_global_callback(const std::string& id, event_callback);
     bool remove_global_callback(const std::string& id);
 
-    bool add_global_binding(const event_binding&);
     bool remove_global_binding(const std::string& id);
 
+    bool add_keydown_binding(StateType, std::string_view id, keys const&,
+                             mouse_buttons const & t_mouse_buttons= {});
+    bool add_keydown_repeat_binding(StateType, std::string_view id, keys const&,
+                                    mouse_buttons const & t_mouse_buttons= {});
     bool add_callback(const StateType state, const std::string& id,
                       event_callback);
     bool remove_callback(const StateType state, const std::string& id);
 
-    bool add_binding(const StateType state, const event_binding&);
+    //    bool add_binding(const StateType state, const event_binding&);
     bool remove_binding(const StateType state, const std::string& id);
 
     void handle_event(const SDL_Event&);

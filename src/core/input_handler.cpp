@@ -1,85 +1,150 @@
 #include "GameKit/core/input_handler.hpp"
 #include "GameKit/helpers/game_exception.hpp"
 
+#include <array>
 #include <stdexcept>
+#include <unordered_map>
+#include <vector>
+
 static constexpr auto s_index_offset = 1;
-//
-// class gk::input_handler::details
-//{
-// public:
-//  std::unordered_map<std::string, bool> m_invoked{};
-//};
+namespace gk
+{
+
+  // Index 0 = left mouse button pressed
+  // Index 1 = middle mouse button pressed
+  // Index 2 = right mouse button pressed
+  // Index 4 = motion
+  using MouseButtonState = std::array<bool, MouseButton::Motion>;
+
+  enum EventType
+  {
+    Idle,
+    KeyDown = SDL_KEYDOWN,
+    KeyUp = SDL_KEYUP,
+    MouseMotion = SDL_MOUSEMOTION,
+    MouseDown = SDL_MOUSEBUTTONDOWN,
+    MouseUp = SDL_MOUSEBUTTONUP,
+
+  };
+
+  struct event
+  {
+    enum class on_keyhold_behaviour
+    {
+      invoke_once,
+      invoke_repeat,
+    };
+    EventType type{Idle};
+    // only relevant for keydown events. If multiple keys are used and one is
+    // set to "invoke_repeat" this behaviour is used for that binding
+    on_keyhold_behaviour on_keyhold{on_keyhold_behaviour::invoke_once};
+    SDL_Scancode scancode{SDL_SCANCODE_UNKNOWN};
+    MouseButton mouse_button{Left};
+  };
+
+  using event_array = std::vector<event>;
+
+  struct event_binding
+  {
+    explicit event_binding(std::string const& t_id)
+        : id{t_id}
+    {
+    }
+
+    std::string id;
+    event_array events{};
+    size_t event_counter{0};
+    event_details details{};
+    bool already_invoked{false};
+  };
+
+  using event_callbacks = std::unordered_map<std::string, event_callback>;
+  using event_bindings = std::unordered_map<std::string, event_binding>;
+
+  struct input_handler::details
+  {
+    event_callbacks callbacks{};
+    event_bindings bindings{};
+
+    std::unordered_map<std::string, bool> bindings_invoked{};
+
+    const Uint8* keystates{nullptr};
+    MouseButtonState mouseEvents{};
+    bool mouseMotion{false};
+    int mouseX{0};
+    int mouseY{0};
+
+    static bool isKeyEvent(uint32_t event_type);
+    static bool isMouseButtonEvent(uint32_t event_type);
+    static bool isMouseMotionEvent(uint32_t event_type);
+    bool add_binding(event_binding const&);
+    void updateMouseStates(uint32_t event_type);
+    void updateKeyStates();
+    bool isKeyDown(SDL_Scancode key) const;
+    bool isKeyUp(SDL_Scancode key) const;
+    bool isMouseButtonDown(MouseButton button) const;
+    bool isMotion() const;
+
+    bool setInvoked(std::string const& id);
+    bool resetInvoked(std::string const& id);
+    bool wasInvoked(const std::string& id) const;
+  };
+
+} // namespace gk
+
+gk::input_handler::input_handler()
+    : m_details{std::make_unique<gk::input_handler::details>()}
+{
+}
+
 bool gk::input_handler::add_callback(const std::string& id,
                                      event_callback callback)
 {
-  std::exception_ptr eptr = nullptr;
+  std::exception_ptr exception_ptr = nullptr;
   try
   {
-    return m_callbacks.try_emplace(id, callback).second;
+    return m_details->callbacks.try_emplace(id, callback).second;
   }
   catch (...)
   {
-    eptr = std::current_exception();
+    exception_ptr = std::current_exception();
   }
-  handle_exception(eptr);
+  handle_exception(exception_ptr);
   return false;
 }
 
 bool gk::input_handler::remove_callback(const std::string& id)
 {
-  std::exception_ptr eptr = nullptr;
+  std::exception_ptr exception_ptr = nullptr;
   try
   {
-    return m_callbacks.erase(id) == 1;
+    return m_details->callbacks.erase(id) == 1;
   }
   catch (...)
   {
-    eptr = std::current_exception();
+    exception_ptr = std::current_exception();
   }
-  handle_exception(eptr);
-  return false;
-}
-
-bool gk::input_handler::add_binding(const event_binding& binding)
-{
-  std::exception_ptr eptr = nullptr;
-  try
-  {
-    if (binding.id.empty())
-    {
-      return false;
-    }
-    if (const auto added = m_details.try_emplace(binding.id, false).second;
-        !added)
-    {
-      return false;
-    }
-    return m_bindings.try_emplace(binding.id, binding).second;
-  }
-  catch (...)
-  {
-    eptr = std::current_exception();
-  }
-  handle_exception(eptr);
+  handle_exception(exception_ptr);
   return false;
 }
 
 bool gk::input_handler::remove_binding(const std::string& id)
 {
-  std::exception_ptr eptr = nullptr;
+  std::exception_ptr exception_ptr = nullptr;
   try
   {
-    if (const auto removed = m_details.erase(id); removed != 1)
+    if (const auto removed = m_details->bindings_invoked.erase(id);
+        removed != 1)
     {
       return false;
     }
-    return m_bindings.erase(id) == 1;
+    return m_details->bindings.erase(id) == 1;
   }
   catch (...)
   {
-    eptr = std::current_exception();
+    exception_ptr = std::current_exception();
   }
-  handle_exception(eptr);
+  handle_exception(exception_ptr);
   return false;
 }
 
@@ -90,25 +155,14 @@ void gk::input_handler::handle_event(const SDL_Event& evnt)
   switch (evnt.type)
   {
   case SDL_KEYDOWN:
-    updateKeyStates();
-    break;
-
   case SDL_KEYUP:
-    updateKeyStates();
+    m_details->updateKeyStates();
     break;
-
   case SDL_MOUSEMOTION:
-    updateMouseStates(evnt.type);
-    break;
-
   case SDL_MOUSEBUTTONDOWN:
-    updateMouseStates(evnt.type);
-    break;
-
   case SDL_MOUSEBUTTONUP:
-    updateMouseStates(evnt.type);
+    m_details->updateMouseStates(evnt.type);
     break;
-
   default:
     break;
   }
@@ -116,45 +170,45 @@ void gk::input_handler::handle_event(const SDL_Event& evnt)
 
 void gk::input_handler::update()
 {
-  for (auto& [id, binding] : m_bindings)
+  for (auto& [id, binding] : m_details->bindings)
   {
     for (auto& event : binding.events)
     {
-      if (isKeyEvent(event.type))
+      if (m_details->isKeyEvent(event.type))
       {
-        if (isKeyDown(event.scancode))
+        if (m_details->isKeyDown(event.scancode))
         {
           ++binding.event_counter;
           if (event.on_keyhold == event::on_keyhold_behaviour::invoke_repeat)
           {
-            resetInvoked(binding.id);
+            m_details->resetInvoked(binding.id);
           }
         }
         else
         {
-          resetInvoked(binding.id);
+          m_details->resetInvoked(binding.id);
         }
       }
-      else if (isMouseButtonEvent(event.type))
+      else if (m_details->isMouseButtonEvent(event.type))
       {
-        if (isMouseButtonDown(event.mouse_button))
+        if (m_details->isMouseButtonDown(event.mouse_button))
         {
           ++binding.event_counter;
           if (event.on_keyhold == event::on_keyhold_behaviour::invoke_repeat)
           {
-            resetInvoked(binding.id);
+            m_details->resetInvoked(binding.id);
           }
         }
         else
         {
-          resetInvoked(binding.id);
+          m_details->resetInvoked(binding.id);
         }
       }
-      else if (isMouseMotionEvent(event.type))
+      else if (m_details->isMouseMotionEvent(event.type))
       {
-        if (isMotion())
+        if (m_details->isMotion())
         {
-          resetInvoked(binding.id);
+          m_details->resetInvoked(binding.id);
           ++binding.event_counter;
         }
       }
@@ -162,105 +216,174 @@ void gk::input_handler::update()
     // invoke callback
     if (binding.event_counter == binding.events.size())
     {
-      if (const auto callback = m_callbacks.find(binding.id);
-          callback != m_callbacks.end())
+      if (const auto callback = m_details->callbacks.find(binding.id);
+          callback != m_details->callbacks.end())
       {
-        if (!wasInvoked(binding.id))
+        if (!m_details->wasInvoked(binding.id))
         {
-          binding.details.mouse_pos = {static_cast<float>(m_mouseX),
-                                       static_cast<float>(m_mouseY)};
+          binding.details.mouse_pos = {static_cast<float>(m_details->mouseX),
+                                       static_cast<float>(m_details->mouseY)};
           callback->second(binding.details);
-          setInvoked(binding.id);
+          m_details->setInvoked(binding.id);
         }
         binding.details.reset();
       }
     }
     binding.event_counter = 0;
   }
-  m_mouseEvents[MouseButton::Motion - s_index_offset] = false;
+  m_details->mouseEvents[MouseButton::Motion - s_index_offset] = false;
 }
 
-bool gk::input_handler::isKeyEvent(const uint32_t event_type)
+bool gk::input_handler::details::add_binding(
+    event_binding const& t_event_binding)
+{
+  std::exception_ptr exception_ptr = nullptr;
+  try
+  {
+    if (t_event_binding.id.empty())
+    {
+      return false;
+    }
+    if (const auto added =
+            bindings_invoked.try_emplace(t_event_binding.id, false).second;
+        !added)
+    {
+      return false;
+    }
+    return bindings.try_emplace(t_event_binding.id, t_event_binding).second;
+  }
+  catch (...)
+  {
+    exception_ptr = std::current_exception();
+  }
+  handle_exception(exception_ptr);
+  return false;
+}
+
+bool gk::input_handler::add_keydown_binding(std::string_view id,
+                                            gk::keys const& t_keys,
+                                            mouse_buttons t_mouse_buttons)
+{
+  auto binding = gk::event_binding{std::string{id}};
+  for (auto const& key : t_keys)
+  {
+    binding.events.push_back({gk::EventType::KeyDown,
+                              gk::event::on_keyhold_behaviour::invoke_once,
+                              key});
+  }
+
+  for(auto const & button : t_mouse_buttons) {
+    binding.events.push_back({gk::EventType::MouseDown,
+                              gk::event::on_keyhold_behaviour::invoke_once,
+                              SDL_SCANCODE_UNKNOWN, button});
+  }
+  return m_details->add_binding(binding);
+}
+
+bool gk::input_handler::add_keydown_repeat_binding(
+    std::string_view id, keys const& t_keys, mouse_buttons t_mouse_buttons)
+{
+  auto binding = gk::event_binding{std::string{id}};
+  for (auto const& key : t_keys)
+  {
+    binding.events.push_back({gk::EventType::KeyDown,
+                              gk::event::on_keyhold_behaviour::invoke_repeat,
+                              key});
+  }
+  for(auto const& button : t_mouse_buttons)
+  {
+    binding.events.push_back({gk::EventType::MouseDown,
+                              gk::event::on_keyhold_behaviour::invoke_repeat,
+                              SDL_SCANCODE_UNKNOWN, button});
+  }
+  return m_details->add_binding(binding);
+}
+gk::input_handler::~input_handler() = default;
+
+// input_handler::details
+bool gk::input_handler::details::isKeyEvent(const uint32_t event_type)
 {
   return event_type == SDL_KEYDOWN || event_type == SDL_KEYUP;
 }
 
-bool gk::input_handler::isMouseButtonEvent(const uint32_t event_type)
+bool gk::input_handler::details::isMouseButtonEvent(const uint32_t event_type)
 {
   return event_type == SDL_MOUSEBUTTONDOWN || event_type == SDL_MOUSEBUTTONUP;
 }
 
-bool gk::input_handler::isMouseMotionEvent(const uint32_t event_type)
+bool gk::input_handler::details::isMouseMotionEvent(const uint32_t event_type)
 {
   return event_type == SDL_MOUSEMOTION;
 }
 
-void gk::input_handler::updateMouseStates(const uint32_t event_type)
+void gk::input_handler::details::updateMouseStates(const uint32_t event_type)
 {
-  const auto mouseButtons = SDL_GetMouseState(&m_mouseX, &m_mouseY);
+  const auto mouseButtons = SDL_GetMouseState(&mouseX, &mouseY);
 
   if (mouseButtons & SDL_BUTTON(gk::MouseButton::Left))
   {
-    m_mouseEvents[gk::MouseButton::Left - s_index_offset] = true;
+    mouseEvents[gk::MouseButton::Left - s_index_offset] = true;
   }
   else
   {
-    m_mouseEvents[gk::MouseButton::Left - s_index_offset] = false;
+    mouseEvents[gk::MouseButton::Left - s_index_offset] = false;
   }
   if (mouseButtons & SDL_BUTTON(gk::MouseButton::Middle))
   {
-    m_mouseEvents[gk::MouseButton::Middle - s_index_offset] = true;
+    mouseEvents[gk::MouseButton::Middle - s_index_offset] = true;
   }
   else
   {
-    m_mouseEvents[gk::MouseButton::Middle - s_index_offset] = false;
+    mouseEvents[gk::MouseButton::Middle - s_index_offset] = false;
   }
   if (mouseButtons & SDL_BUTTON(gk::MouseButton::Right))
   {
-    m_mouseEvents[gk::MouseButton::Right - s_index_offset] = true;
+    mouseEvents[gk::MouseButton::Right - s_index_offset] = true;
   }
   else
   {
-    m_mouseEvents[gk::MouseButton::Right - s_index_offset] = false;
+    mouseEvents[gk::MouseButton::Right - s_index_offset] = false;
   }
   if (event_type == SDL_MOUSEMOTION)
   {
-    m_mouseEvents[gk::MouseButton::Motion - s_index_offset] = true;
+    mouseEvents[gk::MouseButton::Motion - s_index_offset] = true;
   }
 }
 
-void gk::input_handler::updateKeyStates()
+void gk::input_handler::details::updateKeyStates()
 {
-  m_keystates = SDL_GetKeyboardState(NULL);
+  keystates = SDL_GetKeyboardState(nullptr);
 }
 
-bool gk::input_handler::isKeyDown(SDL_Scancode key) const
+bool gk::input_handler::details::isKeyDown(SDL_Scancode key) const
 {
-  if (m_keystates != nullptr)
+  if (keystates != nullptr)
   {
-    return m_keystates[key] == 1;
+    return keystates[key] == 1;
   }
   return false;
 }
 
-bool gk::input_handler::isKeyUp(SDL_Scancode key) const
+bool gk::input_handler::details::isKeyUp(SDL_Scancode key) const
 {
   return !isKeyDown(key);
 }
 
-bool gk::input_handler::isMouseButtonDown(const MouseButton button) const
+bool gk::input_handler::details::isMouseButtonDown(
+    const MouseButton button) const
 {
-  return m_mouseEvents[button - s_index_offset];
+  return mouseEvents[button - s_index_offset];
 }
 
-bool gk::input_handler::isMotion() const
+bool gk::input_handler::details::isMotion() const
 {
-  return m_mouseEvents[MouseButton::Motion - s_index_offset];
+  return mouseEvents[MouseButton::Motion - s_index_offset];
 }
 
-bool gk::input_handler::setInvoked(std::string const& id)
+bool gk::input_handler::details::setInvoked(std::string const& id)
 {
-  if (const auto invoked = m_details.find(id); invoked != m_details.end())
+  if (const auto invoked = bindings_invoked.find(id);
+      invoked != bindings_invoked.end())
   {
     invoked->second = true;
     return true;
@@ -268,9 +391,10 @@ bool gk::input_handler::setInvoked(std::string const& id)
   return false;
 }
 
-bool gk::input_handler::resetInvoked(std::string const& id)
+bool gk::input_handler::details::resetInvoked(std::string const& id)
 {
-  if (const auto invoked = m_details.find(id); invoked != m_details.end())
+  if (const auto invoked = bindings_invoked.find(id);
+      invoked != bindings_invoked.end())
   {
     invoked->second = false;
     return true;
@@ -278,31 +402,12 @@ bool gk::input_handler::resetInvoked(std::string const& id)
   return false;
 }
 
-bool gk::input_handler::wasInvoked(const std::string& id) const
+bool gk::input_handler::details::wasInvoked(const std::string& id) const
 {
-  if (const auto invoked = m_details.find(id); invoked != m_details.end())
+  if (const auto invoked = bindings_invoked.find(id);
+      invoked != bindings_invoked.end())
   {
     return invoked->second;
   }
   return false;
-}
-gk::event_binding gk::make_keydown_binding(std::string_view const& t_id,
-                                           SDL_Scancode t_scancode)
-{
-  auto binding = gk::event_binding{std::string{t_id}};
-  binding.events.push_back({gk::EventType::KeyDown,
-                            gk::event::on_keyhold_behaviour::invoke_once,
-                            t_scancode});
-
-  return binding;
-}
-gk::event_binding gk::make_keydown_repeat_binding(std::string_view const& t_id,
-                                                  SDL_Scancode t_scancode)
-{
-  auto binding = gk::event_binding{std::string{t_id}};
-  binding.events.push_back({gk::EventType::KeyDown,
-                            gk::event::on_keyhold_behaviour::invoke_repeat,
-                            t_scancode});
-
-  return binding;
 }

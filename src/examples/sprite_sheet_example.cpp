@@ -29,7 +29,7 @@ public:
       spdlog::error("could not load sprite_texture.cfg");
     }
     {
-      t_input_handler->add_binding(StateType::MAIN, gk::make_keydown_repeat_binding("left", SDL_SCANCODE_A));
+      t_input_handler->add_keydown_repeat_binding(StateType::MAIN, "left", {SDL_SCANCODE_A});
       t_input_handler->add_callback(StateType::MAIN, "left",
                                     [this](gk::event_details const&)
                                     {
@@ -40,7 +40,7 @@ public:
                                     });
     }
     {
-      t_input_handler->add_binding(StateType::MAIN, gk::make_keydown_repeat_binding("right", SDL_SCANCODE_D));
+      t_input_handler->add_keydown_repeat_binding(StateType::MAIN, "right", {SDL_SCANCODE_D});
       t_input_handler->add_callback(StateType::MAIN, "right",
                                     [this](gk::event_details const&)
                                     {
@@ -104,7 +104,7 @@ int main(int argc, const char** argv)
     auto& input_handler = app.get_input_handler();
 
     {
-      input_handler->add_global_binding(gk::make_keydown_binding("quit", SDL_SCANCODE_Q));
+      input_handler->add_global_keydown_binding("quit", {SDL_SCANCODE_Q});
       input_handler->add_global_callback(
           "quit", [&](gk::event_details const& t_details) { app.stop(); });
     }

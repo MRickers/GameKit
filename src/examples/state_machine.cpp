@@ -28,12 +28,8 @@ public:
     m_sharedContext.inputHandler_ptr->add_callback(
         StateType::INTRO, "IntroContinue",
         [this](const gk::event_details& details) { changeState(details); });
-
-    auto binding = gk::event_binding{"IntroContinue"};
-    binding.events.push_back({gk::EventType::KeyDown,
-                              gk::event::on_keyhold_behaviour::invoke_once,
-                              SDL_SCANCODE_SPACE});
-    m_sharedContext.inputHandler_ptr->add_binding(StateType::INTRO, binding);
+    m_sharedContext.inputHandler_ptr->add_keydown_binding(
+        StateType::INTRO, "IntroContinue", {SDL_SCANCODE_SPACE});
   }
   void on_destroy() override
   {
@@ -110,12 +106,8 @@ public:
     m_sharedContext.inputHandler_ptr->add_callback(
         StateType::MAIN, "MouseLeft",
         [this](const gk::event_details& details) { mouseClick(details); });
-
-    auto binding = gk::event_binding{"MouseLeft"};
-    binding.events.push_back({gk::EventType::MouseDown,
-                              gk::event::on_keyhold_behaviour::invoke_once,
-                              SDL_SCANCODE_UNKNOWN, gk::MouseButton::Left});
-    m_sharedContext.inputHandler_ptr->add_binding(StateType::MAIN, binding);
+    m_sharedContext.inputHandler_ptr->add_keydown_binding(
+        StateType::MAIN, "MouseLeft", {}, {gk::MouseButton::Left});
   }
   void on_destroy() override
   {
@@ -206,34 +198,22 @@ public:
       m_sharedContext.inputHandler_ptr->add_callback(
           StateType::GAME, "MouseMotion",
           [this](const gk::event_details& details) { mouseMotion(details); });
-
-      auto binding = gk::event_binding{"MouseMotion"};
-      binding.events.push_back({gk::EventType::MouseMotion,
-                                gk::event::on_keyhold_behaviour::invoke_once,
-                                SDL_SCANCODE_UNKNOWN, gk::MouseButton::Motion});
-      m_sharedContext.inputHandler_ptr->add_binding(StateType::GAME, binding);
+      m_sharedContext.inputHandler_ptr->add_keydown_repeat_binding(
+          StateType::GAME, "MouseMotion", {}, {gk::MouseButton::Motion});
     }
     {
       m_sharedContext.inputHandler_ptr->add_callback(
           StateType::GAME, "Pause",
           [this](const gk::event_details& details) { paused(details); });
-
-      auto binding = gk::event_binding{"Pause"};
-      binding.events.push_back({gk::EventType::KeyDown,
-                                gk::event::on_keyhold_behaviour::invoke_once,
-                                SDL_SCANCODE_P});
-      m_sharedContext.inputHandler_ptr->add_binding(StateType::GAME, binding);
+      m_sharedContext.inputHandler_ptr->add_keydown_binding(
+          StateType::GAME, "Pause", {SDL_SCANCODE_P});
     }
     {
       m_sharedContext.inputHandler_ptr->add_callback(
           StateType::GAME, "Quit", [this](const gk::event_details& details)
           { m_sharedContext.app->stop(); });
-
-      auto binding = gk::event_binding{"Quit"};
-      binding.events.push_back({gk::EventType::KeyDown,
-                                gk::event::on_keyhold_behaviour::invoke_once,
-                                SDL_SCANCODE_Q});
-      m_sharedContext.inputHandler_ptr->add_binding(StateType::GAME, binding);
+      m_sharedContext.inputHandler_ptr->add_keydown_binding(
+          StateType::GAME, "Quit", {SDL_SCANCODE_Q});
     }
 
     if (m_font = TTF_OpenFont("Roboto-Regular.ttf", 10); m_font == nullptr)
@@ -330,12 +310,8 @@ public:
       m_sharedContext.inputHandler_ptr->add_callback(
           StateType::PAUSED, "Unpause",
           [this](const gk::event_details& details) { unpause(details); });
-
-      auto binding = gk::event_binding{"Unpause"};
-      binding.events.push_back({gk::EventType::KeyDown,
-                                gk::event::on_keyhold_behaviour::invoke_once,
-                                SDL_SCANCODE_P});
-      m_sharedContext.inputHandler_ptr->add_binding(StateType::PAUSED, binding);
+      m_sharedContext.inputHandler_ptr->add_keydown_binding(
+          StateType::PAUSED, "Unpause", {SDL_SCANCODE_P});
     }
   }
   void on_destroy() override
