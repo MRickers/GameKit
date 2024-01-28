@@ -1,5 +1,6 @@
 #include "GameKit/core/animiation_directional.hpp"
 #include "GameKit/core/sprite_sheet.hpp"
+#include "GameKit/helpers/game_exception.hpp"
 
 void gk::animation_directional::frame_step()
 {
@@ -27,6 +28,9 @@ void gk::animation_directional::frame_step()
 
 void gk::animation_directional::crop_sprite()
 {
+  if(not m_sprite_sheet) {
+    throw gk::game_exception("invalid sprite_sheet pointer", 1000);
+  }
   auto const size_x = m_sprite_sheet->get_sprite_size().GetX<uint16_t>();
   auto const size_y = m_sprite_sheet->get_sprite_size().GetY<uint16_t>();
 
