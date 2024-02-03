@@ -1,30 +1,30 @@
-#include "GameKit/core/sprite_sheet.hpp"
-#include "GameKit/core/animiation_directional.hpp"
-#include "GameKit/helpers/game_exception.hpp"
+#include "GameKit/core/AnimiationDirectional.hpp"
+#include "GameKit/core/SpriteSheet.hpp"
+#include "GameKit/helpers/GameException.hpp"
 #include <fstream>
 
-gk::sprite_sheet::sprite_sheet(
-    std::unique_ptr<gk::texture_manager>& texture_manager)
+gk::SpriteSheet::SpriteSheet(
+    std::unique_ptr<gk::TextureManager>& texture_manager)
     : m_sprite{nullptr}
     , m_sprite_size{}
     , m_sprite_scale{1.f, 1.f}
-    , m_direction{sprite_sheet::direction::LEFT}
+    , m_direction{SpriteSheet::Direction::LEFT}
     , m_texture_manager{texture_manager}
     , m_clip{}
 {
 }
 
-gk::sprite_sheet::~sprite_sheet()
+gk::SpriteSheet::~SpriteSheet()
 {
   release_sheet();
 }
 
-void gk::sprite_sheet::crop_sprite(gk::rect const& t_rect)
+void gk::SpriteSheet::crop_sprite(gk::Rect const& t_rect)
 {
   m_clip = t_rect;
 }
 
-void gk::sprite_sheet::release_sheet()
+void gk::SpriteSheet::release_sheet()
 {
   if (!m_texture_manager->release_resource(m_texture_name))
   {
@@ -39,18 +39,18 @@ void gk::sprite_sheet::release_sheet()
   }
 }
 
-void gk::sprite_sheet::set_sprite_size(gk::vector2d const& t_size)
+void gk::SpriteSheet::set_sprite_size(gk::Vector2d const& t_size)
 {
   m_sprite_size = t_size;
   m_clip.size = t_size;
 }
 
-void gk::sprite_sheet::set_sprite_position(gk::vector2d const& t_pos)
+void gk::SpriteSheet::set_sprite_position(gk::Vector2d const& t_pos)
 {
   m_sprite_pos = t_pos;
 }
 
-void gk::sprite_sheet::set_direction(sprite_sheet::direction t_direction)
+void gk::SpriteSheet::set_direction(SpriteSheet::Direction t_direction)
 {
   if (m_direction == t_direction)
   {
@@ -60,17 +60,17 @@ void gk::sprite_sheet::set_direction(sprite_sheet::direction t_direction)
   m_current_animation->crop_sprite();
 }
 
-gk::vector2d gk::sprite_sheet::get_sprite_size() const
+gk::Vector2d gk::SpriteSheet::get_sprite_size() const
 {
   return m_sprite_size;
 }
 
-gk::sprite_sheet::direction gk::sprite_sheet::get_direction() const
+gk::SpriteSheet::Direction gk::SpriteSheet::get_direction() const
 {
   return m_direction;
 }
 
-bool gk::sprite_sheet::set_animation(std::string const& t_name,
+bool gk::SpriteSheet::set_animation(std::string const& t_name,
                                      bool const t_play, bool const t_loop)
 {
   if (auto itr = m_animations.find(t_name); itr != m_animations.end())
@@ -102,12 +102,12 @@ bool gk::sprite_sheet::set_animation(std::string const& t_name,
   return false;
 }
 
-void gk::sprite_sheet::update(time_ms t_dt)
+void gk::SpriteSheet::update(time_ms t_dt)
 {
   m_current_animation->update(t_dt);
 }
 
-void gk::sprite_sheet::draw(SDL_Renderer* renderer)
+void gk::SpriteSheet::draw(SDL_Renderer* renderer)
 {
   const SDL_Rect src{
       m_clip.pos.GetX<int>(),
@@ -130,7 +130,7 @@ void gk::sprite_sheet::draw(SDL_Renderer* renderer)
   }
 }
 
-bool gk::sprite_sheet::load_sheet(std::filesystem::path const& t_filename)
+bool gk::SpriteSheet::load_sheet(std::filesystem::path const& t_filename)
 {
   std::ifstream ifs;
   ifs.open(t_filename.string());
@@ -199,7 +199,7 @@ bool gk::sprite_sheet::load_sheet(std::filesystem::path const& t_filename)
         }
         if (m_animation_type == "Directional")
         {
-          auto animation = std::make_unique<animation_directional>(this);
+          auto animation = std::make_unique<AnimationDirectional>(this);
           animation->parse_file_input(key_stream);
           animation->set_name(name);
           animation->reset();
@@ -224,7 +224,7 @@ bool gk::sprite_sheet::load_sheet(std::filesystem::path const& t_filename)
   }
   return false;
 }
-gk::base_animation* gk::sprite_sheet::get_current_animation() const
+gk::BaseAnimation* gk::SpriteSheet::get_current_animation() const
 {
   return m_current_animation;
 }

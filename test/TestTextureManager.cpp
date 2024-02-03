@@ -1,4 +1,4 @@
-#include "GameKit/core/texture_manager.hpp"
+#include "GameKit/core/TextureManager.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("Interface", "[texture_manager]")
@@ -10,21 +10,21 @@ TEST_CASE("Interface", "[texture_manager]")
 
   SECTION("Default construct")
   {
-    gk::texture_manager texture_manager{renderer};
+    gk::TextureManager texture_manager{renderer};
     SDL_Texture* t = texture_manager.load("test_texture.png");
     REQUIRE(t != nullptr);
   }
 
   SECTION("load invalid config constructor")
   {
-    gk::texture_manager texture_manager{renderer, "test_texture.png"};
+    gk::TextureManager texture_manager{renderer, "test_texture.png"};
     SDL_Texture* t = texture_manager.get_resource("test_texture.png");
     REQUIRE(t == nullptr);
   }
 
   SECTION("load config constructor")
   {
-    gk::texture_manager texture_manager{renderer, "texture.cfg"};
+    gk::TextureManager texture_manager{renderer, "texture.cfg"};
     REQUIRE(texture_manager.require_resource("schiggy"));
     SDL_Texture* t = texture_manager.get_resource("schiggy");
     REQUIRE(t != nullptr);
@@ -32,7 +32,7 @@ TEST_CASE("Interface", "[texture_manager]")
 
   SECTION("unload texture")
   {
-    gk::texture_manager texture_manager{renderer, "texture.cfg"};
+    gk::TextureManager texture_manager{renderer, "texture.cfg"};
     REQUIRE(texture_manager.require_resource("schiggy"));
     SDL_Texture* t = texture_manager.get_resource("schiggy");
     REQUIRE(t != nullptr);
@@ -42,7 +42,7 @@ TEST_CASE("Interface", "[texture_manager]")
 
   SECTION("unload multiple texture")
   {
-    gk::texture_manager texture_manager{renderer, "texture.cfg"};
+    gk::TextureManager texture_manager{renderer, "texture.cfg"};
     REQUIRE(texture_manager.require_resource("schiggy"));
     REQUIRE(texture_manager.require_resource("schiggy"));
     REQUIRE(texture_manager.find("schiggy")->second == 2);
@@ -54,7 +54,7 @@ TEST_CASE("Interface", "[texture_manager]")
 
   SECTION("purge")
   {
-    gk::texture_manager texture_manager{renderer};
+    gk::TextureManager texture_manager{renderer};
     texture_manager.load_config("texture.cfg");
     texture_manager.require_resource("schiggy");
     texture_manager.require_resource("a");

@@ -1,16 +1,16 @@
-#include <GameKit/helpers/drawer.hpp>
+#include <GameKit/helpers/Drawer.hpp>
 
 #include <SDL2/SDL_render.h>
 namespace gk
 {
 
-  void drawer::set_render_color(SDL_Renderer* renderer, Color color)
+  void Drawer::set_render_color(SDL_Renderer* renderer, Color color)
   {
     const auto rgba = get_color_rgba(color);
     SDL_SetRenderDrawColor(renderer, rgba.r, rgba.g, rgba.b, rgba.a);
   }
 
-  ColorRGBA drawer::get_color_rgba(Color color)
+  ColorRGBA Drawer::get_color_rgba(Color color)
   {
     switch (color)
     {
@@ -79,7 +79,7 @@ namespace gk
     // Return default color (black) if the given color is not recognized
     return {0, 0, 0, 255};
   }
-  void drawer::draw_filled_circle(SDL_Renderer* renderer, int centerX,
+  void Drawer::draw_filled_circle(SDL_Renderer* renderer, int centerX,
                                   int centerY, size_t radius)
   {
     const int squaredRadius = radius * radius;
@@ -102,9 +102,9 @@ namespace gk
   }
 } // namespace gk
 
-void gk::drawer::draw_filled_rect(SDL_Renderer* renderer,
-                                  const gk::vector2d& pos,
-                                  const gk::vector2d& size)
+void gk::Drawer::draw_filled_rect(SDL_Renderer* renderer,
+                                  const gk::Vector2d& pos,
+                                  const gk::Vector2d& size)
 {
   SDL_Rect rect{pos.GetX<int>(), pos.GetY<int>(), size.GetX<int>(),
                 size.GetY<int>()};

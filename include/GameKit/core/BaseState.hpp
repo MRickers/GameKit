@@ -4,10 +4,10 @@ class SDL_Renderer;
 
 namespace gk
 {
-  class base_state
+  class BaseState
   {
   public:
-    virtual ~base_state()
+    virtual ~BaseState()
     {
     }
     virtual void on_create() = 0;

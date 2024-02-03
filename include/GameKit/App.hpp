@@ -1,8 +1,8 @@
 #pragma once
-#include "GameKit/core/state_input_handler.hpp"
-#include "GameKit/core/state_machine.hpp"
-#include "GameKit/core/texture_manager.hpp"
-#include "vector/vector2d.hpp"
+#include "GameKit/core/StateInputHandler.hpp"
+#include "GameKit/core/StateMachine.hpp"
+#include "GameKit/core/TextureManager.hpp"
+#include "vector/Vector2d.hpp"
 #include <memory>
 #include <string>
 
@@ -10,9 +10,9 @@ class SDL_Renderer;
 class SDL_Window;
 namespace gk
 {
-  using input_handler_ptr = std::shared_ptr<state_input_handler>;
-  using state_machinePtr = std::shared_ptr<state_machine>;
-  using texture_manager_ptr = std::shared_ptr<texture_manager>;
+  using InputHandlerPtr = std::shared_ptr<StateInputHandler>;
+  using StateMachinePtr = std::shared_ptr<StateMachine>;
+  using TextureManagerPtr = std::shared_ptr<TextureManager>;
 
   class AppConfiguration
   {
@@ -22,31 +22,31 @@ namespace gk
         , m_size{static_cast<float>(width), static_cast<float>(height)}
     {
     }
-    std::string getTitle() const
+    [[nodiscard]] std::string get_title() const
     {
       return m_title;
     }
-    vector2d getSize() const
+    [[nodiscard]] Vector2d get_size() const
     {
       return m_size;
     }
-    std::chrono::milliseconds const& get_update_rate() const
+    [[nodiscard]] std::chrono::milliseconds const& get_update_rate() const
     {
       return m_update_rate;
     }
 
   private:
     std::string m_title{"Title"};
-    gk::vector2d m_size{640, 480};
+    gk::Vector2d m_size{640, 480};
     std::chrono::milliseconds m_update_rate{1000 / 60};
   };
 
   class App;
   struct SharedContext
   {
-    state_input_handler* inputHandler_ptr{nullptr};
-    state_machine* state_machine_ptr{nullptr};
-    texture_manager* texture_manager_ptr{nullptr};
+    StateInputHandler* inputHandler_ptr{nullptr};
+    StateMachine* state_machine_ptr{nullptr};
+    TextureManager* texture_manager_ptr{nullptr};
     App* app{nullptr};
   };
 
@@ -58,31 +58,31 @@ namespace gk
 
     void stop();
     void run();
-    SDL_Renderer* get_renderer() const;
+    [[nodiscard]] SDL_Renderer* get_renderer() const;
 
-    gk::vector2d getWindowSize() const;
-    gk::SharedContext get_shared_context() const;
-    std::unique_ptr<state_input_handler>& get_input_handler();
-    std::unique_ptr<state_machine>& get_state_machine();
-    std::unique_ptr<texture_manager>& get_texture_manager();
-    std::chrono::milliseconds const& get_update_rate() const;
+    [[nodiscard]] gk::Vector2d get_window_size() const;
+    [[nodiscard]] gk::SharedContext get_shared_context() const;
+    std::unique_ptr<StateInputHandler>& get_input_handler();
+    std::unique_ptr<StateMachine>& get_state_machine();
+    std::unique_ptr<TextureManager>& get_texture_manager();
+    [[nodiscard]] std::chrono::milliseconds const& get_update_rate() const;
     static void shutdown();
 
   private:
-    void handleEvents();
+    void handle_events();
     void update();
     void draw();
-    void clearRenderer();
-    bool isRunning() const;
+    void clear_renderer();
+    [[nodiscard]] bool is_running() const;
     std::chrono::milliseconds m_update_rate;
     bool m_running{false};
     SDL_Window* m_window{nullptr};
     SDL_Renderer* m_renderer{nullptr};
-    std::unique_ptr<texture_manager> m_texture_manager{nullptr};
-    std::unique_ptr<state_input_handler> m_inputHandler{nullptr};
-    std::unique_ptr<state_machine> m_state_machine{nullptr};
+    std::unique_ptr<TextureManager> m_texture_manager{nullptr};
+    std::unique_ptr<StateInputHandler> m_inputHandler{nullptr};
+    std::unique_ptr<StateMachine> m_state_machine{nullptr};
 
-    gk::vector2d m_size;
+    gk::Vector2d m_size;
     SharedContext m_shared_context;
   };
 

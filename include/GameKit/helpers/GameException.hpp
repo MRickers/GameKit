@@ -5,11 +5,11 @@
 
 namespace gk
 {
-  class game_exception : public std::exception
+  class GameException : public std::exception
   {
   public:
-    game_exception(const std::string& msg, const int error,
-                   const char* file = "", const int line = 0)
+    GameException(const std::string& msg, const int error,
+                  const char* file = "", const int line = 0)
         : m_error{error}
         , m_msg{msg}
     {
@@ -39,14 +39,14 @@ namespace gk
     }
     catch (const std::exception& e)
     {
-      throw game_exception{e.what(), 0, file, line};
+      throw GameException{e.what(), 0, file, line};
     }
   }
 
 #define handle_exception(eptr) exception_handler(eptr, __FILE__, __LINE__)
 
-#define game_exception(message, error)                                         \
-  game_exception                                                               \
+#define GameException(message, error)                                          \
+  GameException                                                                \
   {                                                                            \
     message, error, __FILE__, __LINE__                                         \
   }

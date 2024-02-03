@@ -1,7 +1,7 @@
-#include "GameKit/core/state_machine.hpp"
+#include "GameKit/core/StateMachine.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-class StateMock : public gk::base_state
+class StateMock : public gk::BaseState
 {
 public:
   void on_create() override
@@ -34,7 +34,7 @@ public:
   std::string m_input{""};
 };
 
-gk::base_state_ptr create_state()
+gk::BaseStatePtr create_state()
 {
   return std::make_unique<StateMock>();
 }
@@ -49,7 +49,7 @@ enum class StateType
 
 TEST_CASE("Add/Switch State", "[statemanager]")
 {
-  gk::state_machine state_machine;
+  gk::StateMachine state_machine;
 
   SECTION("InitState")
   {
@@ -58,8 +58,8 @@ TEST_CASE("Add/Switch State", "[statemanager]")
   SECTION("RegisterState")
   {
     state_machine.register_state(StateType::INIT,
-                                []() -> gk::base_state_ptr
-                                { return std::make_unique<StateMock>(); });
+                                []() -> gk::BaseStatePtr
+                                 { return std::make_unique<StateMock>(); });
     REQUIRE(!state_machine.has_state(StateType::INIT));
   }
   SECTION("SwitchStateSimple")
@@ -68,8 +68,8 @@ TEST_CASE("Add/Switch State", "[statemanager]")
     StateMock* statePtr = nullptr;
 
     state_machine.register_state(StateType::MENU,
-                                [&statePtr]() -> gk::base_state_ptr
-                                {
+                                [&statePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   statePtr = state.get();
                                   return std::move(state);
@@ -86,15 +86,15 @@ TEST_CASE("Add/Switch State", "[statemanager]")
     StateMock* initStatePtr = nullptr;
 
     state_machine.register_state(StateType::INIT,
-                                [&initStatePtr]() -> gk::base_state_ptr
-                                {
+                                [&initStatePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   initStatePtr = state.get();
                                   return std::move(state);
                                 });
     state_machine.register_state(StateType::MENU,
-                                [&menuStatePtr]() -> gk::base_state_ptr
-                                {
+                                [&menuStatePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   menuStatePtr = state.get();
                                   return std::move(state);
@@ -111,15 +111,15 @@ TEST_CASE("Add/Switch State", "[statemanager]")
 
 TEST_CASE("Remove", "[statemanager]")
 {
-  gk::state_machine state_machine;
+  gk::StateMachine state_machine;
 
   SECTION("Add/Remove")
   {
     StateMock* statePtr = nullptr;
 
     state_machine.register_state(StateType::PAUSE,
-                                [&statePtr]() -> gk::base_state_ptr
-                                {
+                                [&statePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   statePtr = state.get();
                                   return std::move(state);
@@ -134,15 +134,15 @@ TEST_CASE("Remove", "[statemanager]")
 
 TEST_CASE("Update", "[statemanager]")
 {
-  gk::state_machine state_machine;
+  gk::StateMachine state_machine;
 
   SECTION("Simple")
   {
     StateMock* statePtr = nullptr;
 
     state_machine.register_state(StateType::PAUSE,
-                                [&statePtr]() -> gk::base_state_ptr
-                                {
+                                [&statePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   statePtr = state.get();
                                   return std::move(state);
@@ -158,23 +158,23 @@ TEST_CASE("Update", "[statemanager]")
     StateMock* menuStatePtr = nullptr;
 
     state_machine.register_state(StateType::PAUSE,
-                                [&pauseStatePtr]() -> gk::base_state_ptr
-                                {
+                                [&pauseStatePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   pauseStatePtr = state.get();
                                   state->set_transcendent(true);
                                   return std::move(state);
                                 });
     state_machine.register_state(StateType::PLAY,
-                                [&playStatePtr]() -> gk::base_state_ptr
-                                {
+                                [&playStatePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   playStatePtr = state.get();
                                   return std::move(state);
                                 });
     state_machine.register_state(StateType::MENU,
-                                [&menuStatePtr]() -> gk::base_state_ptr
-                                {
+                                [&menuStatePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   menuStatePtr = state.get();
                                   return std::move(state);
@@ -196,15 +196,15 @@ TEST_CASE("Update", "[statemanager]")
 
 TEST_CASE("drawer", "[statemanager]")
 {
-  gk::state_machine state_machine;
+  gk::StateMachine state_machine;
 
   SECTION("Simple")
   {
     StateMock* statePtr = nullptr;
 
     state_machine.register_state(StateType::PAUSE,
-                                [&statePtr]() -> gk::base_state_ptr
-                                {
+                                [&statePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   statePtr = state.get();
                                   return std::move(state);
@@ -220,23 +220,23 @@ TEST_CASE("drawer", "[statemanager]")
     StateMock* menuStatePtr = nullptr;
 
     state_machine.register_state(StateType::PAUSE,
-                                [&pauseStatePtr]() -> gk::base_state_ptr
-                                {
+                                [&pauseStatePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   pauseStatePtr = state.get();
                                   state->set_transparent(true);
                                   return std::move(state);
                                 });
     state_machine.register_state(StateType::PLAY,
-                                [&playStatePtr]() -> gk::base_state_ptr
-                                {
+                                [&playStatePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   playStatePtr = state.get();
                                   return std::move(state);
                                 });
     state_machine.register_state(StateType::MENU,
-                                [&menuStatePtr]() -> gk::base_state_ptr
-                                {
+                                [&menuStatePtr]() -> gk::BaseStatePtr
+                                 {
                                   auto state = std::make_unique<StateMock>();
                                   menuStatePtr = state.get();
                                   return std::move(state);

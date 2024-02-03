@@ -1,14 +1,14 @@
 #pragma once
-#include "GameKit/helpers/clock_chrono.hpp"
-#include "GameKit/helpers/clock_sdl.hpp"
+#include "GameKit/helpers/ClockChrono.hpp"
+#include "GameKit/helpers/SdlClock.hpp"
 
 namespace gk
 {
-  template <typename clock> class timer_interface
+  template <typename Clock> class TimerInterface
   {
   private:
     bool m_started{false};
-    clock m_clock{};
+    Clock m_clock{};
 
   public:
     time_ms round()
@@ -44,7 +44,7 @@ namespace gk
       return m_clock.time_passed();
     }
 
-    bool is_started() const
+    [[nodiscard]] bool is_started() const
     {
       return m_started;
     }
@@ -55,7 +55,7 @@ namespace gk
     }
   };
 
-  using Timer = timer_interface<chrono_clock>;
-  using TimerSdl = timer_interface<sdl_clock>;
+  using Timer = TimerInterface<ChronoClock>;
+  using TimerSdl = TimerInterface<SdlClock>;
 
 } // namespace gk

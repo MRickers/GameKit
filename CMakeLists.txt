@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
-set(VERSION_PATCH 0)
+set(VERSION_PATCH 1)
 
 project(GameKit
         LANGUAGES C CXX

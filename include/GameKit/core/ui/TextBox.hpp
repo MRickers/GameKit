@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 
-#include "GameKit/helpers/drawer.hpp"
-#include "GameKit/vector/vector2d.hpp"
+#include "GameKit/helpers/Drawer.hpp"
+#include "GameKit/vector/Vector2d.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -14,26 +14,26 @@ namespace gk
   using text_container = std::vector<std::string>;
   using text_buffer = std::deque<std::string>;
 
-  class text_curcular_buffer
+  class TextCurcularBuffer
   {
   public:
-    text_curcular_buffer(size_t maxRows = 6);
+    explicit TextCurcularBuffer(size_t maxRows = 6);
     void push(const std::string& content);
     void pop();
     void clear();
-    size_t size() const;
-    size_t rows() const;
-    text_container get() const;
+    [[nodiscard]] size_t size() const;
+    [[nodiscard]] size_t rows() const;
+    [[nodiscard]] text_container get() const;
 
   private:
     text_buffer m_textBuffer{};
     size_t m_maxRows{6};
   };
 
-  template <typename Container> class text_field
+  template <typename Container> class TextField
   {
   public:
-    text_field(size_t lineCount = 6, _TTF_Font* font = nullptr,
+    explicit TextField(size_t lineCount = 6, _TTF_Font* font = nullptr,
                size_t fontSize = 0)
         : m_container{lineCount}
         , m_font{font}
@@ -41,7 +41,7 @@ namespace gk
     {
     }
 
-    ~text_field()
+    ~TextField()
     {
       if (m_texture)
       {
@@ -112,7 +112,7 @@ namespace gk
       }
     }
 
-    void setPos(const gk::vector2d& pos)
+    void setPos(const gk::Vector2d& pos)
     {
       m_pos = pos;
     }
@@ -124,12 +124,12 @@ namespace gk
     _TTF_Font* m_font{nullptr};
     SDL_Texture* m_texture{nullptr};
     Color m_textColor{Color::WHITE};
-    gk::vector2d m_pos{0, 0};
+    gk::Vector2d m_pos{0, 0};
     size_t m_fontSize;
   };
 
   template <typename Container>
-  inline void gk::text_field<Container>::draw(SDL_Renderer* renderer)
+  inline void gk::TextField<Container>::draw(SDL_Renderer* renderer)
   {
     if (m_texture)
     {
@@ -142,7 +142,7 @@ namespace gk
     {
       formattedText += line + "\n";
     }
-    const auto colorTmp = gk::drawer::get_color_rgba(m_textColor);
+    const auto colorTmp = gk::Drawer::get_color_rgba(m_textColor);
     SDL_Color textColor;
     textColor.r = colorTmp.r;
     textColor.g = colorTmp.g;
@@ -162,9 +162,9 @@ namespace gk
           m_pos.GetX<int>(), m_pos.GetY<int>(),
           static_cast<int>(textSurface->w),
           static_cast<int>(m_container.size() * m_fontSize)};
-      SDL_RenderCopy(renderer, m_texture, NULL, &textRect);
+      SDL_RenderCopy(renderer, m_texture, nullptr, &textRect);
       SDL_FreeSurface(textSurface);
     }
   }
-  using TextBox = text_field<text_curcular_buffer>;
+  using TextBox = TextField<TextCurcularBuffer>;
 } // namespace gk

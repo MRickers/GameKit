@@ -1,11 +1,11 @@
-#include "GameKit/core/ui/text_box.hpp"
+#include "GameKit/core/ui/TextBox.hpp"
 
-gk::text_curcular_buffer::text_curcular_buffer(size_t maxRows)
+gk::TextCurcularBuffer::TextCurcularBuffer(size_t maxRows)
     : m_maxRows{maxRows}
 {
 }
 
-void gk::text_curcular_buffer::push(const std::string& content)
+void gk::TextCurcularBuffer::push(const std::string& content)
 {
   if (m_textBuffer.size() >= m_maxRows)
   {
@@ -14,7 +14,7 @@ void gk::text_curcular_buffer::push(const std::string& content)
   m_textBuffer.push_back(content);
 }
 
-void gk::text_curcular_buffer::pop()
+void gk::TextCurcularBuffer::pop()
 {
   if (!m_textBuffer.empty())
   {
@@ -22,22 +22,22 @@ void gk::text_curcular_buffer::pop()
   }
 }
 
-void gk::text_curcular_buffer::clear()
+void gk::TextCurcularBuffer::clear()
 {
   m_textBuffer.clear();
 }
 
-size_t gk::text_curcular_buffer::size() const
+size_t gk::TextCurcularBuffer::size() const
 {
   return m_textBuffer.size();
 }
 
-size_t gk::text_curcular_buffer::rows() const
+size_t gk::TextCurcularBuffer::rows() const
 {
   return m_maxRows;
 }
 
-gk::text_container gk::text_curcular_buffer::get() const
+gk::text_container gk::TextCurcularBuffer::get() const
 {
   text_container container;
   for (const auto& item : m_textBuffer)

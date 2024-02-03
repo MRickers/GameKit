@@ -1,5 +1,5 @@
 #pragma once
-#include "GameKit/vector/vector2d.hpp"
+#include "GameKit/vector/Vector2d.hpp"
 #include <cstddef>
 #include <cstdint>
 
@@ -50,7 +50,7 @@ namespace gk
     VIOLET
   };
 
-  class drawer
+  class Drawer
   {
   public:
     static void set_render_color(SDL_Renderer* renderer, Color);
@@ -58,7 +58,7 @@ namespace gk
     static void draw_filled_circle(SDL_Renderer* renderer, int centerX,
                                    int centerY, size_t radius);
     static void draw_filled_rect(SDL_Renderer* renderer,
-                                 const gk::vector2d& pos,
-                                 const gk::vector2d& size);
+                                 const gk::Vector2d& pos,
+                                 const gk::Vector2d& size);
   };
 } // namespace gk

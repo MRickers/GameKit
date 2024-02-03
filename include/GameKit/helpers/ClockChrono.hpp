@@ -1,10 +1,10 @@
 #pragma once
-#include "GameKit/helpers/types.hpp"
+#include "GameKit/helpers/Types.hpp"
 #include <chrono>
 
 namespace gk
 {
-  class chrono_clock
+  class ChronoClock
   {
   public:
     time_ms time_passed();

@@ -1,11 +1,11 @@
-#include "GameKit/vector/vector2d.hpp"
+#include "GameKit/vector/Vector2d.hpp"
 #include <catch2/catch_test_macros.hpp>
 using namespace gk;
 
 TEST_CASE("Addition", "[vector2d]")
 {
-  vector2d vec1{1, 1};
-  vector2d vec2{2, 2};
+  Vector2d vec1{1, 1};
+  Vector2d vec2{2, 2};
 
   const auto vec3 = vec1 + vec2;
 
@@ -17,8 +17,8 @@ TEST_CASE("Addition", "[vector2d]")
 
 TEST_CASE("AdditionTo", "[vector2d]")
 {
-  vector2d vec1{23, 1000};
-  vector2d vec2{9876, 234};
+  Vector2d vec1{23, 1000};
+  Vector2d vec2{9876, 234};
 
   vec2 += vec1;
 
@@ -32,8 +32,8 @@ TEST_CASE("AdditionTo", "[vector2d]")
 
 TEST_CASE("Subtraction", "[vector2d]")
 {
-  vector2d vec1{1, 1};
-  vector2d vec2{3, 3};
+  Vector2d vec1{1, 1};
+  Vector2d vec2{3, 3};
 
   const auto vec3 = vec1 - vec2;
 
@@ -45,8 +45,8 @@ TEST_CASE("Subtraction", "[vector2d]")
 
 TEST_CASE("SubstractTo", "[vector2d]")
 {
-  vector2d vec1{300, 400};
-  vector2d vec2{500, 600};
+  Vector2d vec1{300, 400};
+  Vector2d vec2{500, 600};
 
   vec1 -= vec2;
 
@@ -60,7 +60,7 @@ TEST_CASE("SubstractTo", "[vector2d]")
 
 TEST_CASE("MultiplyScalar", "[vector2d]")
 {
-  vector2d vec1{300, 400};
+  Vector2d vec1{300, 400};
   const auto vec2 = vec1 * 4;
 
   const auto [x, y] = vec2.Get();
@@ -73,7 +73,7 @@ TEST_CASE("MultiplyScalar", "[vector2d]")
 
 TEST_CASE("MultiplyScalarTo", "[vector2d]")
 {
-  vector2d vec1{300, 400};
+  Vector2d vec1{300, 400};
   vec1 *= 10;
 
   const auto [x, y] = vec1.Get();
@@ -84,7 +84,7 @@ TEST_CASE("MultiplyScalarTo", "[vector2d]")
 
 TEST_CASE("DivideScalar", "[vector2d]")
 {
-  vector2d vec1{300, 400};
+  Vector2d vec1{300, 400};
   const auto vec2 = vec1 / 2;
 
   const auto [x, y] = vec2.Get();
@@ -97,7 +97,7 @@ TEST_CASE("DivideScalar", "[vector2d]")
 
 TEST_CASE("DivideScalarTo", "[vector2d]")
 {
-  vector2d vec1{300, 400};
+  Vector2d vec1{300, 400};
   vec1 /= 10;
 
   const auto [x, y] = vec1.Get();
@@ -108,32 +108,32 @@ TEST_CASE("DivideScalarTo", "[vector2d]")
 
 TEST_CASE("DivideByZero", "[vector2d]")
 {
-  vector2d vec1{300, 400};
+  Vector2d vec1{300, 400};
   REQUIRE_THROWS_AS(vec1 / 0, std::invalid_argument);
 }
 
 TEST_CASE("DivideByZeroTo", "[vector2d]")
 {
-  vector2d vec1{300, 400};
+  Vector2d vec1{300, 400};
   REQUIRE_THROWS_AS(vec1 /= 0, std::invalid_argument);
 }
 
 TEST_CASE("VectorLength", "[vector2d]")
 {
-  vector2d vec1{3, 4};
+  Vector2d vec1{3, 4};
   REQUIRE(vec1.Length() == 5);
 }
 
 TEST_CASE("Normalize", "[vector2d]")
 {
-  vector2d vec1{3, 4};
+  Vector2d vec1{3, 4};
   REQUIRE_NOTHROW(vec1.Normalize());
   REQUIRE(vec1.Length() == 1);
 }
 
 TEST_CASE("SetLength", "[vector2d]")
 {
-  vector2d vec1{3, 4};
+  Vector2d vec1{3, 4};
   REQUIRE(vec1.Length() == 5);
   vec1.SetLength(10);
   REQUIRE(vec1.Length() == 10);
@@ -141,7 +141,7 @@ TEST_CASE("SetLength", "[vector2d]")
 
 TEST_CASE("SetLimitNotReached", "[vector2d]")
 {
-  vector2d vec1{3, 4};
+  Vector2d vec1{3, 4};
   REQUIRE(vec1.Length() == 5);
   vec1.SetLimit(10);
   REQUIRE(vec1.Length() == 5);
@@ -149,7 +149,7 @@ TEST_CASE("SetLimitNotReached", "[vector2d]")
 
 TEST_CASE("SetLimitReached", "[vector2d]")
 {
-  vector2d vec1{3, 4};
+  Vector2d vec1{3, 4};
   REQUIRE(vec1.Length() == 5);
   vec1.SetLimit(3);
   REQUIRE(vec1.Length() == 3);

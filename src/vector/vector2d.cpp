@@ -1,55 +1,55 @@
-#include "GameKit/vector/vector2d.hpp"
+#include "GameKit/vector/Vector2d.hpp"
 #include <cmath>
 #include <stdexcept>
 
-gk::vector2d::vector2d(const float x, const float y)
+gk::Vector2d::Vector2d(const float x, const float y)
     : m_x{x}
     , m_y{y}
 {
 }
 
-gk::vector2d::vector2d(const int x, const int y)
+gk::Vector2d::Vector2d(const int x, const int y)
     : m_x{static_cast<float>(x)}
     , m_y{static_cast<float>(y)}
 {
 }
-gk::vector2d gk::vector2d::operator+(const vector2d& other) const
+gk::Vector2d gk::Vector2d::operator+(const Vector2d& other) const
 {
   return {m_x + other.m_x, m_y + other.m_y};
 }
 
-gk::vector2d& gk::vector2d::operator+=(const vector2d& other)
+gk::Vector2d& gk::Vector2d::operator+=(const Vector2d& other)
 {
   m_x += other.m_x;
   m_y += other.m_y;
   return *this;
 }
 
-gk::vector2d gk::vector2d::operator-(const vector2d& other) const
+gk::Vector2d gk::Vector2d::operator-(const Vector2d& other) const
 {
   return {m_x - other.m_x, m_y - other.m_y};
 }
 
-gk::vector2d& gk::vector2d::operator-=(const vector2d& other)
+gk::Vector2d& gk::Vector2d::operator-=(const Vector2d& other)
 {
   m_x -= other.m_x;
   m_y -= other.m_y;
   return *this;
 }
 
-gk::vector2d gk::vector2d::operator*(const float scalar) const
+gk::Vector2d gk::Vector2d::operator*(const float scalar) const
 {
   return {m_x * scalar, m_y * scalar};
 }
 
-gk::vector2d& gk::vector2d::operator*=(const float scalar)
+gk::Vector2d& gk::Vector2d::operator*=(const float scalar)
 {
   m_x *= scalar;
   m_y *= scalar;
   return *this;
 }
 
-gk::vector2d gk::vector2d::operator/(const float scalar) const
+gk::Vector2d gk::Vector2d::operator/(const float scalar) const
 {
   if (scalar == 0)
   {
@@ -58,7 +58,7 @@ gk::vector2d gk::vector2d::operator/(const float scalar) const
   return {m_x / scalar, m_y / scalar};
 }
 
-gk::vector2d& gk::vector2d::operator/=(const float scalar)
+gk::Vector2d& gk::Vector2d::operator/=(const float scalar)
 {
   if (scalar == 0)
   {
@@ -69,12 +69,12 @@ gk::vector2d& gk::vector2d::operator/=(const float scalar)
   return *this;
 }
 
-float gk::vector2d::Length() const
+float gk::Vector2d::Length() const
 {
   return std::sqrt(m_x * m_x + m_y * m_y);
 }
 
-void gk::vector2d::SetLength(const float len)
+void gk::Vector2d::SetLength(const float len)
 {
   if (const auto length = Length(); len > 0)
   {
@@ -85,7 +85,7 @@ void gk::vector2d::SetLength(const float len)
   }
 }
 
-void gk::vector2d::Normalize()
+void gk::Vector2d::Normalize()
 {
   if (const auto len = Length(); len > 0)
   {
@@ -93,7 +93,7 @@ void gk::vector2d::Normalize()
   }
 }
 
-void gk::vector2d::SetLimit(const float limit)
+void gk::Vector2d::SetLimit(const float limit)
 {
   if (Length() > limit)
   {
@@ -101,37 +101,37 @@ void gk::vector2d::SetLimit(const float limit)
   }
 }
 
-std::pair<float, float> gk::vector2d::Get() const
+std::pair<float, float> gk::Vector2d::Get() const
 {
   return {m_x, m_y};
 }
 
-template <> float gk::vector2d::GetX<float>() const
+template <> float gk::Vector2d::GetX<float>() const
 {
   return m_x;
 }
 
-template <> int gk::vector2d::GetX<int>() const
+template <> int gk::Vector2d::GetX<int>() const
 {
   return static_cast<int>(m_x);
 }
 
-template <> uint16_t gk::vector2d::GetX<uint16_t>() const
+template <> uint16_t gk::Vector2d::GetX<uint16_t>() const
 {
   return static_cast<uint16_t>(m_x);
 }
 
-template <> float gk::vector2d::GetY<float>() const
+template <> float gk::Vector2d::GetY<float>() const
 {
   return m_y;
 }
 
-template <> int gk::vector2d::GetY<int>() const
+template <> int gk::Vector2d::GetY<int>() const
 {
   return static_cast<int>(m_y);
 }
 
-template <> uint16_t gk::vector2d::GetY<uint16_t>() const
+template <> uint16_t gk::Vector2d::GetY<uint16_t>() const
 {
   return static_cast<uint16_t>(m_y);
 }

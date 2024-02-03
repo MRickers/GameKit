@@ -16,7 +16,7 @@ App.cpp
 target_include_directories(gkcore PUBLIC ${PROJECT_HEADERS})
 target_link_libraries(gkcore PRIVATE SDL2 SDL2_ttf SDL2_image)
 set_target_properties(gkcore PROPERTIES
-CXX_STANDARD 17
+CXX_STANDARD 23
 CXX_STANDARD_REQUIRED On
 )
 
@@ -34,7 +34,7 @@ examples/inputHandler.cpp
 
 target_link_libraries(inputHandlerExample PRIVATE gkcore)
 set_target_properties(inputHandlerExample PROPERTIES
-CXX_STANDARD 17
+CXX_STANDARD 23
 CXX_STANDARD_REQUIRED On
 )
 
@@ -48,7 +48,7 @@ add_custom_command(TARGET state_machine_example POST_BUILD
 
 target_link_libraries(state_machine_example PRIVATE gkcore spdlog::spdlog_header_only)
 set_target_properties(state_machine_example PROPERTIES
-CXX_STANDARD 17
+CXX_STANDARD 23
 CXX_STANDARD_REQUIRED On
 )
 
@@ -57,7 +57,7 @@ set(SPRITE_SHEET_EXAMPLE sprite_sheet_example)
 add_executable(${SPRITE_SHEET_EXAMPLE} examples/sprite_sheet_example.cpp)
 target_link_libraries(${SPRITE_SHEET_EXAMPLE} PRIVATE gkcore spdlog::spdlog_header_only)
 set_target_properties(${SPRITE_SHEET_EXAMPLE} PROPERTIES
-        CXX_STANDARD 17
+        CXX_STANDARD 23
         CXX_STANDARD_REQUIRED On
 )
 add_custom_command(TARGET ${SPRITE_SHEET_EXAMPLE} POST_BUILD

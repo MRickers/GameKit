@@ -1,8 +1,8 @@
-#include "GameKit/core/state_machine.hpp"
-#include "GameKit/helpers/game_exception.hpp"
+#include "GameKit/core/StateMachine.hpp"
+#include "GameKit/helpers/GameException.hpp"
 #include <algorithm>
 
-void gk::state_machine::update()
+void gk::StateMachine::update()
 {
   if (m_states.empty())
   {
@@ -31,7 +31,7 @@ void gk::state_machine::update()
   }
 }
 
-void gk::state_machine::draw(SDL_Renderer* renderer)
+void gk::StateMachine::draw(SDL_Renderer* renderer)
 {
   if (m_states.empty())
   {
@@ -60,7 +60,7 @@ void gk::state_machine::draw(SDL_Renderer* renderer)
   }
 }
 
-void gk::state_machine::process_requests()
+void gk::StateMachine::process_requests()
 {
   while (m_toRemove.begin() != m_toRemove.end())
   {
@@ -69,11 +69,11 @@ void gk::state_machine::process_requests()
   }
 }
 
-bool gk::state_machine::has_state(const StateType state)
+bool gk::StateMachine::has_state(const StateType state)
 {
   const auto found =
       std::find_if(m_states.begin(), m_states.end(),
-                   [state](const std::pair<StateType, gk::base_state_ptr>& p)
+                   [state](const std::pair<StateType, gk::BaseStatePtr>& p)
                    { return state == p.first; });
   if (found != m_states.end())
   {
@@ -88,12 +88,12 @@ bool gk::state_machine::has_state(const StateType state)
   return false;
 }
 
-void gk::state_machine::switch_to(const StateType state)
+void gk::StateMachine::switch_to(const StateType state)
 {
 
   if (const auto toSwitch =
           std::find_if(m_states.begin(), m_states.end(),
-                       [state](const std::pair<StateType, base_state_ptr>& p)
+                       [state](const std::pair<StateType, BaseStatePtr>& p)
                        { return state == p.first; });
       toSwitch != m_states.end())
   {
@@ -119,23 +119,23 @@ void gk::state_machine::switch_to(const StateType state)
   }
 }
 
-void gk::state_machine::remove(const StateType state)
+void gk::StateMachine::remove(const StateType state)
 {
   m_toRemove.push_back(state);
 }
 
-void gk::state_machine::register_state(const StateType state,
-                                       state_creator creator)
+void gk::StateMachine::register_state(const StateType state,
+                                      StateCreator creator)
 {
   m_factory[state] = creator;
 }
 
-StateType gk::state_machine::current_state() const
+StateType gk::StateMachine::current_state() const
 {
   return m_current_state;
 }
 
-void gk::state_machine::create_state(const StateType state)
+void gk::StateMachine::create_state(const StateType state)
 {
   if (const auto stateRegistered = m_factory.find(state);
       stateRegistered != m_factory.end())
@@ -147,16 +147,16 @@ void gk::state_machine::create_state(const StateType state)
     newStatePtr->on_create();
     return;
   }
-  throw gk::game_exception(std::string{"could not create state: "} +
+  throw gk::GameException(std::string{"could not create state: "} +
                                std::to_string(static_cast<int>(state)),
                            -100);
 }
 
-void gk::state_machine::remove_state(const StateType state)
+void gk::StateMachine::remove_state(const StateType state)
 {
   auto stateToRemove =
       std::find_if(m_states.begin(), m_states.end(),
-                   [state](const std::pair<StateType, gk::base_state_ptr>& p)
+                   [state](const std::pair<StateType, gk::BaseStatePtr>& p)
                    { return state == p.first; });
   if (stateToRemove != m_states.end())
   {

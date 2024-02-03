@@ -1,7 +1,7 @@
 #include "GameKit/App.hpp"
-#include "GameKit/core/ui/text_box.hpp"
-#include "GameKit/helpers/drawer.hpp"
-#include "GameKit/helpers/timer.hpp"
+#include "GameKit/core/ui/TextBox.hpp"
+#include "GameKit/helpers/Drawer.hpp"
+#include "GameKit/helpers/Timer.hpp"
 #include <spdlog/spdlog.h>
 
 enum class StateType
@@ -12,10 +12,10 @@ enum class StateType
   PAUSED,
 };
 
-class IntroState : public gk::base_state
+class IntroState : public gk::BaseState
 {
 public:
-  IntroState(gk::SharedContext sharedContext, const gk::vector2d& windowSize)
+  IntroState(gk::SharedContext sharedContext, const gk::Vector2d& windowSize)
       : m_sharedContext{sharedContext}
       , m_windowSize{windowSize}
   {
@@ -51,13 +51,13 @@ public:
   {
     if (!m_timer.has_passed(2000))
     {
-      m_pos += gk::vector2d{0, 1};
+      m_pos += gk::Vector2d{0, 1};
     }
   }
   void draw(SDL_Renderer* renderer) override
   {
-    gk::drawer::set_render_color(renderer, gk::Color::MAROON);
-    gk::drawer::draw_filled_rect(renderer, m_pos, m_size);
+    gk::Drawer::set_render_color(renderer, gk::Color::MAROON);
+    gk::Drawer::draw_filled_rect(renderer, m_pos, m_size);
   }
 
 private:
@@ -73,17 +73,17 @@ private:
 
   gk::SharedContext m_sharedContext{};
   gk::Timer m_timer;
-  gk::vector2d m_windowSize{0, 0};
-  gk::vector2d m_pos{0, 0};
-  gk::vector2d m_size{200, 100};
+  gk::Vector2d m_windowSize{0, 0};
+  gk::Vector2d m_pos{0, 0};
+  gk::Vector2d m_size{200, 100};
 };
 
-class MainState : public gk::base_state
+class MainState : public gk::BaseState
 {
   struct Shape
   {
-    gk::vector2d m_pos{0, 0};
-    gk::vector2d m_size{0, 0};
+    gk::Vector2d m_pos{0, 0};
+    gk::Vector2d m_size{0, 0};
   };
 
 public:
@@ -97,7 +97,7 @@ public:
     const auto [x, y] = m_buttonPos.Get();
     for (int i = 0; i < 3; ++i)
     {
-      const auto buttonPos = gk::vector2d{
+      const auto buttonPos = gk::Vector2d{
           x, y + (i * (m_buttonSize.GetY<int>() + m_buttonPadding))};
 
       m_shapes[i].m_pos = buttonPos + m_buttonSize / 2;
@@ -129,10 +129,10 @@ public:
   }
   void draw(SDL_Renderer* renderer) override
   {
-    gk::drawer::set_render_color(renderer, gk::Color::LIME);
+    gk::Drawer::set_render_color(renderer, gk::Color::LIME);
     for (int i = 0; i < 3; ++i)
     {
-      gk::drawer::draw_filled_rect(renderer, m_shapes[i].m_pos,
+      gk::Drawer::draw_filled_rect(renderer, m_shapes[i].m_pos,
                                    m_shapes[i].m_size);
     }
   }
@@ -169,18 +169,18 @@ private:
 
   gk::SharedContext m_sharedContext{};
 
-  gk::vector2d m_buttonSize{100, 50};
-  gk::vector2d m_buttonPos{220, 90};
+  gk::Vector2d m_buttonSize{100, 50};
+  gk::Vector2d m_buttonPos{220, 90};
   uint32_t m_buttonPadding{10};
   Shape m_shapes[3];
 };
 
-class GameState : public gk::base_state
+class GameState : public gk::BaseState
 {
   struct Shape
   {
-    gk::vector2d m_pos{0, 0};
-    gk::vector2d m_size{0, 0};
+    gk::Vector2d m_pos{0, 0};
+    gk::Vector2d m_size{0, 0};
   };
 
 public:
@@ -259,8 +259,8 @@ public:
   }
   void draw(SDL_Renderer* renderer) override
   {
-    gk::drawer::set_render_color(renderer, gk::Color::OLIVE);
-    gk::drawer::draw_filled_circle(renderer, m_shape.m_pos.GetX<int>(),
+    gk::Drawer::set_render_color(renderer, gk::Color::OLIVE);
+    gk::Drawer::draw_filled_circle(renderer, m_shape.m_pos.GetX<int>(),
                                    m_shape.m_pos.GetY<int>(),
                                    m_shape.m_size.GetX<int>());
     m_textBox.draw(renderer);
@@ -279,18 +279,18 @@ private:
 
   gk::SharedContext m_sharedContext{};
   Shape m_shape;
-  gk::vector2d m_mousePos;
-  gk::vector2d m_vel;
+  gk::Vector2d m_mousePos;
+  gk::Vector2d m_vel;
   gk::TextBox m_textBox;
   TTF_Font* m_font{nullptr};
 };
 
-class PauseState : public gk::base_state
+class PauseState : public gk::BaseState
 {
   struct Shape
   {
-    gk::vector2d m_pos{0, 0};
-    gk::vector2d m_size{0, 0};
+    gk::Vector2d m_pos{0, 0};
+    gk::Vector2d m_size{0, 0};
   };
 
 public:
@@ -335,7 +335,7 @@ public:
   void draw(SDL_Renderer* renderer) override
   {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 50);
-    gk::drawer::draw_filled_rect(renderer, m_shape.m_pos, m_shape.m_size);
+    gk::Drawer::draw_filled_rect(renderer, m_shape.m_pos, m_shape.m_size);
   }
 
 private:
@@ -353,7 +353,7 @@ int main()
 {
   try
   {
-    const gk::vector2d windowSize{640, 480};
+    const gk::Vector2d windowSize{640, 480};
 
     auto app = std::make_shared<gk::App>(gk::AppConfiguration{
         "state_machine", static_cast<size_t>(windowSize.GetX<int>()),
@@ -364,19 +364,19 @@ int main()
     auto sharedContext = app->get_shared_context();
 
     state_machine->register_state(
-        StateType::INTRO, [sharedContext, &windowSize]() -> gk::base_state_ptr
+        StateType::INTRO, [sharedContext, &windowSize]() -> gk::BaseStatePtr
         { return std::make_unique<IntroState>(sharedContext, windowSize); });
 
     state_machine->register_state(
-        StateType::MAIN, [sharedContext]() -> gk::base_state_ptr
+        StateType::MAIN, [sharedContext]() -> gk::BaseStatePtr
         { return std::make_unique<MainState>(sharedContext); });
 
     state_machine->register_state(
-        StateType::GAME, [sharedContext]() -> gk::base_state_ptr
+        StateType::GAME, [sharedContext]() -> gk::BaseStatePtr
         { return std::make_unique<GameState>(sharedContext); });
 
     state_machine->register_state(
-        StateType::PAUSED, [sharedContext]() -> gk::base_state_ptr
+        StateType::PAUSED, [sharedContext]() -> gk::BaseStatePtr
         { return std::make_unique<PauseState>(sharedContext); });
 
     state_machine->switch_to(StateType::INTRO);

@@ -1,5 +1,5 @@
-#include "GameKit/core/input_handler.hpp"
-#include "GameKit/helpers/game_exception.hpp"
+#include "GameKit/core/InputHandler.hpp"
+#include "GameKit/helpers/GameException.hpp"
 
 #include <array>
 #include <stdexcept>
@@ -61,7 +61,7 @@ namespace gk
   using event_callbacks = std::unordered_map<std::string, event_callback>;
   using event_bindings = std::unordered_map<std::string, event_binding>;
 
-  struct input_handler::details
+  struct InputHandler::details
   {
     event_callbacks callbacks{};
     event_bindings bindings{};
@@ -92,12 +92,12 @@ namespace gk
 
 } // namespace gk
 
-gk::input_handler::input_handler()
-    : m_details{std::make_unique<gk::input_handler::details>()}
+gk::InputHandler::InputHandler()
+    : m_details{std::make_unique<gk::InputHandler::details>()}
 {
 }
 
-bool gk::input_handler::add_callback(const std::string& id,
+bool gk::InputHandler::add_callback(const std::string& id,
                                      event_callback callback)
 {
   std::exception_ptr exception_ptr = nullptr;
@@ -113,7 +113,7 @@ bool gk::input_handler::add_callback(const std::string& id,
   return false;
 }
 
-bool gk::input_handler::remove_callback(const std::string& id)
+bool gk::InputHandler::remove_callback(const std::string& id)
 {
   std::exception_ptr exception_ptr = nullptr;
   try
@@ -128,7 +128,7 @@ bool gk::input_handler::remove_callback(const std::string& id)
   return false;
 }
 
-bool gk::input_handler::remove_binding(const std::string& id)
+bool gk::InputHandler::remove_binding(const std::string& id)
 {
   std::exception_ptr exception_ptr = nullptr;
   try
@@ -150,7 +150,7 @@ bool gk::input_handler::remove_binding(const std::string& id)
 
 /// @brief If no event happens, this method will not be invoked.
 /// @param evnt
-void gk::input_handler::handle_event(const SDL_Event& evnt)
+void gk::InputHandler::handle_event(const SDL_Event& evnt)
 {
   switch (evnt.type)
   {
@@ -168,7 +168,7 @@ void gk::input_handler::handle_event(const SDL_Event& evnt)
   }
 }
 
-void gk::input_handler::update()
+void gk::InputHandler::update()
 {
   for (auto& [id, binding] : m_details->bindings)
   {
@@ -234,7 +234,7 @@ void gk::input_handler::update()
   m_details->mouseEvents[MouseButton::Motion - s_index_offset] = false;
 }
 
-bool gk::input_handler::details::add_binding(
+bool gk::InputHandler::details::add_binding(
     event_binding const& t_event_binding)
 {
   std::exception_ptr exception_ptr = nullptr;
@@ -260,7 +260,7 @@ bool gk::input_handler::details::add_binding(
   return false;
 }
 
-bool gk::input_handler::add_keydown_binding(std::string_view id,
+bool gk::InputHandler::add_keydown_binding(std::string_view id,
                                             gk::keys const& t_keys,
                                             mouse_buttons t_mouse_buttons)
 {
@@ -280,7 +280,7 @@ bool gk::input_handler::add_keydown_binding(std::string_view id,
   return m_details->add_binding(binding);
 }
 
-bool gk::input_handler::add_keydown_repeat_binding(
+bool gk::InputHandler::add_keydown_repeat_binding(
     std::string_view id, keys const& t_keys, mouse_buttons t_mouse_buttons)
 {
   auto binding = gk::event_binding{std::string{id}};
@@ -298,25 +298,25 @@ bool gk::input_handler::add_keydown_repeat_binding(
   }
   return m_details->add_binding(binding);
 }
-gk::input_handler::~input_handler() = default;
+gk::InputHandler::~InputHandler() = default;
 
 // input_handler::details
-bool gk::input_handler::details::isKeyEvent(const uint32_t event_type)
+bool gk::InputHandler::details::isKeyEvent(const uint32_t event_type)
 {
   return event_type == SDL_KEYDOWN || event_type == SDL_KEYUP;
 }
 
-bool gk::input_handler::details::isMouseButtonEvent(const uint32_t event_type)
+bool gk::InputHandler::details::isMouseButtonEvent(const uint32_t event_type)
 {
   return event_type == SDL_MOUSEBUTTONDOWN || event_type == SDL_MOUSEBUTTONUP;
 }
 
-bool gk::input_handler::details::isMouseMotionEvent(const uint32_t event_type)
+bool gk::InputHandler::details::isMouseMotionEvent(const uint32_t event_type)
 {
   return event_type == SDL_MOUSEMOTION;
 }
 
-void gk::input_handler::details::updateMouseStates(const uint32_t event_type)
+void gk::InputHandler::details::updateMouseStates(const uint32_t event_type)
 {
   const auto mouseButtons = SDL_GetMouseState(&mouseX, &mouseY);
 
@@ -350,12 +350,12 @@ void gk::input_handler::details::updateMouseStates(const uint32_t event_type)
   }
 }
 
-void gk::input_handler::details::updateKeyStates()
+void gk::InputHandler::details::updateKeyStates()
 {
   keystates = SDL_GetKeyboardState(nullptr);
 }
 
-bool gk::input_handler::details::isKeyDown(SDL_Scancode key) const
+bool gk::InputHandler::details::isKeyDown(SDL_Scancode key) const
 {
   if (keystates != nullptr)
   {
@@ -364,23 +364,23 @@ bool gk::input_handler::details::isKeyDown(SDL_Scancode key) const
   return false;
 }
 
-bool gk::input_handler::details::isKeyUp(SDL_Scancode key) const
+bool gk::InputHandler::details::isKeyUp(SDL_Scancode key) const
 {
   return !isKeyDown(key);
 }
 
-bool gk::input_handler::details::isMouseButtonDown(
+bool gk::InputHandler::details::isMouseButtonDown(
     const MouseButton button) const
 {
   return mouseEvents[button - s_index_offset];
 }
 
-bool gk::input_handler::details::isMotion() const
+bool gk::InputHandler::details::isMotion() const
 {
   return mouseEvents[MouseButton::Motion - s_index_offset];
 }
 
-bool gk::input_handler::details::setInvoked(std::string const& id)
+bool gk::InputHandler::details::setInvoked(std::string const& id)
 {
   if (const auto invoked = bindings_invoked.find(id);
       invoked != bindings_invoked.end())
@@ -391,7 +391,7 @@ bool gk::input_handler::details::setInvoked(std::string const& id)
   return false;
 }
 
-bool gk::input_handler::details::resetInvoked(std::string const& id)
+bool gk::InputHandler::details::resetInvoked(std::string const& id)
 {
   if (const auto invoked = bindings_invoked.find(id);
       invoked != bindings_invoked.end())
@@ -402,7 +402,7 @@ bool gk::input_handler::details::resetInvoked(std::string const& id)
   return false;
 }
 
-bool gk::input_handler::details::wasInvoked(const std::string& id) const
+bool gk::InputHandler::details::wasInvoked(const std::string& id) const
 {
   if (const auto invoked = bindings_invoked.find(id);
       invoked != bindings_invoked.end())

@@ -1,6 +1,6 @@
 #include "GameKit/App.hpp"
-#include "GameKit/core/sprite_sheet.hpp"
-#include "GameKit/helpers/game_exception.hpp"
+#include "GameKit/core/SpriteSheet.hpp"
+#include "GameKit/helpers/GameException.hpp"
 #include <spdlog/spdlog.h>
 
 enum class StateType
@@ -8,7 +8,7 @@ enum class StateType
   MAIN,
 };
 
-class game_state : public gk::base_state
+class game_state : public gk::BaseState
 {
   enum class state_t
   {
@@ -18,9 +18,9 @@ class game_state : public gk::base_state
   };
 
 public:
-  explicit game_state(std::unique_ptr<gk::texture_manager>& t_texture_manager,
+  explicit game_state(std::unique_ptr<gk::TextureManager>& t_texture_manager,
                       std::chrono::milliseconds const& t_update_rate,
-                      std::unique_ptr<gk::state_input_handler>& t_input_handler)
+                      std::unique_ptr<gk::StateInputHandler>& t_input_handler)
       : m_sprite_sheet{t_texture_manager}
       , m_update_rate(t_update_rate)
   {
@@ -35,7 +35,7 @@ public:
                                     {
                                       m_pos += {-1, 0};
                                       m_sprite_sheet.set_direction(
-                                          gk::sprite_sheet::direction::LEFT);
+                                          gk::SpriteSheet::Direction::LEFT);
                                       m_state = state_t::WALKING;
                                     });
     }
@@ -46,7 +46,7 @@ public:
                                     {
                                       m_pos += {1, 0};
                                       m_sprite_sheet.set_direction(
-                                          gk::sprite_sheet::direction::RIGHT);
+                                          gk::SpriteSheet::Direction::RIGHT);
                                       m_state = state_t::WALKING;
                                     });
     }
@@ -58,7 +58,7 @@ public:
       spdlog::info("could not load sprite.sheet");
     }
     m_sprite_sheet.get_current_animation()->set_looping(true);
-    m_sprite_sheet.set_direction(gk::sprite_sheet::direction::RIGHT);
+    m_sprite_sheet.set_direction(gk::SpriteSheet::Direction::RIGHT);
   }
   void on_destroy() override
   {
@@ -89,10 +89,10 @@ public:
   }
 
 private:
-  gk::sprite_sheet m_sprite_sheet;
-  gk::vector2d m_pos{300, 200};
+  gk::SpriteSheet m_sprite_sheet;
+  gk::Vector2d m_pos{300, 200};
   std::chrono::milliseconds m_update_rate;
-  gk::vector2d m_vel{0, 0};
+  gk::Vector2d m_vel{0, 0};
   state_t m_state{state_t::IDLE};
 };
 
@@ -111,7 +111,7 @@ int main(int argc, const char** argv)
 
     auto& state_machine = app.get_state_machine();
     state_machine->register_state(StateType::MAIN,
-                                  [&]() -> gk::base_state_ptr
+                                  [&]() -> gk::BaseStatePtr
                                   {
                                     return std::make_unique<game_state>(
                                         app.get_texture_manager(),
@@ -121,7 +121,7 @@ int main(int argc, const char** argv)
     state_machine->switch_to(StateType::MAIN);
     app.run();
   }
-  catch (gk::game_exception const& e)
+  catch (gk::GameException const& e)
   {
 
     std::cout << e.what();

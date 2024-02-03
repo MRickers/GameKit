@@ -1,10 +1,10 @@
 #pragma once
-#include "GameKit/helpers/types.hpp"
+#include "GameKit/helpers/Types.hpp"
 #include <SDL2/SDL.h>
 
 namespace gk
 {
-  class sdl_clock
+  class SdlClock
   {
   public:
     time_ms time_passed();

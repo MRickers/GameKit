@@ -1,5 +1,5 @@
 #pragma once
-#include "GameKit/vector/vector2d.hpp"
+#include "GameKit/vector/Vector2d.hpp"
 
 #include <functional>
 #include <memory>
@@ -22,7 +22,7 @@ namespace gk
   struct event_details
   {
     std::string id;
-    vector2d mouse_pos{0, 0};
+    Vector2d mouse_pos{0, 0};
 
     void reset() // private
     {
@@ -33,11 +33,11 @@ namespace gk
   using keys = std::vector<SDL_Scancode>;
   using mouse_buttons = std::vector<gk::MouseButton>;
 
-  class input_handler
+  class InputHandler
   {
   public:
-    input_handler();
-    ~input_handler();
+    InputHandler();
+    ~InputHandler();
 
     bool add_callback(const std::string& id, event_callback);
     bool remove_callback(const std::string& id);

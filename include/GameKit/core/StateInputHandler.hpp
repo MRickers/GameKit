@@ -1,5 +1,5 @@
 #pragma once
-#include "GameKit/core/input_handler.hpp"
+#include "GameKit/core/InputHandler.hpp"
 #include <unordered_map>
 
 enum class StateType;
@@ -7,10 +7,10 @@ enum class StateType;
 namespace gk
 {
 
-  class state_input_handler
+  class StateInputHandler
   {
-    using input_handler_owner = std::unique_ptr<input_handler>;
-    using input_handlers = std::unordered_map<StateType, input_handler_owner>;
+    using InputHandlerOwner = std::unique_ptr<InputHandler>;
+    using InputHandlers = std::unordered_map<StateType, InputHandlerOwner>;
 
   public:
     void set_current_state(const StateType state);
@@ -42,8 +42,8 @@ namespace gk
     void update();
 
   private:
-    input_handlers m_handlers;
-    input_handler m_globalInputs;
+    InputHandlers m_handlers;
+    InputHandler m_globalInputs;
     StateType m_current_state;
   };
 

@@ -3,10 +3,10 @@
 
 namespace gk
 {
-  class random_int_generator
+  class RandomIntGenerator
   {
   public:
-    random_int_generator(int lower, int upper)
+    RandomIntGenerator(int lower, int upper)
         : distribution(lower, upper)
         , generator(rd())
     {

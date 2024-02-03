@@ -7,19 +7,19 @@
 
 namespace gk
 {
-  template <typename Derived, typename T> class resource_manager
+  template <typename Derived, typename T> class ResourceManager
   {
   public:
-    resource_manager() = default;
+    ResourceManager() = default;
 
-    resource_manager(const std::string& loadFile)
+    ResourceManager(const std::string& loadFile)
         : m_resources{}
         , m_paths{}
     {
       load_config(loadFile);
     }
 
-    virtual ~resource_manager()
+    virtual ~ResourceManager()
     {
     }
 

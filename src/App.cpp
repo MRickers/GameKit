@@ -1,10 +1,10 @@
 #include "GameKit/App.hpp"
-#include "GameKit/core/input_handler.hpp"
-#include "GameKit/core/ui/text_box.hpp"
-#include "GameKit/helpers/drawer.hpp"
-#include "GameKit/helpers/game_exception.hpp"
-#include "GameKit/helpers/timer.hpp"
-#include "GameKit/vector/vector2d.hpp"
+#include "GameKit/core/InputHandler.hpp"
+#include "GameKit/core/ui/TextBox.hpp"
+#include "GameKit/helpers/Drawer.hpp"
+#include "GameKit/helpers/GameException.hpp"
+#include "GameKit/helpers/Timer.hpp"
+#include "GameKit/vector/Vector2d.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -24,27 +24,27 @@ namespace gk
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                    "SDL could not initialize SDL! SDL_Error: %s",
                    SDL_GetError());
-      throw gk::game_exception{"SDL could not initialize", -123};
+      throw gk::GameException{"SDL could not initialize", -123};
     }
     if (TTF_Init() < 0)
     {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                    "SDL could not initialize TTF! SDL_Error: %s",
                    TTF_GetError());
-      throw gk::game_exception{"SDL could not initialize ttf", -123};
+      throw gk::GameException{"SDL could not initialize ttf", -123};
     }
-    const auto& [width, height] = config.getSize().Get();
-    m_size = config.getSize();
+    const auto& [width, height] = config.get_size().Get();
+    m_size = config.get_size();
 
     if (m_window = SDL_CreateWindow(
-            config.getTitle().c_str(), SDL_WINDOWPOS_UNDEFINED,
+            config.get_title().c_str(), SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
         m_window == nullptr)
     {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                    "SDL could not initialize window! SDL_Error: %s",
                    SDL_GetError());
-      throw gk::game_exception{"SDL initialize window failed", -123};
+      throw gk::GameException{"SDL initialize window failed", -123};
     }
     if (m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
         m_renderer == nullptr)
@@ -52,15 +52,15 @@ namespace gk
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                    "SDL could not initialize renderer! SDL_Error: %s",
                    SDL_GetError());
-      throw gk::game_exception{"SDL initialize renderer failed", -123};
+      throw gk::GameException{"SDL initialize renderer failed", -123};
     }
     SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
 
     m_update_rate = config.get_update_rate();
 
-    m_inputHandler = std::make_unique<state_input_handler>();
-    m_state_machine = std::make_unique<state_machine>();
-    m_texture_manager = std::make_unique<texture_manager>(m_renderer);
+    m_inputHandler = std::make_unique<StateInputHandler>();
+    m_state_machine = std::make_unique<StateMachine>();
+    m_texture_manager = std::make_unique<TextureManager>(m_renderer);
 
     m_shared_context.inputHandler_ptr = m_inputHandler.get();
     m_shared_context.state_machine_ptr = m_state_machine.get();
@@ -82,7 +82,7 @@ namespace gk
     }
   }
 
-  void App::handleEvents()
+  void App::handle_events()
   {
     SDL_Event evnt;
     while (SDL_PollEvent(&evnt) != 0)
@@ -122,14 +122,14 @@ namespace gk
     SDL_RenderPresent(m_renderer);
   }
 
-  void App::clearRenderer()
+  void App::clear_renderer()
   {
     // clear renderer
     SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
     SDL_RenderClear(m_renderer);
   }
 
-  bool App::isRunning() const
+  bool App::is_running() const
   {
     return m_running;
   }
@@ -148,7 +148,7 @@ namespace gk
     constexpr auto fontPath = "Roboto-Regular.ttf";
 #endif
 
-    fpsText.setPos(gk::vector2d{2.f, m_size.GetY<float>() - 2 - fontSize});
+    fpsText.setPos(gk::Vector2d{2.f, m_size.GetY<float>() - 2 - fontSize});
     if (!fpsText.loadFont(fontPath, fontSize))
     {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
@@ -174,7 +174,7 @@ namespace gk
                  now - lastUpdateTime) > m_update_rate &&
              updates < max_updates)
       {
-        handleEvents();
+        handle_events();
         update();
         lastUpdateTime += m_update_rate;
         updates++;
@@ -188,7 +188,7 @@ namespace gk
         lastUpdateTime = now - m_update_rate;
       }
 
-      clearRenderer();
+      clear_renderer();
 
       if (fps_timer.has_passed(1000))
       {
@@ -218,7 +218,7 @@ namespace gk
 
 } // namespace gk
 
-gk::vector2d gk::App::getWindowSize() const
+gk::Vector2d gk::App::get_window_size() const
 {
   int width, height;
   SDL_GetWindowSize(m_window, &width, &height);
@@ -233,11 +233,11 @@ gk::SharedContext gk::App::get_shared_context() const
 {
   return m_shared_context;
 }
-std::unique_ptr<gk::state_input_handler>& gk::App::get_input_handler()
+std::unique_ptr<gk::StateInputHandler>& gk::App::get_input_handler()
 {
   return m_inputHandler;
 }
-std::unique_ptr<gk::state_machine>& gk::App::get_state_machine()
+std::unique_ptr<gk::StateMachine>& gk::App::get_state_machine()
 {
   return m_state_machine;
 }
@@ -246,7 +246,7 @@ void gk::App::shutdown()
   TTF_Quit();
   SDL_Quit();
 }
-std::unique_ptr<gk::texture_manager>& gk::App::get_texture_manager()
+std::unique_ptr<gk::TextureManager>& gk::App::get_texture_manager()
 {
   return m_texture_manager;
 }

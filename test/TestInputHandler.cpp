@@ -1,9 +1,9 @@
-#include "GameKit/core/input_handler.hpp"
+#include "GameKit/core/InputHandler.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("Add/Remove Callback", "[inputhandler]")
 {
-  gk::input_handler input_handler;
+  gk::InputHandler input_handler;
   SECTION("add_callback")
   {
     REQUIRE(
@@ -23,7 +23,7 @@ TEST_CASE("Add/Remove Callback", "[inputhandler]")
 
 TEST_CASE("Add/Remove Binding", "[inputhandler]")
 {
-  gk::input_handler input_handler;
+  gk::InputHandler input_handler;
   SECTION("add_binding")
   {
     REQUIRE(input_handler.add_keydown_binding("test", {}));
