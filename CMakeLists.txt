@@ -30,6 +30,7 @@ option(BUILD_TESTS "Build all tests" ON)
 
 add_subdirectory(spdlog)
 add_subdirectory(Catch2)
+add_subdirectory(fmt)
 add_subdirectory(src)
 
 if(${BUILD_TESTS})

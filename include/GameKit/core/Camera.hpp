@@ -11,7 +11,8 @@ namespace gk {
 
   class Camera {
   public:
-    explicit Camera(Vector2d const & t_screen_size);
+    explicit Camera(Vector2d const& t_screen_size,
+                    Vector2d const& t_world_size);
     void set_target(Rect* const t_target);
     void set_position(Vector2d const & new_pos);
     [[nodiscard]] Vector2d transform(Vector2d current_position) const;
@@ -19,6 +20,7 @@ namespace gk {
 
   private:
     Vector2d m_screen_size;
+    Vector2d m_world_size;
     Vector2d m_position;
     Rect* m_target{nullptr};
   };
