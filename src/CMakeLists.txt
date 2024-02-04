@@ -11,10 +11,13 @@ core/base_animation.cpp
 core/animation_directional.cpp
 vector/vector2d.cpp
 App.cpp
+        core/Map.cpp
+        core/Camera.cpp
+        ../include/GameKit/core/Camera.hpp
 )
 
 target_include_directories(gkcore PUBLIC ${PROJECT_HEADERS})
-target_link_libraries(gkcore PRIVATE SDL2 SDL2_ttf SDL2_image)
+target_link_libraries(gkcore PRIVATE SDL2 SDL2_ttf SDL2_image fmt::fmt-header-only)
 set_target_properties(gkcore PROPERTIES
 CXX_STANDARD 23
 CXX_STANDARD_REQUIRED On
